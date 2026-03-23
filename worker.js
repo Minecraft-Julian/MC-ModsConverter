@@ -7,10 +7,18 @@ function generateUUID() {
     });
 }
 
+self.onmessage = function(e) {
+    if (e.data.type === 'start') {
+        const converter = new ModConverter(e.data.file, e.data.options);
+        converter.process();
+    }
+};
+
 class ModConverter {
-    constructor(file) {
+    constructor(file, options = {}) {
         this.file = file;
-        this.modNameBase = file.name.replace('.jar', '').replace('.zip', '');
+        this.options = options;
+        this.modNameBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
         
         // Registries
         this.namespaces = new Set();
@@ -26,6 +34,7 @@ class ModConverter {
         this.blockProperties = {};
         
         this.fileCount = 0;
+        this.skippedClasses = 0;
         this.warnings = [];
     }
 
@@ -111,6 +120,10 @@ class ModConverter {
                 self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: `Compressing ${metadata.percent.toFixed(1)}%`, isLoading: true, percent: metadata.percent });
             });
             
+            if (this.skippedClasses > 0) {
+                this.warnings.push({ path: 'Java Classes (.class)', error: `Skipped ${this.skippedClasses} raw logic files. Complex mechanisms cannot natively cross-compile; manual Bedrock scripting required.` });
+            }
+
             self.postMessage({ 
                 type: 'success', 
                 blob: content, 
@@ -134,7 +147,7 @@ class ModConverter {
 
     async categorizeAndProcessFile(relativePath, zipEntry) {
         if (relativePath.endsWith('.class')) {
-            this.logWarning(relativePath, "Skipped: Java Logic (Requires Manual Bedrock Scripting)");
+            this.skippedClasses++;
             this.incrementCounter();
             return;
         }
@@ -232,7 +245,7 @@ class ModConverter {
                 this.rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
                 this.incrementCounter();
             } catch(e) {
-                this.logWarning(relativePath, e);
+                    this.logWarning(relativePath, e);
             }
             return;
         }
@@ -473,7 +486,7 @@ class ModConverter {
 
         // BLOCK MODELS -> BEDROCK GEOMETRY
         const blockModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/block\/(.*)\.json$/);
-        if (blockModelMatch) {
+        if (blockModelMatch && this.options.convertModels !== false) {
             try {
                 const modelId = blockModelMatch[2];
                 const fileContent = await zipEntry.async('string');
@@ -619,7 +632,26 @@ class ModConverter {
                 const parts = fullId.split(':');
                 const namespace = parts[0];
                 const blockId = parts[1];
-                const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": blockId, "render_method": "alpha_test" } }, "minecraft:destroy_time": 1.0, "minecraft:explosion_resistance": 1.0 } } };
+                
+                let destroyTime = 1.0;
+                let explosionRes = 1.0;
+                
+                const isWood = blockId.includes("wood") || blockId.includes("log") || blockId.includes("plank") || blockId.includes("door") || blockId.includes("fence") || blockId.includes("chest");
+                const isMetal = blockId.includes("iron") || blockId.includes("gold") || blockId.includes("copper") || blockId.includes("brass") || blockId.includes("steel") || blockId.includes("netherite") || blockId.includes("machine") || blockId.includes("block");
+                const isGlass = blockId.includes("glass");
+                const isStone = blockId.includes("stone") || blockId.includes("cobble") || blockId.includes("brick") || blockId.includes("obsidian") || blockId.includes("ore") || blockId.includes("furnace");
+                const isDirt = blockId.includes("dirt") || blockId.includes("sand") || blockId.includes("gravel") || blockId.includes("clay") || blockId.includes("mud");
+                const isLeaves = blockId.includes("leave") || blockId.includes("foliage") || blockId.includes("plant") || blockId.includes("flower") || blockId.includes("grass");
+
+                if (blockId.includes("obsidian")) { destroyTime = 50.0; explosionRes = 1200.0; }
+                else if (isMetal) { destroyTime = 5.0; explosionRes = 6.0; }
+                else if (isStone) { destroyTime = 1.5; explosionRes = 6.0; }
+                else if (isWood) { destroyTime = 2.0; explosionRes = 3.0; }
+                else if (isDirt) { destroyTime = 0.5; explosionRes = 0.5; }
+                else if (isGlass) { destroyTime = 0.3; explosionRes = 0.3; }
+                else if (isLeaves) { destroyTime = 0.2; explosionRes = 0.2; }
+
+                const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": blockId, "render_method": "alpha_test" } }, "minecraft:destroy_time": destroyTime, "minecraft:explosion_resistance": explosionRes } } };
                 
                 const bProps = this.blockProperties[fullId];
                 if (bProps && bProps.hasLogic) {

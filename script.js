@@ -46,6 +46,14 @@ function handleFiles(files) {
         return;
     }
 
+    if (file.size > 100 * 1024 * 1024) { // over 100mb
+        if (!confirm("This file is heavily sized (>100MB). Extremely large modifications may hang or crash your browser tab during geometry extraction. Do you wish to continue?")) {
+            return;
+        }
+    }
+
+    const convertModels = document.getElementById('convertModels') ? document.getElementById('convertModels').checked : true;
+
     // Hide download button & errors on new upload
     downloadBtn.classList.add('hidden');
     const errorsContainer = document.getElementById('errorsContainer');
@@ -89,7 +97,7 @@ function handleFiles(files) {
         worker.terminate();
     };
 
-    worker.postMessage({ type: 'start', file: file });
+    worker.postMessage({ type: 'start', file: file, options: { convertModels } });
 }
 
 function displayWarnings(warnings) {
