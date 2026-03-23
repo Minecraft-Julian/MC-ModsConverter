@@ -46,7 +46,8 @@ function handleFiles(files) {
         return;
     }
 
-    processFile(file);
+    const converter = new ModConverter(file);
+    converter.process();
 }
 
 function generateUUID() {
@@ -55,29 +56,6 @@ function generateUUID() {
         return v.toString(16);
     });
 }
-
-const generateManifest = (type, name, description) => {
-    const headerUUID = generateUUID();
-    const moduleUUID = generateUUID();
-    
-    return JSON.stringify({
-        "format_version": 2,
-        "header": {
-            "name": name,
-            "description": description,
-            "uuid": headerUUID,
-            "version": [1, 0, 0],
-            "min_engine_version": [1, 16, 0]
-        },
-        "modules": [
-            {
-                "type": type === 'resources' ? 'resources' : 'data',
-                "uuid": moduleUUID,
-                "version": [1, 0, 0]
-            }
-        ]
-    }, null, 4);
-};
 
 function updateStatus(title, desc, isLoading = true) {
     statusPanel.classList.remove('hidden');
@@ -93,126 +71,457 @@ function updateStatus(title, desc, isLoading = true) {
     }
 }
 
-async function processFile(file) {
-    const modNameBase = file.name.replace('.jar', '').replace('.zip', '');
-    updateStatus('Processing...', `Reading ${file.name}`);
-    downloadBtn.classList.add('hidden');
+class ModConverter {
+    constructor(file) {
+        this.file = file;
+        this.modNameBase = file.name.replace('.jar', '').replace('.zip', '');
+        
+        // Registries
+        this.namespaces = new Set();
+        this.blocks = new Set();
+        this.items = new Set();
+        
+        this.blockTexturesRegistry = {};
+        this.itemTexturesRegistry = {};
+        this.flipbookTextures = [];
+        this.javaSoundsJson = null;
+        
+        this.fileCount = 0;
+    }
 
-    try {
-        const zip = new JSZip();
-        const loadedZip = await zip.loadAsync(file);
+    generateManifest(type, name, description) {
+        const headerUUID = generateUUID();
+        const moduleUUID = generateUUID();
         
-        const addonZip = new JSZip();
-        
-        // Create Behaviors and Resources folders
-        const bpFolder = addonZip.folder(`${modNameBase}_BP`);
-        const rpFolder = addonZip.folder(`${modNameBase}_RP`);
-        
-        // Add Manifests
-        updateStatus('Generating Assets...', 'Creating Bedrock manifests');
-        bpFolder.file("manifest.json", generateManifest('data', `${modNameBase} Behaviors`, "Converted from Java Edition"));
-        rpFolder.file("manifest.json", generateManifest('resources', `${modNameBase} Resources`, "Converted from Java Edition"));
-        
-        // Basic mapping logic - copy assets
-        updateStatus('Extracting Assets...', 'Locating Java textures and sounds');
-        
-        let fileCount = 0;
-        let javaSoundsJson = null;
-        let flipbookTextures = [];
-        
-        // Find texture and sound files
-        for (const [relativePath, zipEntry] of Object.entries(loadedZip.files)) {
-            if (zipEntry.dir) continue;
+        return JSON.stringify({
+            "format_version": 2,
+            "header": {
+                "name": name,
+                "description": description,
+                "uuid": headerUUID,
+                "version": [1, 0, 0],
+                "min_engine_version": [1, 16, 0]
+            },
+            "modules": [
+                {
+                    "type": type === 'resources' ? 'resources' : 'data',
+                    "uuid": moduleUUID,
+                    "version": [1, 0, 0]
+                }
+            ]
+        }, null, 4);
+    }
+
+    async process() {
+        updateStatus('Processing...', `Reading ${this.file.name}`);
+        downloadBtn.classList.add('hidden');
+
+        try {
+            const zip = new JSZip();
+            this.loadedZip = await zip.loadAsync(this.file);
+            this.addonZip = new JSZip();
             
-            // Checks for specific asset types
-            const textureMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*\.(png|tga|jpg|jpeg))$/);
-            const mcmetaMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*\.png)\.mcmeta$/);
-            const soundMatch = relativePath.match(/^assets\/([^/]+)\/sounds\/(.*\.(ogg|wav))$/);
-            const soundsJsonMatch = relativePath.match(/^assets\/[^/]+\/sounds\.json$/);
-
-            if (textureMatch) {
-                const bedrockTexturePath = textureMatch[1];
-                const fileContent = await zipEntry.async('arraybuffer');
-                // Place into ResourcePack/textures/
-                rpFolder.file(`textures/${bedrockTexturePath}`, fileContent);
-                fileCount++;
-            } else if (mcmetaMatch) {
-                try {
-                    const texturePathWithExt = mcmetaMatch[1]; // e.g. "block/fire.png"
-                    const texturePath = texturePathWithExt.replace(/\.png$/, ''); // "block/fire"
-                    const fileContent = await zipEntry.async('string');
-                    const parsed = JSON.parse(fileContent);
-
-                    if (parsed.animation) {
-                        const flipbook = {
-                            "flipbook_texture": `textures/${texturePath}`,
-                            "atlas_tile": texturePath.split('/').pop(),
-                            "ticks_per_frame": parsed.animation.frametime || 1
-                        };
-                        
-                        if (parsed.animation.frames) {
-                            // Extract just the index if frame is an object in Java (e.g. {"index": 0, "time": 2})
-                            flipbook.frames = parsed.animation.frames.map(f => typeof f === 'object' ? f.index : f);
-                        }
-                        flipbookTextures.push(flipbook);
-                    }
-                } catch(e) {
-                    console.warn(`Could not parse ${relativePath}`, e);
-                }
-            } else if (soundMatch) {
-                const namespace = soundMatch[1];
-                const soundPath = soundMatch[2];
-                const fileContent = await zipEntry.async('arraybuffer');
-                // Place into ResourcePack/sounds/namespace/...
-                rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
-                fileCount++;
-            } else if (soundsJsonMatch) {
-                try {
-                    const fileContent = await zipEntry.async('string');
-                    const parsed = JSON.parse(fileContent);
-                    if (!javaSoundsJson) javaSoundsJson = {};
-                    Object.assign(javaSoundsJson, parsed);
-                } catch(e) {
-                    console.warn("Could not parse sounds.json", e);
-                }
+            this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
+            this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
+            
+            updateStatus('Generating Assets...', 'Creating Bedrock manifests');
+            this.bpFolder.file("manifest.json", this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition"));
+            this.rpFolder.file("manifest.json", this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition"));
+            
+            updateStatus('Extracting Assets...', 'Scanning Java Mod Structure');
+            
+            // Phase 1: Categorize and parse all files sequentially to save memory
+            for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
+                if (zipEntry.dir) continue;
+                await this.categorizeAndProcessFile(relativePath, zipEntry);
             }
+            
+            // Phase 2: Generate cross-dependent Bedrock registries
+            updateStatus('Building Registries...', 'Generating Textures & Sound Definitions');
+            await this.generateTexturesRegistry();
+            await this.generateFlipbooks();
+            await this.generateSoundDefinitions();
+            
+            updateStatus('Packaging Addon...', 'Compressing file to .mcaddon format');
+            
+            const content = await this.addonZip.generateAsync({
+                type: "blob",
+                compression: "DEFLATE",
+                compressionOptions: { level: 5 }
+            });
+            
+            updateStatus('Addon Ready!', `Converted ${this.fileCount} assets successfully!`, false);
+            
+            const url = URL.createObjectURL(content);
+            downloadBtn.href = url;
+            downloadBtn.download = `${this.modNameBase}.mcaddon`;
+            downloadBtn.classList.remove('hidden');
+            
+        } catch (error) {
+            console.error(error);
+            updateStatus('Conversion Failed', error.message || 'An error occurred during conversion.', false);
+        }
+    }
+    
+    incrementCounter() {
+        this.fileCount++;
+        if (this.fileCount % 50 === 0) {
+            updateStatus('Converting Assets...', `Migrated ${this.fileCount} files`);
+        }
+    }
+
+    async categorizeAndProcessFile(relativePath, zipEntry) {
+        // Namespace extraction
+        const namespaceMatch = relativePath.match(/^(?:assets|data)\/([^/]+)\//);
+        if (namespaceMatch) {
+            this.namespaces.add(namespaceMatch[1]);
+        }
+
+        // TEXTURES
+        const textureMatch = relativePath.match(/^assets\/([^/]+)\/textures\/(.*\.(png|tga|jpg|jpeg))$/);
+        if (textureMatch) {
+            const namespace = textureMatch[1];
+            const texturePath = textureMatch[2]; // e.g. "block/stone.png"
+            const parsedPath = texturePath.split('/');
+            const type = parsedPath[0]; // "block", "item", etc.
+            const name = parsedPath[parsedPath.length - 1].split('.')[0];
+            
+            const fileContent = await zipEntry.async('arraybuffer');
+            
+            if (type === 'block') {
+                this.rpFolder.file(`textures/blocks/${name}.png`, fileContent);
+                this.blockTexturesRegistry[name] = `textures/blocks/${name}`;
+            } else if (type === 'item') {
+                this.rpFolder.file(`textures/items/${name}.png`, fileContent);
+                this.itemTexturesRegistry[name] = `textures/items/${name}`;
+            } else {
+                this.rpFolder.file(`textures/${texturePath}`, fileContent);
+            }
+            
+            this.incrementCounter();
+            return;
+        }
+
+        // MCMETA (ANIMATIONS)
+        const mcmetaMatch = relativePath.match(/^assets\/([^/]+)\/textures\/(.*\.png)\.mcmeta$/);
+        if (mcmetaMatch) {
+            try {
+                const texturePathWithExt = mcmetaMatch[2];
+                const texturePath = texturePathWithExt.replace(/\.png$/, '');
+                const type = texturePath.split('/')[0];
+                const name = texturePath.split('/').pop();
                 
-            // Keep UI updated occasionally
-            if (fileCount % 10 === 0) {
-                updateStatus('Copying Assets...', `Migrated ${fileCount} files`);
-            }
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+
+                if (parsed.animation) {
+                    let bedrockTexPath = `textures/${texturePath}`;
+                    if (type === 'block') bedrockTexPath = `textures/blocks/${name}`;
+                    if (type === 'item') bedrockTexPath = `textures/items/${name}`;
+                    
+                    const flipbook = {
+                        "flipbook_texture": bedrockTexPath,
+                        "atlas_tile": name,
+                        "ticks_per_frame": parsed.animation.frametime || 2
+                    };
+                    
+                    if (parsed.animation.frames) {
+                        flipbook.frames = parsed.animation.frames.map(f => typeof f === 'object' ? f.index : f);
+                    }
+                    this.flipbookTextures.push(flipbook);
+                }
+            } catch(e) {}
+            return;
         }
-        
-        // Convert animated textures
-        if (flipbookTextures.length > 0) {
-            updateStatus('Converting Animations...', 'Generating flipbook_textures.json');
-            rpFolder.file("textures/flipbook_textures.json", JSON.stringify(flipbookTextures, null, 4));
+
+        // SOUNDS
+        const soundMatch = relativePath.match(/^assets\/([^/]+)\/sounds\/(.*\.(ogg|wav))$/);
+        if (soundMatch) {
+            const namespace = soundMatch[1];
+            const soundPath = soundMatch[2];
+            const fileContent = await zipEntry.async('arraybuffer');
+            this.rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
+            this.incrementCounter();
+            return;
         }
+
+        // SOUNDS.JSON
+        const soundsJsonMatch = relativePath.match(/^assets\/([^/]+)\/sounds\.json$/);
+        if (soundsJsonMatch) {
+            try {
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                if (!this.javaSoundsJson) this.javaSoundsJson = {};
+                Object.assign(this.javaSoundsJson, parsed);
+            } catch(e) {}
+            return;
+        }
+
+        // LANGUAGES
+        const langMatch = relativePath.match(/^assets\/([^/]+)\/lang\/(.*)\.json$/);
+        if (langMatch) {
+            try {
+                const namespace = langMatch[1];
+                let langCode = langMatch[2].toLowerCase();
+                // map java lang codes to bedrock
+                if (langCode === 'en_us') langCode = 'en_US';
+                if (langCode === 'de_de') langCode = 'de_DE';
+                // ... more mappings could be done, but keeping it simple
+                
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                let langLines = [];
+                
+                for (const [key, value] of Object.entries(parsed)) {
+                    // Java: item.modid.item_name -> Bedrock: item.modid:item_name.name
+                    // Java: block.modid.block_name -> Bedrock: tile.modid:block_name.name
+                    if (key.startsWith('item.')) {
+                        const parts = key.split('.');
+                        if (parts.length >= 3) {
+                            const ns = parts[1];
+                            const id = parts.slice(2).join('_');
+                            langLines.push(`item.${ns}:${id}.name=${value}`);
+                        }
+                    } else if (key.startsWith('block.')) {
+                        const parts = key.split('.');
+                        if (parts.length >= 3) {
+                            const ns = parts[1];
+                            const id = parts.slice(2).join('_');
+                            langLines.push(`tile.${ns}:${id}.name=${value}`);
+                        }
+                    } else if (key.startsWith('entity.') || key.startsWith('itemGroup.')) {
+                         // Generically translate everything else
+                         langLines.push(`${key}=${value}`);
+                    } else {
+                         langLines.push(`${key}=${value}`);
+                    }
+                }
+                
+                if (langLines.length > 0) {
+                    const textContent = langLines.join('\n');
+                    this.rpFolder.file(`texts/${langCode}.lang`, textContent);
+                    // Add default lang indicator
+                    if (langCode === 'en_US') {
+                        this.rpFolder.file(`texts/languages.json`, JSON.stringify(["en_US"], null, 4));
+                    }
+                    this.incrementCounter();
+                }
+            } catch(e) {}
+            return;
+        }
+
+        // RECIPES
+        const recipeMatch = relativePath.match(/^data\/([^/]+)\/recipes\/(.*)\.json$/);
+        if (recipeMatch) {
+            try {
+                const namespace = recipeMatch[1];
+                const recipeId = recipeMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                
+                let bedrockRecipe = {
+                    "format_version": "1.12.0"
+                };
+                
+                // Helper to format item ids
+                const formatId = (id) => id.includes(':') ? id : `minecraft:${id}`;
+
+                if (parsed.type === 'minecraft:crafting_shaped') {
+                    bedrockRecipe["minecraft:recipe_shaped"] = {
+                        "description": { "identifier": `${namespace}:${recipeId}` },
+                        "tags": ["crafting_table"],
+                        "pattern": parsed.pattern,
+                        "key": {},
+                        "result": typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item), "count": parsed.result.count || 1}
+                    };
+                    
+                    for (const [k, v] of Object.entries(parsed.key)) {
+                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = {"item": formatId(v.item || v.tag || "minecraft:air")};
+                    }
+                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                    this.incrementCounter();
+                    
+                } else if (parsed.type === 'minecraft:crafting_shapeless') {
+                    bedrockRecipe["minecraft:recipe_shapeless"] = {
+                        "description": { "identifier": `${namespace}:${recipeId}` },
+                        "tags": ["crafting_table"],
+                        "ingredients": parsed.ingredients.map(i => ({"item": formatId(i.item || i.tag || "minecraft:air")})),
+                        "result": typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item), "count": parsed.result.count || 1}
+                    };
+                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                    this.incrementCounter();
+                    
+                } else if (parsed.type === 'minecraft:smelting') {
+                    bedrockRecipe["minecraft:recipe_furnace"] = {
+                        "description": { "identifier": `${namespace}:${recipeId}` },
+                        "tags": ["furnace"],
+                        "input": formatId(parsed.ingredient.item || parsed.ingredient.tag),
+                        "output": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result.item)
+                    };
+                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                    this.incrementCounter();
+                }
+            } catch(e) {}
+            return;
+        }
+
+        // LOOT TABLES
+        const lootMatch = relativePath.match(/^data\/([^/]+)\/loot_tables\/(.*)\.json$/);
+        if (lootMatch) {
+            try {
+                const namespace = lootMatch[1];
+                const lootPath = lootMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                
+                const bedrockLoot = {
+                    "pools": []
+                };
+                
+                if (parsed.pools) {
+                    for (const pool of parsed.pools) {
+                        const bedrockPool = {
+                            "rolls": typeof pool.rolls === 'number' ? pool.rolls : (pool.rolls?.min || 1),
+                            "entries": []
+                        };
+                        if (pool.entries) {
+                            for (const entry of pool.entries) {
+                                if (entry.type === "minecraft:item" && entry.name) {
+                                    bedrockPool.entries.push({
+                                        "type": "item",
+                                        "name": entry.name,
+                                        "weight": entry.weight || 1
+                                    });
+                                }
+                            }
+                        }
+                        bedrockLoot.pools.push(bedrockPool);
+                    }
+                    this.bpFolder.file(`loot_tables/${lootPath}.json`, JSON.stringify(bedrockLoot, null, 4));
+                    this.incrementCounter();
+                }
+            } catch(e) {}
+            return;
+        }
+
+        // ITEM MODELS -> BP ITEMS
+        const itemModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/item\/(.*)\.json$/);
+        if (itemModelMatch) {
+            try {
+                const namespace = itemModelMatch[1];
+                const itemId = itemModelMatch[2];
+                this.items.add(`${namespace}:${itemId}`);
+                
+                const bedrockItem = {
+                    "format_version": "1.16.100",
+                    "minecraft:item": {
+                        "description": {
+                            "identifier": `${namespace}:${itemId}`,
+                            "category": "nature"
+                        },
+                        "components": {
+                            "minecraft:icon": {
+                                "texture": itemId
+                            }
+                        }
+                    }
+                };
+                this.bpFolder.file(`items/${itemId}.json`, JSON.stringify(bedrockItem, null, 4));
+                this.incrementCounter();
+            } catch(e) {}
+            return;
+        }
+
+        // BLOCKSTATES -> BP BLOCKS
+        const blockstateMatch = relativePath.match(/^assets\/([^/]+)\/blockstates\/(.*)\.json$/);
+        if (blockstateMatch) {
+            try {
+                const namespace = blockstateMatch[1];
+                const blockId = blockstateMatch[2];
+                this.blocks.add(`${namespace}:${blockId}`);
+                
+                const bedrockBlock = {
+                    "format_version": "1.16.100",
+                    "minecraft:block": {
+                        "description": {
+                            "identifier": `${namespace}:${blockId}`,
+                            "is_experimental": false,
+                            "register_to_creative_menu": true
+                        },
+                        "components": {
+                            // Assign a basic material instance, assumes texture id matches block id
+                            "minecraft:material_instances": {
+                                "*": {
+                                    "texture": blockId,
+                                    "render_method": "alpha_test"
+                                }
+                            },
+                            "minecraft:destroy_time": 1.0,
+                            "minecraft:explosion_resistance": 1.0
+                        }
+                    }
+                };
+                
+                // Read blockstate to find models, could be expanded for complex geometries
+                // But keeping it to basic block generation for 1:1 translation wrapper
+                
+                this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
+                this.incrementCounter();
+            } catch(e) {}
+            return;
+        }
+    }
+
+    async generateTexturesRegistry() {
+        // terrain_texture.json
+        const terrainData = {
+            "resource_pack_name": "converted",
+            "texture_name": "atlas.terrain",
+            "padding": 8,
+            "num_mip_levels": 4,
+            "texture_data": {}
+        };
+        for (const [name, path] of Object.entries(this.blockTexturesRegistry)) {
+            terrainData.texture_data[name] = { "textures": path };
+        }
+        this.rpFolder.file("textures/terrain_texture.json", JSON.stringify(terrainData, null, 4));
         
-        // Convert sounds.json to sound_definitions.json for Bedrock
-        if (javaSoundsJson) {
-            updateStatus('Converting Sounds...', 'Generating sound_definitions.json');
+        // item_texture.json
+        const itemData = {
+            "resource_pack_name": "converted",
+            "texture_name": "atlas.items",
+            "texture_data": {}
+        };
+        for (const [name, path] of Object.entries(this.itemTexturesRegistry)) {
+            itemData.texture_data[name] = { "textures": path };
+        }
+        this.rpFolder.file("textures/item_texture.json", JSON.stringify(itemData, null, 4));
+    }
+
+    async generateFlipbooks() {
+        if (this.flipbookTextures.length > 0) {
+            this.rpFolder.file("textures/flipbook_textures.json", JSON.stringify(this.flipbookTextures, null, 4));
+        }
+    }
+
+    async generateSoundDefinitions() {
+        if (this.javaSoundsJson) {
             const bedrockSoundsData = {
                 "format_version": "1.14.0",
                 "sound_definitions": {}
             };
 
-            for (const [eventName, eventData] of Object.entries(javaSoundsJson)) {
+            for (const [eventName, eventData] of Object.entries(this.javaSoundsJson)) {
                 if (!eventData.sounds) continue;
 
                 const bedrockSoundsList = eventData.sounds.map(s => {
                     let soundName = typeof s === 'string' ? s : s.name;
                     let parts = soundName.split(':');
                     
-                    // e.g., "modid:block/wood" -> "sounds/modid/block/wood"
                     let bedrockName = parts.length > 1 ? `sounds/${parts[0]}/${parts[1]}` : `sounds/minecraft/${soundName}`;
                     
-                    // Maintain volume/pitch if represented as an object
                     if (typeof s === 'object') {
-                        return {
-                            ...s,
-                            name: bedrockName
-                        };
+                        return { ...s, name: bedrockName };
                     }
                     return bedrockName;
                 });
@@ -223,32 +532,7 @@ async function processFile(file) {
                 };
             }
 
-            rpFolder.file("sounds/sound_definitions.json", JSON.stringify(bedrockSoundsData, null, 4));
+            this.rpFolder.file("sounds/sound_definitions.json", JSON.stringify(bedrockSoundsData, null, 4));
         }
-
-        updateStatus('Packaging Addon...', 'Compressing file to .mcaddon format');
-        
-        // Generate the final mcaddon
-        const content = await addonZip.generateAsync({
-            type: "blob",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 5
-            }
-        });
-        
-        // Show success
-        updateStatus('Addon Ready!', `Converted ${fileCount} assets successfully.`, false);
-        
-        // Setup download link
-        const url = URL.createObjectURL(content);
-        downloadBtn.href = url;
-        downloadBtn.download = `${modNameBase}.mcaddon`;
-        downloadBtn.classList.remove('hidden');
-        
-    } catch (error) {
-        console.error(error);
-        updateStatus('Conversion Failed', error.message || 'An error occurred during conversion.', false);
-        spinner.classList.add('hidden');
     }
 }
