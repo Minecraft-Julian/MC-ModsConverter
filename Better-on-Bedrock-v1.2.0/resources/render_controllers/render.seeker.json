@@ -1,0 +1,42 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.seeker": {
+      "arrays": {
+        "textures": {
+          "array.skins": [
+            "Texture.default"
+          ]
+        },
+        "geometries": {
+          "Array.geo": [
+            "Geometry.default"
+          ]
+        }
+      },
+      "part_visibility": [
+        {
+          "bullet1": false
+        },
+        {
+          "bullet2": false
+        },
+        {
+          "bullet3": false
+        },
+        {
+          "bullet4": false
+        }
+      ],
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Texture.default"
+      ]
+    }
+  }
+}

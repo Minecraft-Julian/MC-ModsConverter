@@ -1,0 +1,16 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.better_on_bedrock.horned_sheep.setup": {
+			"loop" : true,
+			"bones" : {
+				"body" : {
+					"rotation" : [ "-this", 0.0, 0.0 ]
+				},
+				"head" : {
+					"position" : [ 0.0, "-10.0 - this", 0.0 ]
+				}
+			}
+		}
+	}
+}

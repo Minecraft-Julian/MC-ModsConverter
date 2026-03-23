@@ -1,0 +1,32 @@
+{
+	"format_version": "1.19.0",
+	"animation_controllers": {
+		"controller.animation.Seeker.new": {
+			"states": {
+				"default": {
+					"animations": ["new"],
+					"transitions": [
+						{"active": "q.variant == 2  || q.variant == 3 || q.variant == 5 "},
+						{"charge_beam": "q.variant == 4"}
+					],
+					"blend_transition": 0.2
+				},
+				"active": {
+					"animations": ["eye", "new", "lazer"],
+					"transitions": [
+						{"default": "!q.variant == 2 || !q.variant == 4 || !q.variant == 5 || !q.variant == 3 || !v.ischarging"},
+						{"charge_beam": "q.variant == 4"}
+					],
+					"blend_transition": 0.2
+				},
+				"charge_beam": {
+					"animations": ["charge_beam_charging", "new"],
+					"transitions": [
+						{"default": "!q.variant == 2 || !q.variant == 4 || !q.variant == 5  || !q.variant == 3 || !v.ischarging"},
+						{"active": "q.variant == 2 || q.variant == 5 || q.variant == 3"}
+					]
+				}
+			}
+		}
+	}
+}

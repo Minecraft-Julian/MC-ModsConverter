@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:adventurer_house_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 888080034,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 66
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:adventurer_house",
+                "weight": 1
+            }
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.40",
+    "minecraft:recipe_smithing_transform": {
+        "description": {
+            "identifier": "better_on_bedrock:stardust_axe_smithing"
+        },
+        "tags": [ "smithing_table" ],
+
+        "template": "better_on_bedrock:stardust_upgrade_template",
+        "base": "minecraft:diamond_axe",
+        "addition": "minecraft:netherite_ingot",
+        "result": "better_on_bedrock:stardust_axe"
+    }
+}

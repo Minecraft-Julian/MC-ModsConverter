@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "tomato_stage_3",
+        "metalness_emissive_roughness": "tomato_stage_3_mer",
+        "heightmap": "tomato_stage_3_heightmap"
+    }
+}

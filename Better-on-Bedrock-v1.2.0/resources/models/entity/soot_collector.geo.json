@@ -1,0 +1,103 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.soot_collector",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 6,
+				"visible_bounds_offset": [0, 2, 0]
+			},
+			"bones": [
+				{
+					"name": "body",
+					"pivot": [0, 42, 0],
+					"reset": true,
+					"locators": {
+						"locator": [0, 9, -11]
+					}
+				},
+				{
+					"name": "bosy2",
+					"parent": "body",
+					"pivot": [0, 32, 0],
+					"cubes": [
+						{"origin": [-4, 32, -2], "size": [8, 13, 4], "uv": [32, 16]}
+					]
+				},
+				{
+					"name": "rightArm",
+					"parent": "bosy2",
+					"pivot": [-5, 44, 0],
+					"reset": true,
+					"cubes": [
+						{"origin": [-6, 12, -1], "size": [2, 33, 2], "uv": [56, 0]}
+					]
+				},
+				{
+					"name": "rightItem",
+					"parent": "rightArm",
+					"pivot": [-8, 19, 1]
+				},
+				{
+					"name": "leftArm",
+					"parent": "bosy2",
+					"pivot": [5, 44, 0],
+					"reset": true,
+					"mirror": true,
+					"cubes": [
+						{"origin": [4, 12, -1], "size": [2, 33, 2], "uv": [56, 0]}
+					]
+				},
+				{
+					"name": "SCARF",
+					"parent": "bosy2",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-5, 45, -5], "size": [10, 3, 10], "uv": [32, 35]},
+						{"origin": [-8, 18, 4], "size": [16, 29, 0], "uv": [0, 32]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "bosy2",
+					"pivot": [0, 47, 0],
+					"cubes": [
+						{"origin": [-4, 47, -4], "size": [8, 8, 8], "uv": [0, 0]},
+						{"origin": [-6, 54, -1], "size": [12, 9, 0], "uv": [32, 48]}
+					]
+				},
+				{
+					"name": "hat",
+					"parent": "head",
+					"pivot": [0, 42, 0],
+					"reset": true,
+					"cubes": [
+						{"origin": [-4, 46.5, -4], "size": [8, 8, 8], "inflate": -0.5, "uv": [0, 16]}
+					]
+				},
+				{
+					"name": "rightLeg",
+					"parent": "body",
+					"pivot": [-2, 30, 0],
+					"reset": true,
+					"cubes": [
+						{"origin": [-3, 0, -1], "size": [2, 32, 2], "uv": [56, 0]}
+					]
+				},
+				{
+					"name": "leftLeg",
+					"parent": "body",
+					"pivot": [2, 30, 0],
+					"reset": true,
+					"mirror": true,
+					"cubes": [
+						{"origin": [1, 0, -1], "size": [2, 32, 2], "uv": [56, 0]}
+					]
+				}
+			]
+		}
+	]
+}

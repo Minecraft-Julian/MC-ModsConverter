@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:flender_eye",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:lich_eye",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.flender_eye.name\n%item.better_on_bedrock.eyes"
+            }
+        }
+    }
+}

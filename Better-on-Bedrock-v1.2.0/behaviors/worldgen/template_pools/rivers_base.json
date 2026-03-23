@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:overworld/rivers_base"
+        },
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "overworld/rivers_base",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

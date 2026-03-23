@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "small_log_mangrove_side",
+		"metalness_emissive_roughness": "small_log_mangrove_side_mer",
+		"heightmap": "small_log_mangrove_side_heightmap"
+	}
+}

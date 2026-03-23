@@ -1,0 +1,25 @@
+{
+    "format_version": "1.12",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:smooth_resin"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "##",
+            "##",
+            ""
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:resin_block"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:smooth_resin",
+            "count": 4
+        }
+    }
+}

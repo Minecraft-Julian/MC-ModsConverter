@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "vacant_trapdoor",
+        "metalness_emissive_roughness": "vacant_trapdoor_mer",
+        "heightmap": "vacant_trapdoor_heightmap"
+    }
+}

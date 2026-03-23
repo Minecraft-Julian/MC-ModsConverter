@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:flender",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/bosses/flender/flender"
+			},
+			"geometry": {
+				"default": "geometry.flender"
+			},
+			"animations": {
+				"basic": "controller.animation.flender.new",
+				"idle": "animation.flender.new",
+				"attack": "animation.flender.new2",
+				"base": "animation.flender.new3"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_flender"
+			}
+		}
+	}
+}

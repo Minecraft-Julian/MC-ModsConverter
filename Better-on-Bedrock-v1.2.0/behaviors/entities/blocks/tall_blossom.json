@@ -1,0 +1,98 @@
+{
+    "format_version": "1.21.40",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:tall_blossom",
+            "is_spawnable": false,
+            "is_summonable": true,
+
+            "properties": {
+                "pog:rotation": {
+                    "type": "enum",
+                    "values": [ "north", "south", "east", "west" ],
+                    "default": "north",
+                    "client_sync": true
+                }
+            }
+        },
+        "components": {
+            "minecraft:damage_sensor": {
+                "triggers": {
+                    "cause": "all",
+                    "deals_damage": "no"
+                }
+            },
+            "minecraft:type_family": {
+                "family": [ "inanimate", "wawla" ]
+            },
+            "minecraft:persistent": {},
+            "minecraft:mob_effect_immunity": {},
+            "minecraft:collision_box": {
+                "width": 0.025,
+                "height": 0.025
+            },
+            "minecraft:health": {
+                "max": 1,
+                "value": 1
+            },
+            "minecraft:pushable": {
+                "is_pushable": false,
+                "is_pushable_by_piston": true
+            },
+            "minecraft:physics": {
+                "has_gravity": false,
+                "has_collision": false,
+                "push_towards_closest_space": false
+            },
+            "minecraft:conditional_bandwidth_optimization": {},
+            "minecraft:inside_block_notifier": {
+                "block_list": [
+                    {
+                        "block": {
+                            "name": "better_on_bedrock:tall_blossom",
+                            "states": {}
+                        },
+                        "exited_block_event": {
+                            "event": "better_on_bedrock:instant_despawn",
+                            "target": "self"
+                        }
+                    }
+                ]
+            },
+            "minecraft:environment_sensor": {
+                "triggers": {
+                    "event": "better_on_bedrock:instant_despawn",
+                    "target": "self",
+                    "filters": {
+                        "all_of": [
+                            {
+                                "test": "hourly_clock_time",
+                                "operator": ">=",
+                                "value": 0
+                            },
+                            {
+                                "test": "hourly_clock_time",
+                                "operator": "<",
+                                "value": 13000
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "component_groups": {
+            "better_on_bedrock:instant_despawn": {
+                "minecraft:instant_despawn": {
+                    "remove_child_entities": false
+                }
+            }
+        },
+        "events": {
+            "better_on_bedrock:instant_despawn": {
+                "add": {
+                    "component_groups": [ "better_on_bedrock:instant_despawn" ]
+                }
+            }
+        }
+    }
+}

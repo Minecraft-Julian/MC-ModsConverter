@@ -1,0 +1,27 @@
+{
+    "format_version": "1.20.30",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:schroom_hat",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:max_stack_size": 1,
+            "minecraft:icon": {
+                "texture": "schroom_hat"
+            },
+            "minecraft:wearable": {
+                "slot": "slot.armor.head",
+                "protection": 5
+            },
+            "minecraft:durability": {
+                "max_durability": 1156
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:schroom_hat.name"
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:vacant_dusk/vacant_dusk_tall_flower2"
+        },
+        "places_feature": "better_on_bedrock:vacant_dusk/vacant_dusk_tall_flower_snap2",
+        "iterations": "math.random_integer(6,16)",
+        "x": {
+            "extent": [
+                0,
+                8
+            ],
+            "distribution": "gaussian"
+        },
+        "z": {
+            "extent": [
+                0,
+                8
+            ],
+            "distribution": "gaussian"
+        },
+        "y": 0
+    }
+}

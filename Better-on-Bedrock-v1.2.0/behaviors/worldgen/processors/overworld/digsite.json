@@ -1,0 +1,32 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:processor_list": {
+    "description": {
+      "identifier": "pog:trial_digsite"
+    },
+    "processors": [
+      {
+        "processor_type": "minecraft:capped",
+        "limit": 5,
+        "delegate": {
+          "processor_type": "minecraft:rule",
+          "rules": [
+            {
+              "input_predicate": {
+                "predicate_type": "minecraft:block_match",
+                "block": "minecraft:gravel"
+              },
+              "output_state": {
+                "name": "minecraft:suspicious_gravel"
+              },
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/overworld/digsite_1_sus_gravel_and_pots.json"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:nether_amulet"
+        },
+        "tags": [ "crafting_table" ],
+        
+        "pattern": [
+            "#c",
+            "Ce"
+        ],
+        "key": {
+            "#": {
+                "item": "better_on_bedrock:red_stone"
+            },
+            "C": {
+                "item": "better_on_bedrock:yellow_stone"
+            },
+            "c": {
+                "item": "better_on_bedrock:green_stone"
+            },
+            "e": {
+                "item": "better_on_bedrock:nether_amulet_empty"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:nether_amulet_3_stone_yellow_red_green"
+        }
+    }
+}

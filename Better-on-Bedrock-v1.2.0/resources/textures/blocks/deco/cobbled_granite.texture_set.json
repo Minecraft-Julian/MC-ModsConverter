@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "cobbled_granite",
+		"metalness_emissive_roughness": "cobbled_granite_mer",
+		"heightmap": "cobbled_granite_heightmap"
+	}
+}

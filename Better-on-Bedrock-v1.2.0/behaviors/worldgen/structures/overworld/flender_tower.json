@@ -1,0 +1,43 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:jigsaw": {
+        "description": {
+            "identifier": "better_on_bedrock:flender_tower"
+        },
+        "biome_filters": [
+            {
+                "all_of": [
+                    {
+                        "any_of": [
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "plains"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "forest"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "birch_forest"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "step": "surface_structures",
+        "start_pool": "pog:overworld/flender_tower",
+        "max_depth": 6,
+        "start_height": {
+			"type": "uniform",
+			"min": {"absolute": 1},
+			"max": {"absolute": 2}
+		},
+        "heightmap_projection": "world_surface",
+        "terrain_adaptation": "beard_thin"
+    }
+}

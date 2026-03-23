@@ -1,0 +1,46 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:pillager_camp/decoration"
+        },
+        "elements": [
+            {
+                "weight": 30,
+                "element": {
+                    "location": "pillager_camp/decorations/haystakck_01",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "pillager_camp/decorations/haystakck_02",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "pillager_camp/decorations/haystakck_03",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pillager_camp/decorations/lamp",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

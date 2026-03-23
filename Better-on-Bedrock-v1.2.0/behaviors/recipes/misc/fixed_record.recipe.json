@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.40",
+    "minecraft:recipe_smithing_transform": {
+        "description": {
+            "identifier": "better_on_bedrock:fixed_record"
+        },
+        "tags": [ "smithing_table" ],
+
+        "template": "better_on_bedrock:stardust_upgrade_template",
+        "base": "better_on_bedrock:broken_stellar",
+        "addition": "minecraft:netherite_ingot",
+        "result": "better_on_bedrock:stellar_crystals"
+    }
+}

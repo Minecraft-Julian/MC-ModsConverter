@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "hanging_pot_rope",
+        "metalness_emissive_roughness": [0,0,198],
+        "heightmap": "hanging_pot_rope_heightmap"
+    }
+}

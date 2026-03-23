@@ -1,0 +1,32 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "better_on_bedrock:combined_elements"
+        },
+        "tags": [ "crafting_table" ],
+        
+        "ingredients": [
+            {
+                "item": "better_on_bedrock:quetzacaw_feather",
+                "count": 1
+            },
+            {
+                "item": "minecraft:blaze_rod",
+                "count": 1
+            },
+            {
+                "item": "better_on_bedrock:blackstone_crumb",
+                "count": 1
+            },
+            {
+                "item": "minecraft:blaze_powder",
+                "count": 1
+            }
+        ],
+        "result": {
+            "item": "better_on_bedrock:combined_elements",
+            "count": 1
+        }
+    }
+}

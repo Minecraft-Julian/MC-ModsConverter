@@ -1,0 +1,17 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:ore_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:ores/corstinite_feature"
+        },
+        "count": 8,
+        "replace_rules": [
+            {
+                "places_block": "better_on_bedrock:corstinite_ore",
+                "may_replace": [
+                    "minecraft:netherrack"
+                ]
+            }
+        ]
+    }
+}

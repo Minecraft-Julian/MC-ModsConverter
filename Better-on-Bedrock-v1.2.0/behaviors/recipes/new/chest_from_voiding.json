@@ -1,0 +1,23 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:chest_from_voiding"
+        },
+        "tags": [ "crafting_table" ],
+        "pattern": [
+            "###",
+            "# #",
+            "###"
+        ],
+        "key": {
+            "#": {
+                "item": "better_on_bedrock:voiding_planks"
+            }
+        },
+        "result": {
+            "item": "minecraft:chest",
+            "count": 1
+        }
+    }
+}

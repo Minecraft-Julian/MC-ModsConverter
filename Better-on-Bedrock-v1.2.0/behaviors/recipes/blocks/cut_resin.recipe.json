@@ -1,0 +1,19 @@
+{
+	"format_version": "1.12.50",
+	"minecraft:recipe_shapeless": {
+		"description": {
+			"identifier": "better_on_bedrock:cut_resin"
+		},
+		"tags": [
+			"stonecutter"
+		],
+		"ingredients": [
+			{     "item": "minecraft:resin_block"
+        }
+    ],
+    "result": {
+        "item": "better_on_bedrock:cut_resin"
+    },
+		"priority": 2
+	}
+}

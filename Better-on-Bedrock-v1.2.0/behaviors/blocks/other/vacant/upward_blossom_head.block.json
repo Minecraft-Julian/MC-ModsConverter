@@ -1,0 +1,64 @@
+{
+	"format_version": "1.20.20",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:upward_blossom_head",
+			"menu_category": {
+				"category": "none"
+			}
+		},
+		"components": {
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"minecraft:light_emission": 12,
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 0
+			},
+			"minecraft:placement_filter": {
+				"conditions": [
+					{
+						"allowed_faces": ["up"],
+						"block_filter": ["better_on_bedrock:upward_blossom_base"]
+					},
+					{
+						"allowed_faces": ["up"],
+						"block_filter": ["better_on_bedrock:upward_blossom_stem"]
+					}
+				]
+			},
+			"minecraft:geometry": "geometry.upward_blossom_head",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "upward_blossom_head_base",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				},
+				"blossom": {
+					"texture": "upward_blossom_head_blossom",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				},
+				"leaf_inner": {
+					"texture": "upward_blossom_head_leaf_inner",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				},
+				"leaf_outer": {
+					"texture": "upward_blossom_head_leaf_outer",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#32a852",
+			"minecraft:loot": "loot_tables/blocks/upward_blossom_base.json"
+		}
+	}
+}

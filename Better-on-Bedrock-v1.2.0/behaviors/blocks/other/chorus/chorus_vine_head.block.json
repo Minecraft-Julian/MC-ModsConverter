@@ -1,0 +1,53 @@
+{
+	"format_version": "1.21.60",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:chorus_vine_head",
+			"menu_category": {
+				"is_hidden_in_commands": false,
+				"category": "none"
+			}
+		},
+		"components": {
+			"minecraft:collision_box": false,
+			"minecraft:selection_box": {
+				"origin": [
+					-6,
+					7,
+					-6
+				],
+				"size": [
+					12,
+					9,
+					12
+				]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 0
+			},
+			"minecraft:geometry": "geometry.better_on_bedrock.cross",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "chorus_vine_head",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				}
+			},
+            "minecraft:liquid_detection": {
+                "detection_rules": [
+                    {
+                        "can_contain_liquid": false,
+                        "liquid_type": "water",
+                        "on_liquid_touches": "popped"
+                    }
+                ]
+            },
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#32a852"
+		}
+	}
+}

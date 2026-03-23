@@ -1,0 +1,229 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:cherry_village/house/cherry_house"
+        },
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "cherry_village/buildings/cherry_house_small",
+                    "processors": "pog:cherry_village/house1",
+                    "projection": "rigid"
+                },
+                "weight": 9
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_house_farm",
+                    "processors": "pog:cherry_village/farmer",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },     
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_toolsmith",
+                    "processors": "pog:cherry_village/toolsmith",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_librarian",
+                    "processors": "pog:cherry_village/librarian",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_butcher",
+                    "processors": "pog:cherry_village/butcher",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_fishermen",
+                    "processors": "pog:cherry_village/fisherman",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 5,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_house_large",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 4,
+                "element": {
+                    "location": "cherry_village/buildings/large_house_02",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_cartographer",
+                    "processors": "pog:cherry_village/cartographer",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_blacksmith",
+                    "processors": "pog:cherry_village/weaponsmith",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/armorer",
+                    "processors": "pog:cherry_village/armorer",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/fletcher",
+                    "processors": "pog:cherry_village/fletcher",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/shepard",
+                    "processors": "pog:cherry_village/shepherd",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/stonemason",
+                    "processors": "pog:cherry_village/stonemason",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                
+                "weight": 2,
+                "element": {
+                    "location": "cherry_village/buildings/brewer",
+                    "processors": "pog:cherry_village/cleric",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 3,
+                "element": {
+                    "location": "cherry_village/buildings/wheat_farm",
+                    "processors": "pog:farms",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_animal_pen",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_bench",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_log_pile",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+            /*
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/pumpkin_farm",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_bench",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_campfire",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_shop",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "cherry_village/buildings/cherry_water_tap",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+                */
+        ]
+    }
+}

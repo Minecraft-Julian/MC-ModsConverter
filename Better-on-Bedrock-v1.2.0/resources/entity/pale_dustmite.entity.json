@@ -1,0 +1,32 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:pale_dustmite",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"default": "textures/entity/pale_dustmite"
+			},
+			"geometry": {
+				"default": "geometry.pale_dustmite"
+			},
+			"animations": {
+				"basic": "controller.animation.pale_dustmite.basic",
+				"idle": "animation.pale_dustmite.idle",
+				"move": "animation.pale_dustmite.move"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				]
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#4d4d4d",
+				"overlay_color": "#b3992d"
+			}
+		}
+	}
+}

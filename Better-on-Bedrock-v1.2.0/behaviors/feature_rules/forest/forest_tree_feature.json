@@ -1,0 +1,61 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:feature_rules": {
+        "description": {
+            "identifier": "better_on_bedrock:forest_tree_feature",
+            "places_feature": "better_on_bedrock:forest/forest_tree_random_feature"
+        },
+        "conditions": {
+            "placement_pass": "surface_pass",
+            "minecraft:biome_filter": [
+                {
+                    "any_of": [
+                        {
+                            "test": "has_biome_tag",
+                            "operator": "==",
+                            "value": "flower_forest"
+                        }
+                    ]
+                },
+                {
+                    "test": "has_biome_tag",
+                    "operator": "!=",
+                    "value": "birch"
+                },
+                {
+                    "test": "has_biome_tag",
+                    "operator": "!=",
+                    "value": "roofed"
+                },
+                {
+                    "test": "has_biome_tag",
+                    "operator": "!=",
+                    "value": "extreme_hills"
+                },
+                {
+                    "test": "has_biome_tag",
+                    "operator": "!=",
+                    "value": "taiga"
+                }
+            ]
+        },
+        "distribution": {
+            "iterations": 1.4,
+            "x": {
+                "distribution": "uniform",
+                "extent": [
+                    0,
+                    15
+                ]
+            },
+            "z": {
+                "distribution": "uniform",
+                "extent": [
+                    0,
+                    15
+                ]
+            },
+            "y": "query.heightmap(variable.worldx, variable.worldz)"
+        }
+    }
+}

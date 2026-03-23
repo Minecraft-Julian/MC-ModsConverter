@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:pigeon",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/overworld/pigeon"
+			},
+			"geometry": {
+				"default": "geometry.pigeon"
+			},
+			"animations": {
+				"basic": "controller.animation.pigeon",
+				"default": "animation.pigeon.default",
+				"fly": "animation.pigeon.fly",
+				"walk": "animation.pigeon.walk"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_pigeon"
+			}
+		}
+	}
+}

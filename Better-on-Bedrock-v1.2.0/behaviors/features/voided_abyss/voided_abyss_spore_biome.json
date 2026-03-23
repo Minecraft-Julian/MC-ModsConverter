@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:voided_abyss/voided_abyss_spore_biome"
+        },
+        "places_feature": "better_on_bedrock:voided_abyss/voided_abyss_spore_biome2",
+        "iterations": "t.end_biome == 4",
+        "scatter_chance": 99,
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

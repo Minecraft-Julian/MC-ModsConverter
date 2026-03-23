@@ -1,0 +1,25 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:void_brown_bed"
+        },
+        "tags": [ "crafting_table" ],
+        "pattern": [
+            "###",
+            "www"
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:brown_wool"
+            },
+            "w": {
+                "item": "better_on_bedrock:voiding_planks"
+            }
+        },
+        "result": {
+            "item": "minecraft:bed:12",
+            "count": 1
+        }
+    }
+}

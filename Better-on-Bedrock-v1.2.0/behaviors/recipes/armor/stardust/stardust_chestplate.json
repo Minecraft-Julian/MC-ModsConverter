@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.40",
+    "minecraft:recipe_smithing_transform": {
+        "description": {
+            "identifier": "pog:stardust_chestplate_smithing"
+        },
+        "tags": [ "smithing_table" ],
+        "template": "better_on_bedrock:stardust_upgrade_template",
+        "base": "minecraft:netherite_chestplate",
+        "addition": "minecraft:netherite_ingot",
+        "result": "better_on_bedrock:stardust_chestplate"
+    }
+}

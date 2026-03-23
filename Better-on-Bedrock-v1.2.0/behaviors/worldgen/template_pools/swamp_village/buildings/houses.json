@@ -1,0 +1,136 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:swamp_village/buildings/houses"
+        },
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_house",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 20,
+                "element": {
+                    "location": "swamp_village/lamps/swamp_shop",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_house",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_farmer",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_fishman",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_large_house",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_leather_worker",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_librarian",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 64,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_small_house",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 40,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_blacksmith",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 40,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_butcher",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 40,
+                "element": {
+                    "location": "swamp_village/buildings/swamp_brewer",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 90,
+                "element": {
+                    "location": "swamp_village/decoration/swamp_farm",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            },
+            {
+                "weight": 20,
+                "element": {
+                    "location": "swamp_village/decoration/swamp_bench",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

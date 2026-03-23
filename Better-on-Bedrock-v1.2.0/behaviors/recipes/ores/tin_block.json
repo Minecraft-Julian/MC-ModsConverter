@@ -1,0 +1,26 @@
+{
+    "format_version": "1.20.10",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:tin_block"
+        },
+        "tags": [ "crafting_table" ],
+        "unlock": [
+            { "item": "better_on_bedrock:tin_ingot" }
+        ],
+        
+        "pattern": [
+            "###",
+            "###",
+            "###"
+        ],
+        "key": {
+            "#": {
+                "item": "better_on_bedrock:tin_ingot"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:tin_block"
+        }
+    }
+}

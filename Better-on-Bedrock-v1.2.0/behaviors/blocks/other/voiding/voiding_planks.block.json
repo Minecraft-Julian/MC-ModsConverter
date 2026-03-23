@@ -1,0 +1,35 @@
+{
+	"format_version": "1.20.20",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:voiding_planks",
+			"menu_category": {
+				"category": "construction",
+				"group": "itemGroup.name.planks"
+			}
+		},
+		"components": {
+			"minecraft:geometry": {
+				"identifier": "minecraft:geometry.full_block"
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "voiding_planks",
+					"render_method": "opaque"
+				}
+			},
+            
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 2
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 15
+			},
+            
+            "tag:wood": {},
+            "tag:minecraft:planks": {},
+            "tag:better_on_bedrock:planks": {},
+            "tag:minecraft:is_axe_item_destructible": {}
+		}
+	}
+}

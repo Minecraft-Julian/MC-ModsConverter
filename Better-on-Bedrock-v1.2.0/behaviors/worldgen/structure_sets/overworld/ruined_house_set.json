@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:ruined_house_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 2140784291,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 39
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:ruined_house",
+                "weight": 1
+            }
+        ]
+    }
+}

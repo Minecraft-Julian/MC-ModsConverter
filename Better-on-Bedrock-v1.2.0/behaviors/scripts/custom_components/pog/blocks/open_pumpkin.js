@@ -1,0 +1,37 @@
+import { world } from "@minecraft/server";
+function isNight() {
+    const time = world.getTimeOfDay();
+    return time >= 13000 && time < 24000;
+};
+
+/** @type { import("@minecraft/server").BlockCustomComponent } */
+export const events = {
+    onTick: ({ block, dimension }) => {
+        if (block.typeId === "minecraft:air")
+            return;
+
+        const isOpen = block.permutation.getState("pog:is_open") == true;
+        if (isNight()) {
+            if (!isOpen) {
+                const { x, y, z } = block.location;
+                const direction = block.permutation.getState("minecraft:cardinal_direction");
+                const entity = block.dimension.spawnEntity("better_on_bedrock:pale_pumkin_eye", { x: x + 0.5, y, z: z + 0.5 });
+                entity.setProperty("pog:rotation", direction);
+            };
+
+            block.setPermutation(block.permutation.withState("pog:is_open", true));
+        }
+        else {
+            block.setPermutation(block.permutation.withState("pog:is_open", false));
+        };
+    },
+    onPlace: ({block, dimension}) => {
+        if (isNight()) {
+            const { x, y, z } = block.location;
+            const direction = block.permutation.getState("minecraft:cardinal_direction");
+            const entity = block.dimension.spawnEntity("better_on_bedrock:pale_pumkin_eye", { x: x + 0.5, y, z: z + 0.5 });
+            entity.setProperty("pog:rotation", direction);
+            block.setPermutation(block.permutation.withState("pog:is_open", true));
+        };
+    }
+};

@@ -1,0 +1,20 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:swamp/swamp_tree_1"
+        },
+        "structure_name": "mystructure:swamp_tree_1",
+        "adjustment_radius": 0,
+        "facing_direction": "south",
+        "constraints": {
+            "grounded": {},
+            "block_intersection": {
+            "block_allowlist": [
+               "minecraft:air",
+                "minecraft:grass_block"
+            ]
+        }
+        }
+    }
+}

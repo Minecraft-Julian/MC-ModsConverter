@@ -1,0 +1,70 @@
+{
+    "format_version": "1.20.30",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:seeker_launcher",
+            "is_spawnable": false,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:physics": {
+                "has_gravity": true,
+                "has_collision": true
+            },
+            "minecraft:damage_sensor": {
+                "triggers": [
+                    {
+                        "cause": "all",
+                        "deals_damage": false
+                    }
+                ]
+            },
+            "minecraft:pushable": {
+                "is_pushable": false
+            },
+            "minecraft:push_through": {
+                "value": 1
+            }
+        },
+        "component_groups": {
+            "despawn": {
+                "minecraft:instant_despawn": {
+                    "remove_child_entities": false
+                }
+            },
+            "stugg": {
+                "minecraft:timer": {
+                    "time": 5,
+                    "looping": false,
+                    "time_down_event": {
+                        "event": "despawm",
+                        "target": "self"
+                    }
+                }
+            }
+        },
+        "events": {
+            "despawm": {
+                "add": {
+                    "component_groups": [
+                        "despawn"
+                    ]
+                }
+            },
+            "minecraft:entity_spawned": {
+                "queue_command": {
+                    "command": [
+                        "particle pog:seeker_launch_base ~ ~ ~",
+                        "particle pog:seeker_launch_ambient ~ ~ ~"
+                    ]
+                },
+                "add": {
+                    "component_groups": [
+                        "stugg"
+                    ]
+                }
+            }
+        }
+    }
+}

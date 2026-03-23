@@ -1,0 +1,139 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.hover",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 8,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Body",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-7, 0, -8],
+							"size": [14, 10, 16],
+							"uv": [0, 49]
+						},
+						{
+							"origin": [0, 0, -12],
+							"size": [0, 14, 10],
+							"pivot": [0, 0, 0],
+							"rotation": [-55, 0, 0],
+							"uv": [37, 76]
+						}
+					]
+				},
+				{
+					"name": "Head",
+					"parent": "Body",
+					"pivot": [0, 5, -8],
+					"cubes": [
+						{
+							"origin": [-3, 1, -20],
+							"size": [6, 8, 12],
+							"uv": [0, 76]
+						}
+					]
+				},
+				{
+					"name": "Tail",
+					"parent": "Body",
+					"pivot": [0, 6, 8],
+					"cubes": [
+						{
+							"origin": [-4, 4, 8],
+							"size": [8, 6, 16],
+							"uv": [67, 0]
+						}
+					]
+				},
+				{
+					"name": "Tail2",
+					"parent": "Tail",
+					"pivot": [0, 10, 24],
+					"cubes": [
+						{
+							"origin": [-8, 9, 20],
+							"size": [16, 0, 18],
+							"uv": [0, 30]
+						}
+					]
+				},
+				{
+					"name": "Right_Wing",
+					"parent": "Body",
+					"pivot": [-7, 8, -2],
+					"cubes": [
+						{
+							"origin": [-13, 6, -6],
+							"size": [6, 4, 8],
+							"uv": [79, 82]
+						},
+						{
+							"origin": [-27, 4, -8],
+							"size": [14, 6, 14],
+							"uv": [61, 56]
+						},
+						{
+							"origin": [-26, 4, -16],
+							"size": [0, 8, 8],
+							"uv": [51, 30]
+						}
+					]
+				},
+				{
+					"name": "Right_End_Wing",
+					"parent": "Right_Wing",
+					"pivot": [-27, 8, -1],
+					"cubes": [
+						{
+							"origin": [-53, 7, -8],
+							"size": [26, 0, 14],
+							"uv": [0, 15]
+						}
+					]
+				},
+				{
+					"name": "Left_Wing",
+					"parent": "Body",
+					"pivot": [7, 8, -2],
+					"cubes": [
+						{
+							"origin": [7, 6, -6],
+							"size": [6, 4, 8],
+							"uv": [58, 77]
+						},
+						{
+							"origin": [13, 4, -8],
+							"size": [14, 6, 14],
+							"uv": [55, 35]
+						},
+						{
+							"origin": [26, 4, -16],
+							"size": [0, 8, 8],
+							"uv": [0, 30]
+						}
+					]
+				},
+				{
+					"name": "Left_End_Wing",
+					"parent": "Left_Wing",
+					"pivot": [27, 8, -1],
+					"cubes": [
+						{
+							"origin": [27, 7, -8],
+							"size": [26, 0, 14],
+							"uv": [0, 0]
+						}
+					]
+				}
+			]
+		}
+	]
+}

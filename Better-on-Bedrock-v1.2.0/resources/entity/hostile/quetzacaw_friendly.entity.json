@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:quetzacaw_friendly",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/hostile/quetzacaw"
+			},
+			"animations": {
+				"basic": "controller.animation.quetzacaw.new",
+				"walk": "animation.quetzacaw.walk",
+				"idle": "animation.quetzacaw.idle",
+				"attack": "animation.quetzacaw.attack",
+				"sit": "animation.quetzacaw.sit"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"geometry": {
+				"default": "geometry.quetzacaw"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_quetzacaw"
+			}
+		}
+	}
+}

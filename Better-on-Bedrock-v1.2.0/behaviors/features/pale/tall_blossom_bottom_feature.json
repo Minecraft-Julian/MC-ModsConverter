@@ -1,0 +1,20 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:single_block_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:pale/tall_blossom_bottom_feature"
+        },
+        "places_block": {
+            "name": "better_on_bedrock:tall_blossom",
+            "states": {
+                "pog:double_plant": "default",
+                "pog:is_open": false
+            }
+        },
+        "enforce_survivability_rules": true,
+        "enforce_placement_rules": true,
+        "may_replace": [
+            "minecraft:air"
+        ]
+    }
+}

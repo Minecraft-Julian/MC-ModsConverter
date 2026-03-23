@@ -1,0 +1,19 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.fly.base": {
+			"loop": true,
+			"bones": {
+				"wings": {
+					"rotation": [0, 0, "math.cos(q.anim_time * 2500) * 25"]
+				},
+				"bone": {
+					"rotation": [0, 0, "-math.cos(q.anim_time * 2500) * 25"]
+				},
+				"bone2": {
+					"rotation": ["math.cos(q.anim_time * 120) * 6", 0, 0]
+				}
+			}
+		}
+	}
+}

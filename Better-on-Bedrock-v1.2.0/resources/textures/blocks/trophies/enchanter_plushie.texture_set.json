@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "enchanter_plushie",
+        "metalness_emissive_roughness": "enchanter_plushie_mer",
+        "heightmap": "enchanter_plushie_heightmap"
+    }
+}

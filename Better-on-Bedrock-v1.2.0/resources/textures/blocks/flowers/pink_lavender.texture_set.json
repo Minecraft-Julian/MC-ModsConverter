@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "pink_lavender",
+        "metalness_emissive_roughness": "pink_lavender_mer",
+        "heightmap": "pink_lavender_heightmap"
+    }
+}

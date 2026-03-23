@@ -1,0 +1,130 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:vacant_trapdoor",
+            "menu_category": {
+                "category": "construction",
+                "group": "itemGroup.name.trapdoor"
+            },
+            "states": {
+                "pog:is_open": [ false, true ],
+                "pog:is_powered": [ false, true ]
+            },
+            "traits": {
+                "minecraft:placement_direction": {
+                    "enabled_states": [ "minecraft:cardinal_direction" ]
+                },
+                "minecraft:placement_position": {
+                    "enabled_states": [ "minecraft:vertical_half" ]
+                }
+            }
+        },
+        "components": {
+            "minecraft:geometry": {
+                "identifier": "geometry.better_on_bedrock.trapdoor",
+                "bone_visibility": {
+                    "trapdoor_up": "!q.block_state('pog:is_open') && q.block_state('minecraft:vertical_half') == 'top'",
+                    "trapdoor_down": "!q.block_state('pog:is_open') && q.block_state('minecraft:vertical_half') == 'bottom'",
+                    "trapdoor_open": "q.block_state('pog:is_open')"
+                }
+            },
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "better_on_bedrock:vacant_trapdoor",
+                    "render_method": "blend",
+                    "ambient_occlusion": false
+                }
+            },
+            "minecraft:custom_components": [ "pog:trapdoor" ],
+            
+            "minecraft:collision_box": {
+                "origin": [ -8, 0, -8 ],
+                "size": [ 16, 3, 16 ]
+            },
+            "minecraft:selection_box": {
+                "origin": [ -8, 0, -8 ],
+                "size": [ 16, 3, 16 ]
+            },
+            "minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 2
+			},
+            "minecraft:destructible_by_explosion": {
+                "explosion_resistance": 15
+            },
+            "minecraft:flammable": {
+                "destroy_chance_modifier": 20,
+                "catch_chance_modifier": 5
+            },
+			"minecraft:redstone_conductivity": {
+				"redstone_conductor": true
+			},
+            "minecraft:tick": {
+                "looping": true,
+                "interval_range": [ 4, 4 ]
+            },
+
+            "tag:minecraft:is_axe_item_destructible": {}
+        },
+        "permutations": [
+            {
+                "condition": "q.block_state('minecraft:vertical_half') == 'top' && !q.block_state('pog:is_open')",
+                "components": {
+                    "minecraft:collision_box": {
+                        "origin": [ -8, 13, -8 ],
+                        "size": [ 16, 3, 16 ]
+                    },
+                    "minecraft:selection_box": {
+                        "origin": [ -8, 13, -8 ],
+                        "size": [ 16, 3, 16 ]
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:is_open')",
+                "components": {
+                    "minecraft:collision_box": {
+                        "origin": [ -8, 0, 5 ],
+                        "size": [ 16, 16, 3 ]
+                    },
+                    "minecraft:selection_box": {
+                        "origin": [ -8, 0, 5 ],
+                        "size": [ 16, 16, 3 ]
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+                "components": {
+                    "minecraft:transformation": {
+                        "rotation": [ 0, 180, 0 ]
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+                "components": {
+                    "minecraft:transformation": {
+                        "rotation": [ 0, 0, 0 ]
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+                "components": {
+                    "minecraft:transformation": {
+                        "rotation": [ 0, 90, 0 ]
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+                "components": {
+                    "minecraft:transformation": {
+                        "rotation": [ 0, 270, 0 ]
+                    }
+                }
+            }
+        ]
+    }
+}

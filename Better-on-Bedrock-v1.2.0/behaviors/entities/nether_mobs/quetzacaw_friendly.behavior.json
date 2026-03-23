@@ -1,0 +1,362 @@
+{
+	"format_version": "1.20.30",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:quetzacaw_friendly",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"component_groups": {
+			"untamed": {
+				"minecraft:physics": {
+					"has_gravity": true,
+					"has_collision": true
+				},
+				"minecraft:tameable": {
+					"probability": 1,
+					"tame_event": {
+						"event": "tamed",
+						"target": "self"
+					},
+					"tame_items": [
+						"better_on_bedrock:lava_salad"
+					]
+				},
+				"minecraft:loot": {
+					"table": "loot_tables/entities/quetzacaw.json"
+				},
+				"minecraft:pushable": {
+					"is_pushable": false
+				},
+				"minecraft:push_through": {
+					"value": 1
+				},
+				"minecraft:movement": {
+					"value": 0.25
+				},
+				"minecraft:attack_damage": {
+					"value": 4
+				},
+				"minecraft:health": {
+					"value": 25,
+					"max": 25
+				},
+				"minecraft:behavior.delayed_attack": {
+					"attack_duration": 0.9,
+					"attack_once": false,
+					"reach_multiplier": 2,
+					"speed_multiplier": 1,
+					"require_complete_path": true,
+					"cooldown_time": 0.0,
+					"priority": 3
+				},
+				"minecraft:attack": {
+					"damage": 4
+				},
+				"minecraft:behavior.melee_attack": {
+					"melee_fov": 90,
+					"track_target": true,
+					"priority": 3,
+					"cooldown_time": 0
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 3,
+					"entity_types": {
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "monster"
+						}
+					}
+				},
+				"minecraft:movement.basic": {},
+				"minecraft:jump.static": {},
+				"minecraft:navigation.walk": {
+					"avoid_water": true
+				},
+				"minecraft:behavior.random_stroll": {
+					"priority": 3,
+					"speed_multiplier": 0.8
+				}
+			},
+			"sitting": {
+				"minecraft:rideable": {
+					"controlling_seat": 0,
+					"crouching_skip_interact": true,
+					"family_types": [
+						"player"
+					],
+					"interact_text": "action.interact.mount",
+					"pull_in_entities": false,
+					"rider_can_interact": false,
+					"seat_count": 1,
+					"seats": [
+						{
+							"position": [
+								0,
+								1.1,
+								-0.4
+							]
+						}
+					]
+				},
+				"minecraft:sittable": {
+					"stand_event": {
+						"event": "stand_group",
+						"target": "self"
+					}
+				},
+				"minecraft:healable": {
+					"force_use": false,
+					"items": [
+						{
+							"item": "better_on_bedrock:lava_salad",
+							"heal_amount": 5
+						}
+					]
+				}
+			},
+			"is_tamed": {
+				"minecraft:movement": {
+					"value": {
+						"range_min": 0.1125,
+						"range_max": 0.3375
+					}
+				},
+				"minecraft:navigation.walk": {
+					"can_path_over_water": true,
+					"avoid_water": true,
+					"avoid_damage_blocks": true
+				},
+				"minecraft:movement.basic": {},
+				"minecraft:jump.static": {},
+				"minecraft:horse.jump_strength": {
+					"value": {
+						"range_min": 0.4,
+						"range_max": 1.0
+					}
+				},
+				"minecraft:is_saddled": {},
+				"minecraft:input_ground_controlled": {},
+				"minecraft:can_power_jump": {},
+				"minecraft:behavior.player_ride_tamed": {},
+				"minecraft:sittable": {
+					"sit_event": {
+						"event": "sit_group",
+						"target": "self"
+					},
+					"stand_event": {
+						"event": "stand_group",
+						"target": "self"
+					}
+				},
+				"minecraft:is_tamed": {},
+				"minecraft:behavior.stay_while_sitting": {
+					"priority": 1
+				},
+				"minecraft:behavior.controlled_by_player": {
+					"mount_speed_multiplier": 1
+				},
+				"minecraft:rideable": {
+					"controlling_seat": 0,
+					"crouching_skip_interact": true,
+					"family_types": [
+						"player"
+					],
+					"interact_text": "action.interact.mount",
+					"pull_in_entities": false,
+					"rider_can_interact": false,
+					"seat_count": 1,
+					"seats": [
+						{
+							"position": [
+								0,
+								2.3,
+								-0.3
+							]
+						}
+					]
+				},
+				"minecraft:nameable": {
+					"allow_name_tag_renaming": true,
+					"always_show": false
+				},
+				"minecraft:physics": {
+					"has_gravity": true,
+					"has_collision": true
+				},
+				"minecraft:tameable": {
+					"probability": 1,
+					"tame_event": {
+						"event": "tamed",
+						"target": "self"
+					},
+					"tame_items": [
+						"better_on_bedrock:lava_salad"
+					]
+				},
+				"minecraft:loot": {
+					"table": "loot_tables/entities/quetzacaw.json"
+				},
+				"minecraft:pushable": {
+					"is_pushable": false
+				},
+				"minecraft:push_through": {
+					"value": 1
+				},
+				"minecraft:attack_damage": {
+					"value": 4
+				},
+				"minecraft:health": {
+					"value": 25,
+					"max": 25
+				},
+				"minecraft:behavior.delayed_attack": {
+					"attack_duration": 0.9,
+					"attack_once": false,
+					"reach_multiplier": 2,
+					"speed_multiplier": 1,
+					"require_complete_path": true,
+					"cooldown_time": 0.0,
+					"priority": 3
+				},
+				"minecraft:attack": {
+					"damage": 4
+				},
+				"minecraft:behavior.melee_attack": {
+					"melee_fov": 90,
+					"track_target": true,
+					"priority": 3,
+					"cooldown_time": 0
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 3,
+					"entity_types": {
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "monster"
+						}
+					}
+				},
+				"minecraft:behavior.random_stroll": {
+					"priority": 3,
+					"speed_multiplier": 0.8
+				}
+			}
+		},
+		"events": {
+			"minecraft:entity_spawned": {
+				"add": {
+					"component_groups": [
+						"untamed"
+					]
+				}
+			},
+			"tamed": {
+				"add": {
+					"component_groups": [
+						"is_tamed"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"untamed"
+					]
+				}
+			},
+			"sit_group": {
+				"add": {
+					"component_groups": [
+						"sitting"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"is_tamed"
+					]
+				}
+			},
+			"stand_group": {
+				"add": {
+					"component_groups": [
+						"is_tamed"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"sitting"
+					]
+				}
+			}
+		},
+		"components": {
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 3,
+				"entity_types": {
+					"filters": {
+						"test": "is_family",
+						"subject": "other",
+						"value": "monster"
+					}
+				}
+			},
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/quetzacaw.json"
+			},
+			"minecraft:pushable": {
+				"is_pushable": false
+			},
+			"minecraft:push_through": {
+				"value": 1
+			},
+			"minecraft:attack_damage": {
+				"value": 4
+			},
+			"minecraft:collision_box": {
+				"width": 4.2,
+				"height": 3.2
+			},
+			"minecraft:movement": {
+				"value": 0.25
+			},
+			"minecraft:health": {
+				"value": 25,
+				"max": 25
+			},
+			"minecraft:behavior.delayed_attack": {
+				"attack_duration": 0.9,
+				"attack_once": false,
+				"reach_multiplier": 2,
+				"speed_multiplier": 1,
+				"require_complete_path": true,
+				"cooldown_time": 0.0,
+				"priority": 3
+			},
+			"minecraft:attack": {
+				"damage": 4
+			},
+			"minecraft:behavior.melee_attack": {
+				"melee_fov": 90,
+				"track_target": true,
+				"priority": 3,
+				"cooldown_time": 0
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:navigation.walk": {
+				"avoid_water": true
+			},
+			"minecraft:behavior.random_stroll": {
+				"interval": 120,
+				"xz_dist": 10,
+				"y_dist": 7
+			}
+		}
+	}
+}

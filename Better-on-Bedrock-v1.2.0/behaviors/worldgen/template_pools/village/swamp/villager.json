@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:template_pool": {
+    "description": {
+      "identifier": "pog:swamp_village/common/villager"
+    },
+    "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "village/swamp/common/villager",
+        "processors": "better_on_bedrock:empty",
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+    ]
+  }
+}

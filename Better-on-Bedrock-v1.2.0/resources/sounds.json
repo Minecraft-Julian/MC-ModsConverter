@@ -1,0 +1,1112 @@
+{
+    "individual_named_sounds": {
+        "sounds": {
+            "ambient.empty": {
+                "sound": "mob.quiet",
+                "volume": 0
+            },
+            "ambient.pale_garden": {
+                "sound": "ambient.pale_garden",
+                "volume": 1
+            },
+            "ambient.dripstone": {
+                "sound": "ambient.dripstone",
+                "volume": 1
+            },
+            "ambient.bird": {
+                "sound": "ambient.bird",
+                "volume": 0.7
+            },
+            "ambient.birch_bird": {
+                "sound": "ambient.birch_bird",
+                "volume": 0.7
+            },
+            "ambient.taiga_bird": {
+                "sound": "ambient.taiga_bird",
+                "volume": 0.4
+            },
+            "ambient.lush_cave": {
+                "sound": "ambient.lush_cave",
+                "volume": 0.7
+            },
+            "ambient.ocean": {
+                "sound": "ambient.ocean",
+                "volume": 0.3
+            },
+            "ambient.desert": {
+                "sound": "ambient.desert",
+                "volume": 0.5
+            },
+            "ambient.snow": {
+                "sound": "ambient.snow",
+                "volume": 0.5
+            },
+            "ambient.plains": {
+                "sound": "ambient.plains",
+                "volume": 0.5
+            }
+        }
+    },
+    "interactive_sounds": {
+        "block_sounds": {
+            "better_on_bedrock:end_nylium": {
+                "events": {
+                    "fall": {
+                        "sound": "block.better_on_bedrock:end_nylium.break",
+                        "volume": 0.3,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "jump": {
+                        "sound": "block.better_on_bedrock:end_nylium.break",
+                        "volume": 0.3,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "land": {
+                        "sound": "block.better_on_bedrock:end_nylium.break",
+                        "volume": 0.3,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "hit": {
+                        "sound": "block.better_on_bedrock:end_nylium.hit",
+                        "volume": 0.3,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "step": {
+                        "sound": "block.better_on_bedrock:end_nylium.step",
+                        "volume": 0.3,
+                        "pitch": 1.2
+                    }
+                }
+            },
+            "better_on_bedrock:end_foliage": {
+                "events": {
+                    "fall": {
+                        "sound": "block.better_on_bedrock:end_foliage.break",
+                        "volume": 0.8,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "jump": {
+                        "sound": "block.better_on_bedrock:end_foliage.break",
+                        "volume": 0.8,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "land": {
+                        "sound": "block.better_on_bedrock:end_foliage.break",
+                        "volume": 0.8,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    },
+                    "hit": {
+                        "sound": "block.better_on_bedrock:end_nylium.step",
+                        "volume": 0.3,
+                        "pitch": [
+                            0.8,
+                            2.0
+                        ]
+                    }
+                }
+            },
+            "deepslate_stardust": {
+                "events": {
+                    "fall": {
+                        "sound": "block.deespalte_stardust.step",
+                        "volume": 0.3,
+                        "pitch": 1.0
+                    },
+                    "jump": {
+                        "sound": "block.deespalte_stardust.step",
+                        "volume": 0.08,
+                        "pitch": 1.0
+                    },
+                    "land": {
+                        "sound": "block.deespalte_stardust.step",
+                        "volume": 0.12,
+                        "pitch": 1.0
+                    },
+                    "hit": {
+                        "sound": "block.deespalte_stardust.step",
+                        "volume": 0.1,
+                        "pitch": 0.5
+                    },
+                    "step": {
+                        "sound": "block.deespalte_stardust.step",
+                        "volume": 0.2,
+                        "pitch": 1.0
+                    }
+                }
+            },
+            "stardust": {
+                "events": {
+                "fall": {
+                    "sound": "fall.stone",
+                   "volume": 0.5,
+                    "pitch": 1.2
+                },
+                "jump": {
+                    "sound": "block.stardust.jump",
+                    "volume": 0.09,
+                    "pitch": 1
+                },
+                "land": {
+                    "sound": "land.stone",
+                    "volume": 0.12,
+                    "pitch": 1.4
+                },
+                "hit": {
+                    "sound": "block.stardust.hit",
+                    "volume": 0.2,
+                    "pitch": 0.5
+                },
+                "step": {
+                    "sound": "block.stardust.hit",
+                    "volume": 0.2,
+                    "pitch":1.2
+                }
+                }
+            }
+        }
+    },
+    "block_sounds": {
+        "better_on_bedrock:end_nylium": {
+            "events": {
+                "place": {
+                    "sound": "block.better_on_bedrock:end_nylium.place",
+                    "volume": 0.3,
+                    "pitch": [
+                        1.0,
+                        1.1
+                    ]
+                },
+                "fall": {
+                    "sound": "block.better_on_bedrock:end_nylium.break",
+                    "volume": 0.3,
+                    "pitch": [
+                        0.8,
+                        2.0
+                    ]
+                },
+                "hit": {
+                    "sound": "block.better_on_bedrock:end_nylium.break",
+                    "volume": 0.3,
+                    "pitch": [
+                        0.8,
+                        2.0
+                    ]
+                },
+                "step": {
+                    "sound": "block.better_on_bedrock:end_nylium.step",
+                    "volume": 0.3,
+                    "pitch": [
+                        0.8,
+                        2.0
+                    ]
+                },
+                "break": {
+                    "sound": "block.better_on_bedrock:end_nylium.break",
+                    "volume": 0.3,
+                    "pitch": 1
+                }
+            },
+            "volume": 0.8
+        },
+        "better_on_bedrock:waystone": {
+            "events": {
+                "place": {
+                    "sound": "block.better_on_bedrock:waystone.place",
+                    "volume": 0.5,
+                    "pitch": [
+                        1.0,
+                        1.1
+                    ]
+                },
+                "break": {
+                    "sound": "block.better_on_bedrock:waystone.break",
+                    "volume": 0.5,
+                    "pitch": 1
+                }
+            },
+            "volume": 0.8
+        },
+        "better_on_bedrock:end_foliage": {
+            "events": {
+                "place": {
+                    "sound": "block.better_on_bedrock:end_foliage.place",
+                    "volume": 0.8,
+                    "pitch": [
+                        1.0,
+                        1.1
+                    ]
+                },
+                "fall": {
+                    "sound": "block.better_on_bedrock:end_foliage.break",
+                    "volume": 0.8,
+                    "pitch": [
+                        0.8,
+                        2.0
+                    ]
+                },
+                "hit": {
+                    "sound": "block.better_on_bedrock:end_foliage.break",
+                    "volume": 0.8,
+                    "pitch": [
+                        0.8,
+                        2.0
+                    ]
+                },
+                "break": {
+                    "sound": "block.better_on_bedrock:end_foliage.break",
+                    "volume": 0.8,
+                    "pitch": 1
+                }
+            },
+            "volume": 0.8
+        },
+        "deepslate_stardust": {
+            "events": {
+                "place": {
+                    "sound": "block.deespalte_stardust.place",
+                    "volume": 0.6,
+                    "pitch": [
+                        0.8,
+                        1.0
+                    ]
+                },
+                "fall": {
+                    "sound": "block.deespalte_stardust.step",
+                    "volume": 0.3,
+                    "pitch": 1.0
+                },
+                "hit": {
+                    "sound": "block.deespalte_stardust.step",
+                    "volume": 0.1,
+                    "pitch": 0.5
+                },
+                "step": {
+                    "sound": "block.deespalte_stardust.step",
+                    "volume": 0.2,
+                    "pitch": 1.0
+                },
+                "break": {
+                    "sound": "block.deespalte_stardust.break",
+                    "volume": 0.7,
+                    "pitch": 1.0
+                }
+            },
+            "volume": 0.8
+        },
+        "stardust": {
+            "events": {
+                "place": {
+                    "sound": "block.stardust.dig",
+                    "volume": 0.5,
+                    "pitch": [
+                        1.0,
+                        1.1
+                    ]
+                },
+                "fall": {
+                    "sound": "fall.stone",
+                    "volume": 0.5,
+                    "pitch": 1.2
+                },
+                "hit": {
+                    "sound": "block.stardust.hit",
+                    "volume": 0.2,
+                    "pitch": 0.5
+                },
+                "step": {
+                    "sound": "block.stardust.hit",
+                    "volume": 0.1,
+                    "pitch":1.2
+                },
+                "break": {
+                    "sound": "block.stardust.dig",
+                    "volume": 0.5,
+                    "pitch": 1
+                }
+            },
+            "volume": 0.8
+        }
+    },
+    "individual_event_sounds": {
+        "events": {
+           "bubble.pop": {
+                "sound": "bubble.pop",
+                "volume": 0.3,
+                "pitch": [0.7, 0.9]
+            },
+            "chest.closed": {
+                "sound": "block.chest.close",
+                "volume": 0.5,
+                "pitch": [
+                    0.9,
+                    1.0
+                ]
+            },
+            "balloonpop": {
+                "pitch": 1.0,
+                "sound": "balloon.pop",
+                "volume": 1.0
+            },
+            "sparkler.use": {
+                "pitch": 1.0,
+                "sound": "sparkler.use",
+                "volume": 1.0
+            },
+            "lt.reaction.fire": {
+                "pitch": 1.0,
+                "sound": "elemconstruct",
+                "volume": 1.0
+            },
+            "chest.open": {
+                "sound": "block.chest.open",
+                "volume": 0.5,
+                "pitch": [
+                    0.9,
+                    1.0
+                ]
+            },
+            "pop": {
+                "sound": "entity.item.pickup",
+                "volume": 0.3,
+                "pitch": [
+                    0.8,
+                    2.0
+                ]
+            },
+            "item_given": {
+                "sound": "mob.quiet",
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ]
+            },
+            "item_taken": {
+                "sound": "mob.quiet",
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ]
+            },
+            "item_thrown": {
+                "sound": "mob.quiet",
+                "volume": 1,
+                "pitch": 1
+            }
+        }
+    },
+    "entity_sounds": {
+        "entities": {
+            "better_on_bedrock:pot_decoy": {
+                "pitch": [ 1, 1 ],
+                "volume": 1,
+                "events": {
+                    "death": "mob.pot_decoy.death",
+                    "hurt": "mob.pot_decoy.hurt",
+                    "step": "mob.pot_decoy.step",
+                    "plop": "block.decorated_pot.insert"
+                }
+            },
+            "better_on_bedrock:creaking_pot": {
+                "pitch": [ 1, 1 ],
+                "volume": 1,
+                "events": {
+                    "death": "mob.pot_decoy.death",
+                    "hurt": "mob.pot_decoy.hurt",
+                    "step": "mob.pot_decoy.step",
+                    "plop": "block.decorated_pot.insert"
+                }
+            },
+            "better_on_bedrock:pale_dustmite": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "ambient": "mob.pale_dustmite.idle",
+                    "death": "mob.pale_dustmite.death",
+                    "hurt": "mob.pale_dustmite.hurt"
+                }
+            },
+            "better_on_bedrock:hover": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "fly": "mob.hover.fly",
+                    "death": "mob.hover.death",
+                    "hurt": "mob.hover.hurt",
+                    "shoot": "mob.hover.shoot"
+                }
+            },
+            "better_on_bedrock:owl": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.owl.death",
+                    "hurt": "mob.owl.hurt",
+                    "ambient": "mob.owl.idle"
+                }
+            },
+            "better_on_bedrock:jelly": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.owl.jelly",
+                    "hurt": "mob.owl.jelly"
+                }
+            },
+            "better_on_bedrock:chorus_behimeth": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "ambient": "mob.sniffer.idle",
+                    "death": "mob.sniffer.death",
+                    "eat": "mob.sniffer.eat",
+                    "hurt": "mob.sniffer.hurt",
+                    "plop": "mob.sniffer.plop",
+                    "step": "mob.sniffer.step"
+                }
+            },
+            "better_on_bedrock:quetzacaw_friendly": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "ambient": "mob.quetzacaw.idle",
+                    "death": "mob.quetzacaw.hurt",
+                    "hurt": "mob.quetzacaw.hurt"
+                }
+            },
+            "better_on_bedrock:quetzacaw": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "ambient": "mob.quetzacaw.idle",
+                    "death": "mob.quetzacaw.hurt",
+                    "hurt": "mob.quetzacaw.hurt"
+                }
+            },
+            "better_on_bedrock:seeker": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.seeker.hurt",
+                    "hurt": "mob.seeker.hurt"
+                }
+            },
+            "better_on_bedrock:soot_collector": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.soot.hurt",
+                    "hurt": "mob.soot.hurt",
+                    "ambient": "mob.soot.idle"
+                }
+            },
+            "better_on_bedrock:bacterio": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.gungal.death",
+                    "hurt": "mob.gungal.hurt"
+                }
+            },
+            "better_on_bedrock:chorus_golem": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.chorus_golem.death",
+                    "hurt": "mob.chorus_golem.hurt"
+                }
+            },
+            "better_on_bedrock:end_merchant": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.end.death",
+                    "hurt": "mob.end.hurt",
+                    "ambient": "mob.end.idle"
+                }
+            },
+            "better_on_bedrock:fireorb": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.fireorb.death",
+                    "hurt": "mob.fireorb.hurt",
+                    "ambient": "mob.fireorb.idle"
+                }
+            },
+            "better_on_bedrock:groohog": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.groohog.death",
+                    "hurt": "mob.groohog.hurt",
+                    "ambient": "mob.groohog.idle"
+                }
+            },
+            "better_on_bedrock:infected": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.infected.death",
+                    "hurt": "mob.infected.hurt",
+                    "ambient": "mob.infected.idle"
+                }
+            },
+            "better_on_bedrock:longleg": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.spider.say",
+                    "hurt": "mob.spider.say",
+                    "ambient": "mob.longleg.idle"
+                }
+            },
+            "better_on_bedrock:spooder_fox": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.spider.say",
+                    "hurt": "mob.spider.say",
+                    "ambient": "mob.longleg.idle"
+                }
+            },
+            "better_on_bedrock:flasp": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.flasp.hurt",
+                    "hurt": "mob.flasp.death",
+                    "fly": "mob.flasp.fly",
+                    "shoot": "mob.flasp.shoot"
+                }
+            },
+            "better_on_bedrock:croaker": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 0.7,
+                "events": {
+                    "death": "mob.frog.hurt",
+                    "hurt": "mob.frog.hurt",
+                    "ambient": "mob.frog.ambient"
+                }
+            },
+            "better_on_bedrock:hell_hound": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 1,
+                "events": {
+                    "ambient": "mob.wolf.bark",
+                    "death": "mob.wolf.death",
+                    "growl": "mob.wolf.growl",
+                    "hurt": "mob.wolf.hurt",
+                    "pant": "mob.wolf.panting",
+                    "whine": "mob.wolf.whine",
+                    "shake": {
+                        "sound": "mob.wolf.shake",
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    },
+                    "step": {
+                        "sound": "mob.wolf.step",
+                        "volume": 0.65,
+                        "pitch": 1
+                    }
+                }
+            },
+            "better_on_bedrock:inferior": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 1,
+                "events": {
+                    "ambient": "mob.inferior.idle",
+                    "death": "mob.inferior.death",
+                    "hurt": "mob.inferior.hurt",
+                    "attack": "mob.inferior.fire_aura_attack"
+                }
+            },
+            "better_on_bedrock:fire_wisp": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "hurt": "wisp.hurt",
+                    "death": "wisp.deat",
+                    "ambient": "wisp.idle",
+                    "attack": "mob.allay.idle_holding"
+                }
+            },
+            "better_on_bedrock:withered_samurai": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "hurt": "samurai.hurt",
+                    "death": "samurai.death",
+                    "ambient": "samurai.idle"
+                }
+            },
+            "better_on_bedrock:geomancer": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.geomancer.ambient",
+                    "celebrate": "mob.geomancer.attack",
+                    "death": "mob.geomancer.death",
+                    "hurt": "mob.geomancer.hurt",
+                    "cast.spell": "mob.geomancer.attack",
+                    "prepare.attack": "mob.geomancer.attack",
+                    "prepare.summon": "mob.geomancer.attack",
+                    "prepare.wololo": "mob.geomancer.attack",
+                    "ambient.in.raid": {
+                        "sound": "mob.geomancer.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
+            "better_on_bedrock:corrupted_villager": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.geomancer.ambient",
+                    "celebrate": "mob.geomancer.attack",
+                    "death": "mob.geomancer.death",
+                    "hurt": "mob.geomancer.hurt",
+                    "cast.spell": "mob.geomancer.attack",
+                    "prepare.attack": "mob.geomancer.attack",
+                    "prepare.summon": "mob.geomancer.attack",
+                    "prepare.wololo": "mob.geomancer.attack",
+                    "ambient.in.raid": {
+                        "sound": "mob.geomancer.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
+            "better_on_bedrock:frostaeris": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.frostaeris.idle",
+                    "celebrate": "mob.frostaeris.attack",
+                    "death": "mob.frostaeris.death",
+                    "hurt": "mob.frostaeris.hurt",
+                    "cast.spell": "mob.frostaeris.attack",
+                    "prepare.attack": "mob.frostaeris.attack",
+                    "prepare.summon": "mob.frostaeris.attack",
+                    "prepare.wololo": "mob.frostaeris.attack",
+                    "ambient.in.raid": {
+                        "sound": "mob.frostaeris.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
+            "better_on_bedrock:willager": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.evocation_illager.ambient",
+                    "celebrate": "mob.evocation_illager.celebrate",
+                    "death": "mob.evocation_illager.death",
+                    "hurt": "mob.evocation_illager.hurt",
+                    "cast.spell": "mob.evocation_illager.cast_spell",
+                    "prepare.attack": "mob.evocation_illager.prepare_attack",
+                    "prepare.summon": "mob.evocation_illager.prepare_summon",
+                    "prepare.wololo": "mob.evocation_illager.prepare_wololo",
+                    "ambient.in.raid": {
+                        "sound": "mob.evocation_illager.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
+            "better_on_bedrock:flender": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.flender.idle",
+                    "death": "mob.flender.death",
+                    "hurt": "mob.flender.hurt"
+                }
+            },
+            "better_on_bedrock:bloob": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.bloob.blub",
+                    "death": "mob.bloob.death",
+                    "hurt": "mob.bloob.hurt"
+                }
+            },
+            "better_on_bedrock:shroomy": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.shroomy.idle",
+                    "death": "mob.shroomy.death",
+                    "hurt": "mob.shroomy.hurt"
+                }
+            },
+            "better_on_bedrock:enchantaegis": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "enchanter.idle",
+                    "death": "enchanter.death",
+                    "hurt": "enchanter.hurt"
+                }
+            },
+            "better_on_bedrock:squirrel": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "squirrel.idle",
+                    "death": "squirrel.idle",
+                    "hurt": "squirrel.idle"
+                }
+            },
+            "better_on_bedrock:fire_place": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "lich.idle",
+                    "death": "lich.death",
+                    "hurt": "lich.hurt"
+                }
+            },
+            "better_on_bedrock:sparrow": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.parrot.idle",
+                    "death": "mob.parrot.death",
+                    "hurt": "mob.parrot.hurt"
+                }
+            },
+            "better_on_bedrock:pigeon": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.pigeon.idle",
+                    "death": "mob.pigeon.death",
+                    "hurt": "mob.pigeon.hurt"
+                }
+            },
+            "better_on_bedrock:hollow": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "hollow.idle",
+                    "death": "hollow.death",
+                    "hurt": "hollow.hurt"
+                }
+            },
+            "better_on_bedrock:toucan": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "toucan.idle",
+                    "death": "toucan.death",
+                    "hurt": "toucan.hurt"
+                }
+            },
+            "better_on_bedrock:horned_sheep": {
+                "volume": 1.0,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.sheep.say",
+                    "hurt": "mob.sheep.say",
+                    "death": "mob.sheep.say",
+                    "step": {
+                        "sound": "mob.sheep.step",
+                        "volume": 0.4,
+                        "pitch": 1.0
+                    }
+                }
+            },
+            "better_on_bedrock:dotted_sheep": {
+                "volume": 1.0,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.sheep.say",
+                    "hurt": "mob.sheep.say",
+                    "death": "mob.sheep.say",
+                    "step": {
+                        "sound": "mob.sheep.step",
+                        "volume": 0.4,
+                        "pitch": 1.0
+                    }
+                }
+            },
+            "better_on_bedrock:dripstone_projectile": {
+                "volume": 1.0,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.sheep.say",
+                    "hurt": "mob.sheep.say",
+                    "death": "mob.sheep.say"
+                }
+            },
+            "better_on_bedrock:deer": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "deer.idle",
+                    "hurt": "deer.death",
+                    "death": "deer.death",
+                    "step": {
+                        "sound": "mob.pig.step",
+                        "volume": 0.2,
+                        "pitch": 1.0
+                    }
+                }
+            },
+            "better_on_bedrock:raccoon": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.fox.ambient",
+                    "death": "mob.parrot.death",
+                    "hurt": "mob.parrot.hurt"
+                }
+            },
+            "better_on_bedrock:willager_clone": {
+                "volume": 1,
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "events": {
+                    "ambient": "mob.evocation_illager.ambient",
+                    "celebrate": "mob.evocation_illager.celebrate",
+                    "death": "mob.evocation_illager.death",
+                    "hurt": "mob.evocation_illager.hurt",
+                    "cast.spell": "mob.evocation_illager.cast_spell",
+                    "prepare.attack": "mob.evocation_illager.prepare_attack",
+                    "prepare.summon": "mob.evocation_illager.prepare_summon",
+                    "prepare.wololo": "mob.evocation_illager.prepare_wololo",
+                    "ambient.in.raid": {
+                        "sound": "mob.evocation_illager.ambient",
+                        "volume": 3,
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ]
+                    }
+                }
+            },
+            "better_on_bedrock:goblin_trader": {
+                "volume": 2,
+                "pitch": [
+                    1.2,
+                    1.5
+                ],
+                "events": {
+                    "ambient": "goblin.idle",
+                    "hurt": "goblin.hurt",
+                    "death": "goblin.death",
+                    "haggle": "goblin.idle",
+                    "haggle.yes": "goblin.idle",
+                    "haggle.no": "goblin.hurt"
+                }
+            },
+            "better_on_bedrock:cured_villager": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 1.0,
+                "events": {
+                    "ambient": "mob.villager.idle",
+                    "death": "mob.villager.death",
+                    "death.to.zombie": "mob.villager.death",
+                    "haggle": "mob.villager.haggle",
+                    "haggle.no": "mob.villager.no",
+                    "haggle.yes": "mob.villager.yes",
+                    "hurt": "mob.villager.hit"
+                }
+            },
+            "better_on_bedrock:lonely_wizard": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 1.0,
+                "events": {
+                    "ambient": "mob.villager.idle",
+                    "death": "mob.villager.death",
+                    "death.to.zombie": "mob.villager.death",
+                    "haggle": "mob.villager.haggle",
+                    "haggle.no": "mob.villager.no",
+                    "haggle.yes": "mob.villager.yes",
+                    "hurt": "mob.villager.hit"
+                }
+            },
+            "better_on_bedrock:cassowary": {
+                "events": {
+                    "ambient": "mob.squid.ambient",
+                    "hurt": "mob.squid.hurt",
+                    "death": "mob.squid.death"
+                }
+            }
+        }
+    }
+}

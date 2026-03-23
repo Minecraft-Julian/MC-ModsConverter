@@ -1,0 +1,23 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "better_on_bedrock:resin_candy"
+        },
+        "group": "foods",
+        "tags": [ "crafting_table" ],
+        "unlock": {
+            "context": "None"
+        },
+
+        "ingredients": [
+            { "item": "minecraft:resin_clump" },
+            { "item": "better_on_bedrock:resin_shard" },
+            { "item": "minecraft:sugar" }
+        ],
+        "result": {
+            "item": "better_on_bedrock:resin_candy",
+            "count": 1
+        }
+    }
+}

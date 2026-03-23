@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "shroom_nylium_side",
+        "metalness_emissive_roughness": "shroom_nylium_side_mer",
+        "heightmap": "shroom_nylium_side_heightmap"
+    }
+}

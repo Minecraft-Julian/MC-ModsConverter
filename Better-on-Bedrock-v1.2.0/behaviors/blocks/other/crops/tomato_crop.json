@@ -1,0 +1,98 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:tomato_crop",
+            "states": {
+                "better_on_bedrock:growth_stage": {
+                    "values": {
+                        "min": 0,
+                        "max": 2
+                    }
+                }
+            }
+        },
+        "components": {
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "better_on_bedrock:tomato_crop_stage_0",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                }
+            },
+            "minecraft:liquid_detection": {
+                "detection_rules": [
+                    {
+                        "can_contain_liquid": false,
+                        "liquid_type": "water",
+                        "on_liquid_touches": "popped"
+                    }
+                ]
+            },
+            "minecraft:loot": "loot_tables/blocks/crops/tomato_lil.json",
+            "minecraft:collision_box": false,
+            "minecraft:selection_box": {
+                "origin": [
+                    -4,
+                    0,
+                    -4
+                ],
+                "size": [
+                    8,
+                    8,
+                    8
+                ]
+            },
+            "minecraft:geometry": "geometry.better_on_bedrock.cross",
+            "minecraft:placement_filter": {
+                "conditions": [
+                    {
+                        "block_filter": [
+                            "farmland"
+                        ],
+                        "allowed_faces": [
+                            "up"
+                        ]
+                    }
+                ]
+            }
+        },
+        "permutations": [
+            {
+                "condition": "query.block_state('better_on_bedrock:growth_stage') == 0",
+                "components": {
+                    "minecraft:custom_components": [ "pog:ticking" ]
+                }
+            },
+            {
+                "condition": "query.block_state('better_on_bedrock:growth_stage') == 1",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "better_on_bedrock:tomato_crop_stage_1",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    },
+                    "minecraft:custom_components": [ "pog:ticking" ]
+                }
+            },
+            {
+                "condition": "query.block_state('better_on_bedrock:growth_stage') == 2",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "better_on_bedrock:tomato_crop_stage_2",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    },
+                    "minecraft:loot": "loot_tables/blocks/crops/tomato.json"
+                }
+            }
+        ]
+    }
+}

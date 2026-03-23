@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:vineed",
+            "menu_category": {
+                "category": "nature"
+            }
+        },
+        "components": {
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:vineed",
+				"replace_block_item": true
+            },
+            "minecraft:icon": "vacant_vines",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:vineed.name"
+            }
+        }
+    }
+}

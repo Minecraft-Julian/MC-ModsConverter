@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:owl",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/overworld/owl"
+			},
+			"animations": {
+				"basic": "controller.animation.owl",
+				"fly": "animation.owl.fly",
+				"idle": "animation.owl.idle",
+				"look_at_player": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": [
+					"basic",
+					"look_at_player"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"geometry": {
+				"default": "geometry.owl"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_owl"
+			}
+		}
+	}
+}

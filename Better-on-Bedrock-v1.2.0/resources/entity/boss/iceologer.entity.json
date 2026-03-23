@@ -1,0 +1,42 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:frostaeris",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"animations": {
+				"basic": "animation.frostaeris.idle",
+				"walk": "animation.frostaeris.walk",
+				"attack": "animation.frostaeris.ice_summon"
+			},
+			"scripts": {
+				"animate": [
+					{
+						"basic": "q.modified_move_speed <= 0.05 || (q.modified_move_speed >= 0.05 && !q.is_casting)"
+					},
+					{
+						"walk": "q.modified_move_speed"
+					},
+					{
+						"attack": "q.is_casting"
+					}
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"textures": {
+				"default": "textures/entity/bosses/chillager"
+			},
+			"geometry": {
+				"default": "geometry.frostaeris"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_frostaeris"
+			}
+		}
+	}
+}

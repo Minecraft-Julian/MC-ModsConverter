@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "bounty_board_front_used",
+        "metalness_emissive_roughness": "bounty_board_front_used_mer",
+        "heightmap": "bounty_board_front_used_heightmap"
+    }
+}

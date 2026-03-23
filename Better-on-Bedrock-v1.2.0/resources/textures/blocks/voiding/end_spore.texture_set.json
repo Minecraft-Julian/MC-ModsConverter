@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "end_spore",
+		"metalness_emissive_roughness": "end_spore_mer",
+		"heightmap": "end_spore_heightmap"
+	}
+}

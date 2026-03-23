@@ -1,0 +1,22 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:small_chorus_spore",
+            "menu_category": {
+                "category": "nature",
+                "group": "itemGroup.name.grass"
+            }
+        },
+        "components": {
+            "minecraft:icon": "small_spore",
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:small_chorus_spore",
+				"replace_block_item": true
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:small_chorus_spore.name"
+            }
+        }
+    }
+}

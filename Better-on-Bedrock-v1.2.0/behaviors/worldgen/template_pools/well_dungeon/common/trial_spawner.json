@@ -1,0 +1,101 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:common/trial_spawner"
+        },
+         //"fallback": "pog:common/trial_spawner",
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/spawner_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/spawner_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/spawner_03",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/spawner_04",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/spawner_05",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 1
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/trial_spawner_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 3
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/trial_spawner_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 3
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/trial_spawner_03",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 3
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/trial_spawner_04",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 3
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "common/trial_spawner_05",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 3
+            }
+        ]
+    }
+}

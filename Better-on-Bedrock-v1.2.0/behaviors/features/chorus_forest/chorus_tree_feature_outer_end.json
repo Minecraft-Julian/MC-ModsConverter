@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_forest/chorus_tree_feature_outer_end"
+        },
+        "places_feature": "better_on_bedrock:chorus_forest/chorus_tree_random",
+        "iterations": "math.abs(v.originx) > 512 || math.abs(v.originz) > 512",
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

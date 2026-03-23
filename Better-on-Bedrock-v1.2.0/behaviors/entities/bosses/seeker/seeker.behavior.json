@@ -1,0 +1,714 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:seeker",
+			"runtime_identifier": "minecraft:ghast",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"events": {
+			"minecraft:entity_spawned": {
+				"randomize": [
+					{
+						"add": {
+							"component_groups": [
+								"shoot_yeet_projectile"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"beam",
+								"charge_beam_initiate",
+								"move_to_target",
+								"timer",
+								"pull_target",
+								"soot_yeet"
+							]
+						},
+						"weight": 4
+					},
+					{
+						"add": {
+							"component_groups": [
+								"soot_yeet"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"beam",
+								"charge_beam_initiate",
+								"move_to_target",
+								"timer",
+								"pull_target",
+								"shoot_yeet_projectile"
+							]
+						},
+						"weight": 4
+					},
+					{
+						"add": {
+							"component_groups": [
+								"move_to_target"
+							]
+						},
+						"queue_command": {
+							"command": [
+								"playsound boss.beam.charge @p",
+								"execute at @p[r=32] run summon better_on_bedrock:player_dummy_seeker ~ ~ ~"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"pull_target",
+								"beam",
+								"charge_beam_initiate",
+								"timer",
+								"shoot_yeet_projectile",
+								"soot_yeet"
+							]
+						},
+						"weight": 4
+					}
+				]
+			},
+			"passive": {
+				"remove": {
+					"component_groups": [
+						"pull_target",
+						"beam",
+						"charge_beam_initiate",
+						"move_to_target",
+						"timer"
+					]
+				}
+			},
+			"random": {
+				"randomize": [
+					{
+						"add": {
+							"component_groups": [
+								"shoot_yeet_projectile"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"beam",
+								"charge_beam_initiate",
+								"move_to_target",
+								"timer",
+								"pull_target",
+								"soot_yeet"
+							]
+						},
+						"weight": 7
+					},
+					{
+						"add": {
+							"component_groups": [
+								"soot_yeet"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"beam",
+								"charge_beam_initiate",
+								"move_to_target",
+								"timer",
+								"pull_target",
+								"shoot_yeet_projectile"
+							]
+						},
+						"weight": 4
+					},
+					{
+						"add": {
+							"component_groups": [
+								"move_to_target"
+							]
+						},
+						"queue_command": {
+							"command": [
+								"playsound boss.beam.charge @p",
+								"execute at @p[r=32] run summon better_on_bedrock:player_dummy_seeker ~ ~ ~"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"pull_target",
+								"beam",
+								"charge_beam_initiate",
+								"timer",
+								"shoot_yeet_projectile",
+								"soot_yeet"
+							]
+						},
+						"weight": 4
+					}
+				]
+			},
+			"add_beam": {
+				"add": {
+					"component_groups": [
+						"beam"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"timer",
+						"charge_beam_initiate",
+						"pull_target"
+					]
+				}
+			},
+			"remove_beam": {
+				"remove": {
+					"component_groups": [
+						"beam",
+						"charge_beam_initiate",
+						"pull_target"
+					]
+				},
+				"add": {
+					"component_groups": [
+						"timer"
+					]
+				}
+			},
+			"charge_beam_initiate": {
+				"add": {
+					"component_groups": [
+						"charge_beam_initiate"
+					]
+				},
+				"queue_command": {
+					"command": [
+						"playsound boss.beam.shoot @p"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"pull_target",
+						"beam",
+						"timer"
+					]
+				}
+			},
+			"timer": {
+				"add": {
+					"component_groups": [
+						"timer"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"pull_target",
+						"charge_beam_initiate",
+						"beam"
+					]
+				}
+			},
+			"projectile": {
+				"add": {
+					"component_groups": [
+						"projectiles"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"timer"
+					]
+				}
+			},
+			"entity_event": {
+				"queue_command": {
+					"command": [
+						"event entity @e[r=5] despawn"
+					]
+				}
+			}
+		},
+		"component_groups": {
+			"timer": {
+				"minecraft:variant": {
+					"value": 1
+				},
+				"minecraft:custom_hit_test": {
+					"hitboxes": [
+						{
+							"width": 2,
+							"height": 2,
+							"pivot": [
+								0,
+								0,
+								0
+							]
+						}
+					]
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 2,
+					"entity_types": [
+						{
+							"filters": {
+								"test": "is_family",
+								"subject": "other",
+								"value": "player"
+							},
+							"max_dist": 128
+						}
+					],
+					"must_see": true
+				},
+				"minecraft:timer": {
+					"time": 0.5,
+					"looping": false,
+					"time_down_event": {
+						"event": "projectile",
+						"target": "self"
+					}
+				}
+			},
+			"beam": {
+				"minecraft:shooter": {
+					"def": "better_on_bedrock:projectile"
+				},
+				"minecraft:custom_hit_test": {
+					"hitboxes": [
+						{
+							"width": 0.6,
+							"height": 0.6,
+							"pivot": [
+								0,
+								0.3,
+								1
+							]
+						}
+					]
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "all",
+							"deals_damage": true,
+							"damage_modifier": 12
+						}
+					]
+				},
+				"minecraft:variant": {
+					"value": 2
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 2,
+					"entity_types": [
+						{
+							"filters": {
+								"test": "is_family",
+								"subject": "other",
+								"value": "player_dummy"
+							},
+							"max_dist": 128
+						}
+					],
+					"must_see": true
+				},
+				"minecraft:behavior.ranged_attack": {
+					"priority": 1,
+					"attack_radius": 32,
+					"charge_shoot_trigger": 2.5,
+					"charge_charged_trigger": 0.1
+				},
+				"minecraft:timer": {
+					"time": 1.6,
+					"looping": false,
+					"time_down_event": {
+						"event": "remove_beam",
+						"target": "self"
+					}
+				}
+			},
+			"pull_target": {
+				"minecraft:variant": {
+					"value": 3
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 2,
+					"entity_types": [
+						{
+							"filters": {
+								"test": "is_family",
+								"subject": "other",
+								"value": "player"
+							},
+							"max_dist": 128
+						}
+					],
+					"must_see": true
+				},
+				"minecraft:custom_hit_test": {
+					"hitboxes": [
+						{
+							"width": 0.6,
+							"height": 0.6,
+							"pivot": [
+								0,
+								0.3,
+								1
+							]
+						}
+					]
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "entity_attack",
+							"deals_damage": true,
+							"damage_modifier": 6,
+							"on_damage": {
+								"target": "self",
+								"event": "timer"
+							}
+						}
+					]
+				}
+			},
+			"move_to_target": { //charge beam beam
+				"minecraft:variant": {
+					"value": 4
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 2,
+					"entity_types": [
+						{
+							"filters": {
+								"test": "is_family",
+								"subject": "other",
+								"value": "player_dummy"
+							},
+							"max_dist": 128
+						}
+					],
+					"must_see": true
+				},
+				"minecraft:behavior.ranged_attack": {
+					"priority": 4,
+					"attack_interval_min": 1,
+					"attack_interval_max": 1.5,
+					"charge_charged_trigger": 0.0,
+					"charge_shoot_trigger": 0.1,
+					"attack_radius": 16,
+					"burst_shots": 12,
+					"burst_interval": 1.8
+				},
+				"minecraft:shooter": {
+					"def": "better_on_bedrock:seeker_bullet"
+				},
+				"minecraft:custom_hit_test": {
+					"hitboxes": [
+						{
+							"width": 1.5,
+							"height": 1.5,
+							"pivot": [
+								0,
+								0.45,
+								1.4
+							]
+						}
+					]
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "all",
+							"deals_damage": true,
+							"damage_multiplier": 5
+						}
+					]
+				},
+				"minecraft:timer": {
+					"time": 2.5,
+					"looping": true,
+					"time_down_event": {
+						"event": "charge_beam_initiate",
+						"target": "self"
+					}
+				}
+			},
+			"charge_beam_initiate": { //charge beam beam
+				"minecraft:variant": {
+					"value": 5
+				},
+				"minecraft:custom_hit_test": {
+					"hitboxes": [
+						{
+							"width": 0.6,
+							"height": 0.6,
+							"pivot": [
+								0,
+								0.3,
+								1
+							]
+						}
+					]
+				},
+				"minecraft:damage_sensor": {
+					"triggers": {
+						"cause": "all",
+						"deals_damage": true,
+						"damage_modifier": 12
+					}
+				},
+				"minecraft:behavior.ranged_attack": {
+					"priority": 1,
+					"attack_radius": 32,
+					"charge_shoot_trigger": 0.3,
+					"charge_charged_trigger": 0.1
+				},
+				"minecraft:shooter": {
+					"def": "better_on_bedrock:projectile"
+				},
+				"minecraft:behavior.nearest_attackable_target": {
+					"priority": 2,
+					"entity_types": [
+						{
+							"filters": {
+								"test": "is_family",
+								"subject": "other",
+								"value": "player_dummy"
+							},
+							"max_dist": 128
+						}
+					],
+					"must_see": true
+				},
+				"minecraft:timer": {
+					"time": 0.3,
+					"looping": false,
+					"time_down_event": {
+						"event": "timer",
+						"target": "self"
+					}
+				}
+			},
+			"shoot_yeet_projectile": {
+				"minecraft:shooter": {
+					"def": "better_on_bedrock:seeker_projectile"
+				},
+				"minecraft:timer": {
+					"time": 0.3,
+					"looping": false,
+					"time_down_event": {
+						"event": "timer",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.ranged_attack": {
+					"priority": 4,
+					"attack_interval_min": 0.4,
+					"attack_interval_max": 0.7,
+					"charge_charged_trigger": 0.0,
+					"charge_shoot_trigger": 0.1,
+					"attack_radius": 16,
+					"burst_shots": 12,
+					"burst_interval": 1
+				}
+			},
+			"soot_yeet": {
+				"minecraft:timer": {
+					"time": 3,
+					"looping": false,
+					"time_down_event": {
+						"event": "timer",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.summon_entity": {
+					"priority": 2,
+					"summon_choices": [
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 24,
+							"cooldown_time": 1,
+							"weight": 8,
+							"cast_duration": 1,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "target",
+									"base_delay": 0,
+									"num_entities_spawned": 1,
+									"entity_type": "better_on_bedrock:seeker_launcher",
+									"summon_cap": 5,
+									"summon_cap_radius": 3,
+									"size": 1,
+									"sound_event": "prepare.summon"
+								}
+							]
+						}
+					]
+				}
+			},
+			"projectiles": {
+				"minecraft:shooter": {
+					"type": "ShulkerBullet",
+					"def": "minecraft:shulker_bullet"
+				},
+				"minecraft:timer": {
+					"time": 1.5,
+					"looping": false,
+					"time_down_event": {
+						"event": "random",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.ranged_attack": {
+					"attack_interval_min": 0.1,
+					"attack_interval_max": 0.5,
+					"attack_radius": 15
+				}
+			}
+		},
+		"components": {
+			"minecraft:custom_hit_test": {
+				"hitboxes": [
+					{
+						"width": 0.6,
+						"height": 0.6,
+						"pivot": [
+							0,
+							16,
+							1
+						]
+					}
+				]
+			},
+			"minecraft:on_death": {
+				"target": "self",
+				"event": "entity_event"
+			},
+			"minecraft:experience_reward": {
+				"on_death": 500
+			},
+			"minecraft:variant": {
+				"value": 0
+			},
+			"minecraft:behavior.move_towards_target": {
+				"within_radius": 128,
+				"priority": 5
+			},
+			"minecraft:breathable": {
+				"total_supply": 15,
+				"suffocate_time": 0
+			},
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 2,
+				"entity_types": [
+					{
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "player"
+						},
+						"max_dist": 128
+					}
+				],
+				"must_see": true
+			},
+			"minecraft:behavior.move_around_target": {
+				"priority": 2
+			},
+			"minecraft:fire_immune": {},
+			"minecraft:nameable": {},
+			"minecraft:health": {
+				"value": 300,
+				"max": 300
+			},
+			"minecraft:collision_box": {
+				"width": 3.5,
+				"height": 0.6
+			},
+			"minecraft:movement": {
+				"value": 0.005
+			},
+			"minecraft:movement.basic": {
+				"max_turn": 1
+			},
+			"minecraft:navigation.float": {
+				"can_path_over_water": true
+			},
+			"minecraft:behavior.float_wander": {
+				"priority": 2,
+				"y_dist": 1,
+				"xz_dist": 2,
+				"must_reach": true
+			},
+			"minecraft:rideable": {
+				"seats": [
+					{
+						"position": [
+							0,
+							0,
+							1
+						]
+					}
+				],
+				"family_types": [
+					"npc"
+				],
+				"controlling_seat": 0,
+				"crouching_skip_interact": true,
+				"pull_in_entities": false,
+				"rider_can_interact": false,
+				"seat_count": 1
+			},
+			"minecraft:can_fly": {},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/boss.json"
+			},
+			"minecraft:knockback_resistance": {
+				"value": 100,
+				"maximum": 100
+			},
+			"minecraft:type_family": {
+				"family": [
+					"ghast",
+					"monster",
+					"mob"
+				]
+			},
+			"minecraft:damage_sensor": {
+				"triggers": {
+					"cause": "all",
+					"deals_damage": false
+				}
+			},
+			"minecraft:boss": {
+				"hud_range": 55,
+				"name": "Seeker",
+				"should_darken_sky": false
+			},
+			"minecraft:jump.static": {},
+			"minecraft:behavior.float": {
+				"priority": 0
+			},
+			"minecraft:follow_range": {
+				"value": 32,
+				"max": 32
+			},
+			"minecraft:behavior.hurt_by_target": {
+				"priority": 1
+			},
+			"minecraft:physics": {
+				"has_collision": true
+			},
+			"minecraft:pushable": {
+				"is_pushable": true,
+				"is_pushable_by_piston": true
+			},
+			"minecraft:conditional_bandwidth_optimization": {}
+		}
+	}
+}

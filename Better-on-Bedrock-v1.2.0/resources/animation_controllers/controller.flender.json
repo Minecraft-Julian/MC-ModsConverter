@@ -1,0 +1,29 @@
+{
+	"format_version": "1.19.0",
+	"animation_controllers": {
+		"controller.animation.flender.new": {
+			"states": {
+				"default": {
+					"animations": [
+						"idle"
+					],
+					"transitions": [
+						{
+							"active": "q.is_gliding == true && q.has_target"
+						}
+					]
+				},
+				"active": {
+					"animations": [
+						"attack"
+					],
+					"transitions": [
+						{
+							"default": "q.is_gliding == true && !q.has_target"
+						}
+					]
+				}
+			}
+		}
+	}
+}

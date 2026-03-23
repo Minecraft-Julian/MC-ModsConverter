@@ -1,0 +1,24 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "pog:packed_soulsand"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "##",
+            "##"
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:soul_sand"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:packed_soulsand",
+            "count": 1
+        }
+    }
+}

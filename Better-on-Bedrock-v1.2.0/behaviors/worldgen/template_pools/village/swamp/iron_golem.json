@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.20",
+  "minecraft:template_pool": {
+    "description": {
+      "identifier": "pog:village/common/iron_golem"
+    },
+    "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "village/swamp/common/iron_golem",
+        "processors": "better_on_bedrock:empty",
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+    ]
+  }
+}

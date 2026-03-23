@@ -1,0 +1,18 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:roofed/roofed_forest_small_tree_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:roofed/roofed_forest_tree_small_2",
+                5
+            ],
+            [
+                "better_on_bedrock:roofed/roofed_forest_tree_small_1",
+                5
+            ]
+        ]
+    }
+}

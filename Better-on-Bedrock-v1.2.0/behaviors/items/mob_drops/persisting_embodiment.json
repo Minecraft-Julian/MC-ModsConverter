@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:persisting_embodiment",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:icon": "persisting_embodiment",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.persisting_embodiment.name\n%item.better_on_bedrock.persisting_embodiment.desc\n%item.better_on_bedrock.persisting_embodiment.desc.1\n\n%item.better_on_bedrock.persisting_embodiment.desc.2"
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "shrubflower_stem",
+		"metalness_emissive_roughness": "shrubflower_stem_mer",
+		"heightmap": "shrubflower_stem_heightmap"
+	}
+}

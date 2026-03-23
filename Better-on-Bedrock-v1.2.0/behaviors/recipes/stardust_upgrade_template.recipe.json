@@ -1,0 +1,31 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:stardust_upgrade_template"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "#A#",
+            "#B#",
+            "###"
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:deepslate"
+            },
+            "A": {
+                "item": "better_on_bedrock:stardust_upgrade_template"
+            },
+            "B": {
+                "item": "better_on_bedrock:stardust_ingot"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:stardust_upgrade_template",
+            "count": 2
+        }
+    }
+}

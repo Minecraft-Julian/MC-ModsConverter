@@ -1,0 +1,28 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "better_on_bedrock:wooden_spear"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "#",
+      "A",
+      "#"
+    ],
+    "key": {
+      "#": {
+        "item": "minecraft:stick"
+      },
+      "A": {
+        "item": "minecraft:flint"
+      }
+    },
+    "result": {
+      "item": "better_on_bedrock:wooden_spear",
+      "count": 1
+    }
+  }
+}

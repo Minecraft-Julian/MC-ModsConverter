@@ -1,0 +1,13 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.legrang.base": {
+			"loop": true,
+			"bones": {
+				"legrang": {
+					"rotation": [0, "math.abs(q.anim_time * 32)*20", 0]
+				}
+			}
+		}
+	}
+}

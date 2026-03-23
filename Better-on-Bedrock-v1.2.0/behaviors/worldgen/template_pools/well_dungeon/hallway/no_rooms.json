@@ -1,0 +1,109 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:well_dungeon/hallway/no_rooms"
+        },
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/hallway_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 50
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/hallway_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 50
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/hallway_03",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 50
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/staircase_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 70
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/staircase_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 70
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/traps/hallway_trap_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 40
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/traps/hallway_trap_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 40
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/traps/hallway_trap_03",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 40
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/traps/hallway_trap_04",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 40
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/crossway_01",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 7
+            },
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/hallways/crossway_02",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 7
+            }
+        ]
+    }
+}

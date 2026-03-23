@@ -1,0 +1,102 @@
+{
+	"format_version": "1.20.80",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:quetzacaw_egg_block",
+			"menu_category": {
+				"is_hidden_in_commands": false,
+				"category": "none"
+			},
+			"states": {
+				"better_on_bedrock:crack_stage": {
+					"values": {
+						"min": 0,
+						"max": 3
+					}
+				}
+			}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('better_on_bedrock:crack_stage') == 0",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "quetzacaw_egg",
+							"render_method": "opaque"
+						}
+					}
+				}
+			},
+			{
+				"condition": "query.block_state('better_on_bedrock:crack_stage') == 1",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "quetzacaw_egg_cracked_1",
+							"render_method": "opaque"
+						}
+					}
+				}
+			},
+			{
+				"condition": "query.block_state('better_on_bedrock:crack_stage') == 2",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "quetzacaw_egg_cracked_2",
+							"render_method": "opaque"
+						}
+					}
+				}
+			},
+			{
+				"condition": "query.block_state('better_on_bedrock:crack_stage') == 3",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "quetzacaw_egg_cracked_3",
+							"render_method": "opaque"
+						}
+					}
+				}
+			}
+		],
+		"components": {
+			"minecraft:custom_components": [
+				"pog:ticking"
+			],
+			"minecraft:loot": "loot_tables/empty.json",
+			"minecraft:collision_box": {
+				"origin": [
+					-4,
+					0,
+					-4
+				],
+				"size": [
+					8,
+					11,
+					8
+				]
+			},
+			"minecraft:selection_box": {
+				"origin": [
+					-4,
+					0,
+					-4
+				],
+				"size": [
+					8,
+					11,
+					8
+				]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 3
+			},
+			"minecraft:destructible_by_explosion": false,
+			"minecraft:geometry": "geometry.quetzacaw_egg",
+			"minecraft:map_color": "#ffffff"
+		}
+	}
+}

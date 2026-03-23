@@ -1,0 +1,33 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:chorus_crunch",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/chorus_crunch"
+			},
+			"animations": {
+				"basic": "controller.animation.Crystal_Cruncher.new",
+				"idle": "animation.Crystal_Cruncher.idle",
+				"new": "animation.Crystal_Cruncher.new"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"geometry": {
+				"default": "geometry.chorus_crunch"
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#6289ed",
+				"overlay_color": "#2ca802"
+			}
+		}
+	}
+}

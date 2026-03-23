@@ -1,0 +1,49 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:growing_plant_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:voided_abyss/voided_abyss_spore_random"
+        },
+        "height_distribution": [
+            [
+                {
+                    "range_min": 3,
+                    "range_max": 8
+                },
+                2
+            ],
+            [
+                {
+                    "range_min": 3,
+                    "range_max": 2
+                },
+                3
+            ],
+            [
+                {
+                    "range_min": 3,
+                    "range_max": 7
+                },
+                10
+            ]
+        ],
+        "growth_direction": "UP",
+        "age": {
+            "range_min": 17,
+            "range_max": 26
+        },
+        "body_blocks": [
+            [
+                "better_on_bedrock:voided_abyss_blossom_stem",
+                4
+            ]
+        ],
+        "head_blocks": [
+            [
+                "better_on_bedrock:voided_abyss_tall_spore_blossom",
+                4
+            ]
+        ],
+        "allow_water": true
+    }
+}

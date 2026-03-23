@@ -1,0 +1,36 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:bane_spike"
+        },
+        "tags": [ "crafting_table" ],
+        
+        "pattern": [
+            " # ",
+            "ABC",
+            " D "
+        ],
+        "key": {
+            "#": {
+                "item": "better_on_bedrock:carnivorous_mandibile"
+            },
+            "A": {
+                "item": "minecraft:fermented_spider_eye"
+            },
+            "B": {
+                "item": "better_on_bedrock:horn"
+            },
+            "C": {
+                "item": "minecraft:spider_eye"
+            },
+            "D": {
+                "item": "minecraft:stick"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:bane_spike",
+            "count": 1
+        }
+    }
+}

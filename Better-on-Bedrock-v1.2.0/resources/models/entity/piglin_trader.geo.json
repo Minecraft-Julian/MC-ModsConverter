@@ -1,0 +1,154 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.piglin_trader",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "Body",
+					"pivot": [0, 12, 0],
+					"cubes": [
+						{
+							"origin": [-3, 6, -2],
+							"size": [6, 8, 4],
+							"uv": [0, 13]
+						}
+					]
+				},
+				{
+					"name": "RightArm",
+					"parent": "Body",
+					"pivot": [-4, 13, 0],
+					"cubes": [
+						{
+							"origin": [-6, 6, -2],
+							"size": [3, 8, 4],
+							"uv": [34, 13]
+						}
+					]
+				},
+				{
+					"name": "LeftArm",
+					"parent": "Body",
+					"pivot": [4, 13, 0],
+					"cubes": [
+						{
+							"origin": [3, 6, -2],
+							"size": [3, 8, 4],
+							"uv": [20, 13]
+						}
+					]
+				},
+				{
+					"name": "Waist",
+					"parent": "Body",
+					"pivot": [0, 8, 0]
+				},
+				{
+					"name": "RightLeg",
+					"parent": "Waist",
+					"pivot": [-1.5, 3, 0],
+					"cubes": [
+						{
+							"origin": [-3, 0, -2],
+							"size": [3, 6, 4],
+							"uv": [14, 25]
+						},
+						{
+							"origin": [-3.4, 2, -2.4],
+							"size": [3.8, 2, 4.8],
+							"uv": [14, 35]
+						}
+					]
+				},
+				{
+					"name": "LeftLeg",
+					"parent": "Waist",
+					"pivot": [1.5, 3, 0],
+					"cubes": [
+						{
+							"origin": [0, 0, -2],
+							"size": [3, 6, 4],
+							"uv": [0, 25]
+						},
+						{
+							"origin": [-0.4, 2, -2.4],
+							"size": [3.8, 2, 4.8],
+							"uv": [0, 35]
+						}
+					]
+				},
+				{
+					"name": "head",
+					"pivot": [0.53708, 16.25323, -2.3],
+					"cubes": [
+						{
+							"origin": [-4, 14, -4],
+							"size": [8, 6, 7],
+							"uv": [0, 0]
+						},
+						{
+							"origin": [-2, 14, -5],
+							"size": [4, 2, 1],
+							"uv": [23, 4]
+						},
+						{
+							"origin": [2, 14, -5],
+							"size": [1, 1, 1],
+							"uv": [24, 2]
+						},
+						{
+							"origin": [4.33548, 15.46047, -3],
+							"size": [1, 4, 4],
+							"pivot": [4.83548, 17.46047, 0],
+							"rotation": [0, 0, -12.5],
+							"uv": [40, 5]
+						},
+						{
+							"origin": [-5.15009, 15.30567, -3],
+							"size": [1, 4, 4],
+							"pivot": [-4.65009, 17.30567, 0],
+							"rotation": [0, 0, -170],
+							"uv": [40, 5]
+						}
+					]
+				},
+				{
+					"name": "backpack",
+					"pivot": [0, 7.5, 6],
+					"cubes": [
+						{
+							"origin": [-4, 4, 7.25],
+							"size": [8, 6, 2],
+							"uv": [54, 13],
+							"mirror": true
+						},
+						{
+							"origin": [-5, 4, 3.25],
+							"size": [10, 12, 4],
+							"uv": [50, 22],
+							"mirror": true
+						},
+						{
+							"origin": [5, 4, 3.75],
+							"size": [1, 5, 3],
+							"uv": [78, 17]
+						},
+						{
+							"origin": [-6, 4, 3.75],
+							"size": [1, 9, 3],
+							"uv": [78, 26]
+						}
+					]
+				}
+			]
+		}
+	]
+}

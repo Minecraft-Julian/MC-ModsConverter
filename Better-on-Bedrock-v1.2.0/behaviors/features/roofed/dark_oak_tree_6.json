@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:roofed/dark_oak_tree_6"
+        },
+        "structure_name": "mystructure:darkoak_tree_6",
+        "adjustment_radius": 8,
+        "facing_direction": "random",
+        "constraints": {
+            "grounded": {}
+        }
+    }
+}

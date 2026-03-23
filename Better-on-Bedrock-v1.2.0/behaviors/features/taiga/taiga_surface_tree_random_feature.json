@@ -1,0 +1,30 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:taiga/taiga_surface_tree_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:taiga/taiga_tree_random_feature",
+                1
+            ],
+            [
+                "better_on_bedrock:taiga/taiga_tree_regular_random_feature",
+                1
+            ],
+            [
+                "better_on_bedrock:taiga/taiga_tree_regular_diverse_random_feature",
+                1
+            ],
+            [
+                "better_on_bedrock:taiga/taiga_tree_regular_thin_random_feature",
+                1
+            ],
+            [
+                "better_on_bedrock:taiga/taiga_tree_regular_small_random_feature",
+                1
+            ]
+        ]
+    }
+}

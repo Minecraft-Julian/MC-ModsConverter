@@ -1,0 +1,53 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:end_merchant",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"components": {
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			},
+			"minecraft:pushable": {
+				"is_pushable": false
+			},
+			"minecraft:push_through": {
+				"value": 1
+			},
+			"minecraft:movement": {
+				"value": 0.25
+			},
+			"minecraft:health": {
+				"value": 15,
+				"max": 15
+			},
+			"minecraft:collision_box": {
+				"width": 1,
+				"height": 3.4
+			},
+			"minecraft:trade_table": {
+				"convert_trades_economy": false,
+				"display_name": "Ender Merchant",
+				"new_screen": true,
+				"persist_trades": false,
+				"table": "trading/end-trade-table.json"
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:navigation.walk": {
+				"avoid_water": true
+			},
+			"minecraft:behavior.random_stroll": {
+				"priority": 3,
+				"speed_multiplier": 0.8
+			},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/end_merchant.json"
+			}
+		}
+	}
+}

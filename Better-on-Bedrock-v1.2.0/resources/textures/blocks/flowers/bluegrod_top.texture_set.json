@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "bluegrod_top",
+        "metalness_emissive_roughness": "bluegrod_top_mer",
+        "heightmap": "bluegrod_top_heightmap"
+    }
+}

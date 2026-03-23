@@ -1,0 +1,70 @@
+{
+    "format_version": "1.20.20",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:paper_lantern",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:collision_box": {
+                "origin": [ -6, 0, -6 ],
+                "size": [ 12, 16, 12 ]
+            },
+            "minecraft:selection_box": {
+                "origin": [ -6, 0, -6 ],
+                "size": [ 12, 16, 12 ]
+            },
+            "minecraft:destructible_by_mining": {
+                "seconds_to_destroy": 1
+            },
+            "minecraft:custom_components": [ "pog:random_particle" ],
+            "minecraft:placement_filter": {
+                "conditions": [
+                    {
+                        "allowed_faces": [ "down" ],
+                        "block_filter": [
+                            { "tags": "true" }
+                        ]
+                    }
+                ]
+            },
+            "minecraft:tick": {
+                "interval_range": [ 40, 120 ],
+                "looping": true
+            },
+            "minecraft:light_emission": 15,
+            "minecraft:light_dampening": 15,
+            "minecraft:destructible_by_explosion": {
+                "explosion_resistance": 30
+            },
+            "minecraft:geometry": {
+                "identifier": "geometry.paper_lantern"
+            },
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "paper_lantern_side",
+                    "render_method": "alpha_test"
+                },
+                "up": {
+                    "texture": "paper_lantern_top",
+                    "render_method": "alpha_test"
+                },
+                "down": {
+                    "texture": "paper_lantern_bottom",
+                    "render_method": "alpha_test"
+                },
+                "interior": {
+                    "texture": "paper_lantern_interior",
+                    "render_method": "alpha_test"
+                },
+                "bulb": {
+                    "texture": "paper_lantern_bulb",
+                    "render_method": "alpha_test"
+                }
+            },
+            "minecraft:map_color": "#ffffff"
+        }
+    }
+}

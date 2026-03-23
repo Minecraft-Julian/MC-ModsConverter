@@ -1,0 +1,38 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:pig",
+      "min_engine_version": "1.8.0",
+      "materials": {
+        "default": "pig_v3",
+        "enchanted": "entity_enchant",
+        "enchanted_rtx": "entity_alphatest_glint"
+      },
+      "textures": {
+        "default": "textures/entity/pig/pig_v3",
+        "warm": "textures/entity/pig/pig_warm",
+        "cold": "textures/entity/pig/pig_cold",
+        "saddle": "textures/entity/saddle_v2",
+        "enchanted": "textures/misc/enchanted_glint_entity"
+      },
+      "scripts": {
+        "pre_animation": [
+          "t.variant = query.property('minecraft:climate_variant');",
+          "v.index = (t.variant == 'temperate') ? 0 : ((t.variant == 'warm') ? 1 : 2);"
+        ],
+        "should_update_bones_and_effects_offscreen": true
+      },
+      "render_controllers": [ 
+        "controller.render.saddle",
+        "controller.render.pig.v3",
+        {
+          "controller.render.enchanted": "q.property('better_on_bedrock:enchanted') && !q.graphics_mode_is_any('raytraced')"
+        }
+      ],
+      "spawn_egg": {
+        "texture": "spawn_egg_pig"
+      }
+    }
+  }
+}

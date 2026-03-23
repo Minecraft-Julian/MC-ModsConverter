@@ -1,0 +1,26 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:forest/forest_tree_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:forest/forest_tree_variation_1",
+                10
+            ],
+            [
+                "better_on_bedrock:forest/forest_tree_variation_2",
+                2
+            ],
+            [
+                "better_on_bedrock:forest/forest_tree_variation_3",
+                2
+            ],
+            [
+                "better_on_bedrock:forest/forest_tree_variation_4",
+                16
+            ]
+        ]
+    }
+}

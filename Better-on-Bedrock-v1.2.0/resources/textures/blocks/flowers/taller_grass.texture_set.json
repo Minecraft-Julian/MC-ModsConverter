@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "taller_grass",
+        "metalness_emissive_roughness": "taller_grass_mer",
+        "heightmap": "taller_grass_heightmap"
+    }
+}

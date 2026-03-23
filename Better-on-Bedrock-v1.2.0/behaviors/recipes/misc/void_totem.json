@@ -1,0 +1,45 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:void_totem"
+        },
+        "tags": [ "crafting_table" ],
+
+        "pattern": [
+            "#AB",
+            "CDE",
+            "FG#"
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:ender_pearl"
+            },
+            "A": {
+                "item": "better_on_bedrock:enderium"
+            },
+            "B": {
+                "item": "better_on_bedrock:soul_star"
+            },
+            "C": {
+                "item": "minecraft:netherite_ingot"
+            },
+            "D": {
+                "item": "minecraft:totem_of_undying"
+            },
+            "E": {
+                "item": "better_on_bedrock:enderite_ingot"
+            },
+            "F": {
+                "item": "better_on_bedrock:end_shard"
+            },
+            "G": {
+                "item": "better_on_bedrock:chorus_flitter"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:void_totem",
+            "count": 1
+        }
+    }
+}

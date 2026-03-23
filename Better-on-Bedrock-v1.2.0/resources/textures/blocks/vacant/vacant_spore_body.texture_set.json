@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "vacant_spore_body",
+		"metalness_emissive_roughness": "vacant_spore_body_mer",
+		"heightmap": "vacant_spore_body_heightmap"
+	}
+}

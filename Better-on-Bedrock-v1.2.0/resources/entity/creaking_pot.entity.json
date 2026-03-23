@@ -1,0 +1,22 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:creaking_pot",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/pot_decoy"
+			},
+			"geometry": {
+				"default": "geometry.creaking_pot"
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#8d7965",
+				"overlay_color": "#81c36d"
+			}
+		}
+	}
+}

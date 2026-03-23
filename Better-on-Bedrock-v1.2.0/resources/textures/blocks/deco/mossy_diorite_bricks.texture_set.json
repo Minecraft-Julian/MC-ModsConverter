@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "mossy_diorite_bricks",
+		"metalness_emissive_roughness": "mossy_diorite_bricks_mer",
+		"heightmap": "mossy_diorite_bricks_heightmap"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"format_version": "1.21.20",
+	"minecraft:structure_set": {
+		"description": {
+			"identifier": "pog:well_dungeon_set"
+		},
+		"placement": {
+			"type": "minecraft:random_spread",
+			"salt": 96887694,
+			"separation": 8,
+			"spacing": 34
+		},
+		"structures": [
+			{
+				"structure": "better_on_bedrock:well_dungeon",
+				"weight": 1
+			}
+		]
+	}
+}

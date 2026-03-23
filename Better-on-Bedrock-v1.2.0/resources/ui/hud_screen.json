@@ -1,0 +1,1085 @@
+{
+    "hud_actionbar_text/actionbar_message": {
+        "$atext": "$actionbar_text",
+        "visible": "(not (('%.6s' * $atext) = 'wawla;'))"
+    },
+
+    "anim_wawla": {
+		"anim_type": "alpha",
+		"easing": "in_expo",
+		"duration": 0.32,
+		"from": 0.92,
+		"to": 0.92,
+		"destroy_at_end": "hud_actionbar_text"
+	},
+	"anim_wawla_background": {
+		"anim_type": "alpha",
+		"easing": "in_expo",
+		"duration": 0.32,
+		"from": 0.92,
+		"to": 0.92,
+		"destroy_at_end": "hud_actionbar_text"
+	},
+    "wawla": {
+        "type": "panel",
+        "controls": [
+            {
+                "background": {
+                    "type": "image",
+                    "size": [
+                        "100%c + 12px",
+                        "100%c + 5px"
+                    ],
+                    "anchor_from": "top_middle",
+                    "offset": [ 0, "32px" ],
+                    "texture": "textures/ui/wawlaBorder",
+                    "alpha": "@hud.anim_wawla_background",
+                    "$atext": "$actionbar_text",
+                    "visible": "(('%.6s' * $atext) = 'wawla;')",
+                    "controls": [
+                        {
+                            "actionbar_message": {
+                                "type": "label",
+                                "layer": 31,
+                                "anchor_from": "center",
+                                "anchor_to": "center",
+            
+                                "color": "$tool_tip_text",
+                                "$atext": "$actionbar_text",
+                                "$actionbar": "($atext - 'wawla;')",
+                                "text": "$actionbar",
+                                "localize": true,
+                                "alpha": "@hud.anim_wawla"
+                            }
+                        }
+                    ]
+                }
+            }
+		]
+    },
+
+    "wawla_factory": {
+        "type": "panel",
+        "layer": 30,
+        "factory": {
+            "name": "hud_actionbar_text_factory",
+            "control_ids": {
+                "hud_actionbar_text": "wawla@hud.wawla"
+            }
+        }
+    },
+
+    "chat_label": {
+        "modifications": [
+            {
+                "array_name": "bindings",
+                "operation": "insert_back",
+                "value": {
+                    "binding_type": "view",
+                    "source_property_name": "(not (('%.10s' * #text) = 'bob.toast;'))",
+                    "target_property_name": "#visible"
+                }
+            }
+        ]
+    },
+    "toasty": {
+        "type": "panel",
+        "anchor_from": "top_right",
+        "anchor_to": "top_right",
+        "size": [ "100%", "100%c" ],
+        "max_size": [ "100%", "50%" ],
+        "controls": [
+            {
+                "stack_panel": {
+                    "type": "stack_panel",
+                    "anchor_from": "top_right",
+                    "anchor_to": "top_right",
+                    "use_child_anchors": true,
+                    "factory": {
+                        "name": "chat_item_factory",
+                        "max_children_size": 50,
+                        "control_ids": {
+                            "chat_item": "achievement_stacked@hud.achievement_stacked"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+
+    "advancement_animation_in": {
+        "anim_type": "offset",
+        "easing": "out_quart",
+        "duration": 1.0,
+        "from": [ "14% + 180px", 30 ],
+        "to": [ 0, 30 ],
+        "next": "@hud.advancement_animation_stay"
+    },
+    "advancement_animation_stay": {
+        "anim_type": "wait",
+        "duration": 6.7,
+        "next": "@hud.advancement_animation_out"
+    },
+    "advancement_animation_out": {
+        "anim_type": "offset",
+        "easing": "in_quart",
+        "duration": 1.0,
+        "from": [ 0, 30 ],
+        "to": [ "14% + 180px", 30 ],
+        "destroy_at_end": "chat_grid_item"
+    },
+
+    "achievement_element": {
+        "layer": 1,
+        "type": "image",
+        "texture": "textures/ui/achievement_temp",
+        "anims": [ "@hud.advancement_animation_in" ],
+
+        "$unlock_key|default": "unknown",
+        "$content_text|default": "Unknown",
+        "$advancement_text|default": "Unknown",
+        "$advancement_icon|default": "textures/ui/crafting",
+
+        "clips_children": true,
+        "anchor_from": "bottom_right",
+        "anchor_to": "bottom_right",
+                    
+        "offset": [ 0, 33 ],
+        "size": [ 163, 32 ],
+        "uv_size": [ 163, 32 ],
+        "$uv|default": [ 0, 0 ],
+        "uv": "$uv",
+        "controls": [
+            {
+                "advancement_icon_texture": {
+                    "type": "image",
+                    "texture": "$advancement_icon",
+                    "layer": 3,
+                    "anchor_from": "right_middle",
+                    "anchor_to": "right_middle",
+                    "offset": [
+                        "-80%",
+                        "-2.4%"
+                    ],
+                    "size": [ 19, 19 ]
+                }
+            },
+            {
+                "advancement_title": {
+                    "type": "label",
+                    "color": "$main_header_text_color",
+                    "layer": 2,
+                    "shadow": true,
+                    "offset": [ "24%", -5 ],
+                    "text": "$advancement_text",
+                    "size": [ "default", 12 ],
+                    "max_size": [ "100%", "100%" ],
+                    "anchor_from": "left_middle",
+                    "anchor_to": "left_middle"
+                }
+            },
+            {
+                "advancement_content_texts": {
+                    "type": "label",
+                    "shadow": true,
+                    "anchor_from": "left_middle",
+                    "anchor_to": "left_middle",
+                    "color": "$main_header_text_color",
+                    "text": "$content_text",
+                    "layer": 2,
+                    "offset": [ "24%", 5 ]
+                }
+            }
+        ],
+        "bindings": [
+            {
+                "binding_name": "#chat_text",
+                "binding_name_override": "#text",
+                "binding_type": "collection",
+                "binding_collection_name": "chat_text_grid",
+                "binding_condition": "once"
+            },
+            {
+                "binding_type": "view",
+                "source_property_name": "((('%.10s' * #text) = 'bob.toast;') and ((#text - ('%.10s' * #text)) = $unlock_key))",
+                "target_property_name": "#visible"
+            }
+        ]
+    },
+
+    "achievement_stacked": {
+        "type": "panel",
+        "anchor_from": "top_right",
+        "anchor_to": "top_right",
+        "size": [ "100%c", "100%c" ],
+        "controls": [
+            {
+                "pudding": { "type": "panel", "size": [ 0, 2 ] }
+            },
+
+            // Intro
+            {
+                "bob.intro@hud.achievement_element": {
+                    "$unlock_key": "achievement.0",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/guide_book/guide_book",
+                    "$advancement_text": "§u%bob.toast.advancement.firstDay.name",
+                    "$content_text": "§7%bob.toast.advancement.firstDay.desc"
+                }
+            },
+
+            // Quests
+            {
+                "bob.quests.1.1@hud.achievement_element": {
+                    "$unlock_key": "quests.1.1",
+                    "$advancement_icon": "textures/ui/icons/quests/1/first_wood",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.1.name.1"
+                }
+            },
+            {
+                "bob.quests.1.2@hud.achievement_element": {
+                    "$unlock_key": "quests.1.2",
+                    "$advancement_icon": "textures/ui/icons/quests/1/stone_age",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.1.name.2"
+                }
+            },
+            {
+                "bob.quests.1.3@hud.achievement_element": {
+                    "$unlock_key": "quests.1.3",
+                    "$advancement_icon": "textures/ui/icons/quests/1/getting_an_upgrade",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.1.name.3"
+                }
+            },
+            {
+                "bob.quests.1.4@hud.achievement_element": {
+                    "$unlock_key": "quests.1.4",
+                    "$advancement_icon": "textures/ui/icons/quests/1/iron_y",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.1.name.4"
+                }
+            },
+            {
+                "bob.quests.1.5@hud.achievement_element": {
+                    "$unlock_key": "quests.1.5",
+                    "$advancement_icon": "textures/ui/icons/quests/1/diamonds",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.1.name.5"
+                }
+            },
+            //Quest Tier 2
+            {
+                "bob.quests.2.1@hud.achievement_element": {
+                    "$unlock_key": "quests.2.1",
+                    "$advancement_icon": "textures/ui/icons/quests/2/trader",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.2.name.1"
+                }
+            },
+            {
+                "bob.quests.2.2@hud.achievement_element": {
+                    "$unlock_key": "quests.2.2",
+                    "$advancement_icon": "textures/ui/icons/quests/2/bounty_time",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.2.name.2"
+                }
+            },
+            {
+                "bob.quests.2.3@hud.achievement_element": {
+                    "$unlock_key": "quests.2.3",
+                    "$advancement_icon": "textures/ui/icons/quests/2/wizard_craft",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.2.name.3"
+                }
+            },
+            {
+                "bob.quests.2.4@hud.achievement_element": {
+                    "$unlock_key": "quests.2.4",
+                    "$advancement_icon": "textures/ui/icons/quests/2/traveler",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.2.name.4"
+                }
+            },
+            {
+                "bob.quests.2.5@hud.achievement_element": {
+                    "$unlock_key": "quests.2.5",
+                    "$advancement_icon": "textures/ui/icons/quests/2/staffs_n_stones",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.2.name.5"
+                }
+            },
+            //Quest Tier 3
+            {
+                "bob.quests.3.1@hud.achievement_element": {
+                    "$unlock_key": "quests.3.1",
+                    "$advancement_icon": "textures/ui/icons/quests/3/deep_below",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.3.name.1"
+                }
+            },
+            {
+                "bob.quests.3.2@hud.achievement_element": {
+                    "$unlock_key": "quests.3.2",
+                    "$advancement_icon": "textures/ui/icons/quests/3/friends",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.3.name.2"
+                }
+            },
+            {
+                "bob.quests.3.3@hud.achievement_element": {
+                    "$unlock_key": "quests.3.3",
+                    "$advancement_icon": "textures/ui/icons/quests/3/money_crab",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.3.name.3"
+                }
+            },
+            {
+                "bob.quests.3.4@hud.achievement_element": {
+                    "$unlock_key": "quests.3.4",
+                    "$advancement_icon": "textures/ui/icons/quests/3/shielded_pyroclast",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.3.name.4"
+                }
+            },
+            {
+                "bob.quests.3.5@hud.achievement_element": {
+                    "$unlock_key": "quests.3.5",
+                    "$advancement_icon": "textures/ui/icons/quests/3/withered_samurai",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.3.name.5"
+                }
+            },
+            //Quest Tier 4
+            {
+                "bob.quests.4.1@hud.achievement_element": {
+                    "$unlock_key": "quests.4.1",
+                    "$advancement_icon": "textures/ui/icons/quests/4/zombie_slayer",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.4.name.1"
+                }
+            },
+            {
+                "bob.quests.4.2@hud.achievement_element": {
+                    "$unlock_key": "quests.4.2",
+                    "$advancement_icon": "textures/ui/icons/quests/4/creeper_hunter",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.4.name.2"
+                }
+            },
+            {
+                "bob.quests.4.3@hud.achievement_element": {
+                    "$unlock_key": "quests.4.3",
+                    "$advancement_icon": "textures/ui/icons/quests/4/stringy_situation",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.4.name.3"
+                }
+            },
+            {
+                "bob.quests.4.4@hud.achievement_element": {
+                    "$unlock_key": "quests.4.4",
+                    "$advancement_icon": "textures/ui/icons/quests/4/more_souls",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.4.name.4"
+                }
+            },
+            //Quest Tier 5
+            {
+                "bob.quests.5.1@hud.achievement_element": {
+                    "$unlock_key": "quests.5.1",
+                    "$advancement_icon": "textures/ui/icons/quests/5/a_big_nut",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.1"
+                }
+            },
+            {
+                "bob.quests.5.2@hud.achievement_element": {
+                    "$unlock_key": "quests.5.2",
+                    "$advancement_icon": "textures/ui/icons/quests/5/eggs_as_plants",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.2"
+                }
+            },
+            {
+                "bob.quests.5.3@hud.achievement_element": {
+                    "$unlock_key": "quests.5.3",
+                    "$advancement_icon": "textures/ui/icons/quests/5/a_good_diet",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.3"
+                }
+            },
+            {
+                "bob.quests.5.4@hud.achievement_element": {
+                    "$unlock_key": "quests.5.4",
+                    "$advancement_icon": "textures/ui/icons/quests/5/wildin_food",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.4"
+                }
+            },
+            {
+                "bob.quests.5.5@hud.achievement_element": {
+                    "$unlock_key": "quests.5.5",
+                    "$advancement_icon": "textures/ui/icons/quests/5/green_hay",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.5"
+                }
+            },
+            {
+                "bob.quests.5.6@hud.achievement_element": {
+                    "$unlock_key": "quests.5.6",
+                    "$advancement_icon": "textures/ui/icons/quests/5/cure_for_tears",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.6"
+                }
+            },
+            {
+                "bob.quests.5.7@hud.achievement_element": {
+                    "$unlock_key": "quests.5.7",
+                    "$advancement_icon": "textures/ui/icons/quests/5/la_baguette",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.5.name.7"
+                }
+            },
+            //Quest Tier 6
+            {
+                "bob.quests.6.1@hud.achievement_element": {
+                    "$unlock_key": "quests.6.1",
+                    "$advancement_icon": "textures/ui/icons/quests/6/bow_master",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.6.name.1"
+                }
+            },
+            {
+                "bob.quests.6.2@hud.achievement_element": {
+                    "$unlock_key": "quests.6.2",
+                    "$advancement_icon": "textures/ui/icons/quests/6/staying_healthy",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.6.name.2"
+                }
+            },
+            {
+                "bob.quests.6.3@hud.achievement_element": {
+                    "$unlock_key": "quests.6.3",
+                    "$advancement_icon": "textures/ui/icons/quests/6/armored_up",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.6.name.3"
+                }
+            },
+            {
+                "bob.quests.6.4@hud.achievement_element": {
+                    "$unlock_key": "quests.6.4",
+                    "$advancement_icon": "textures/ui/icons/quests/6/willager_hat",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.6.name.4"
+                }
+            },
+
+            //Quest Tier 7
+            {
+                "bob.quests.7.1@hud.achievement_element": {
+                    "$unlock_key": "quests.7.1",
+                    "$advancement_icon": "textures/ui/icons/quests/7/this_is_fine",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.1"
+                }
+            },
+            {
+                "bob.quests.7.2@hud.achievement_element": {
+                    "$unlock_key": "quests.7.2",
+                    "$advancement_icon": "textures/ui/icons/quests/7/snow_white",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.2"
+                }
+            },
+            {
+                "bob.quests.7.3@hud.achievement_element": {
+                    "$unlock_key": "quests.7.3",
+                    "$advancement_icon": "textures/ui/icons/quests/7/netherite",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.3"
+                }
+            },
+            {
+                "bob.quests.7.4@hud.achievement_element": {
+                    "$unlock_key": "quests.7.4",
+                    "$advancement_icon": "textures/ui/icons/quests/7/ender_player",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.4"
+                }
+            },
+            {
+                "bob.quests.7.5@hud.achievement_element": {
+                    "$unlock_key": "quests.7.5",
+                    "$advancement_icon": "textures/ui/icons/quests/7/nether_bed",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.5"
+                }
+            },
+            {
+                "bob.quests.7.6@hud.achievement_element": {
+                    "$unlock_key": "quests.7.6",
+                    "$advancement_icon": "textures/ui/icons/quests/7/movable_chest",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.6"
+                }
+            },
+            {
+                "bob.quests.7.7@hud.achievement_element": {
+                    "$unlock_key": "quests.7.7",
+                    "$advancement_icon": "textures/ui/icons/quests/7/dragon_egg",
+                    "$advancement_text": "§2%bob.toast.questComplete",
+                    "$content_text": "§e%bob.quests.tier.7.name.7"
+                }
+            },
+
+
+            // Quest Tiers
+            {
+                "bob.quests.tier.1@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.1",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/adventure_time",
+                    "$advancement_text": "§e%bob.quests.tier.2",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                "bob.quests.tier.2@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.2",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/nether_arise",
+                    "$advancement_text": "§e%bob.quests.tier.3",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                "bob.quests.tier.3@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.3",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/monster_looter",
+                    "$advancement_text": "§e%bob.quests.tier.4",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                "bob.quests.tier.4@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.4",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/more_food",
+                    "$advancement_text": "§e%bob.quests.tier.5",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                "bob.quests.tier.5@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.5",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/combat_time",
+                    "$advancement_text": "§e%bob.quests.tier.6",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                "bob.quests.tier.6@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.6",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/quests/beyond_the_overworld",
+                    "$advancement_text": "§e%bob.quests.tier.7",
+                    "$content_text": "§6New Tier Unlocked!"
+                }
+            },
+            {
+                
+                "bob.quests.tier.7@hud.achievement_element": {
+                    "$unlock_key": "quests.tier.7",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/icons/main_quests",
+                    "$advancement_text": "§3All Tiers Completed!",
+                    "$content_text": "§6Congratulations!"
+                }
+            },
+
+            // Secret Quests
+            {
+                "bob.quests.secret.1@hud.achievement_element": {
+                    "$unlock_key": "quests.secret.1",
+                    "$advancement_icon": "textures/items/record/record_stellar",
+                    "$advancement_text": "§u%bob.toast.questComplete",
+                    "$content_text": "§7%bob.quests.secret.1.name.1"
+                }
+            },
+
+            // Bounties
+            {
+                "bob.achievement.25@hud.achievement_element": {
+                    "$unlock_key": "bounty.complete",
+                    "$uv": [ 0, 64 ],
+                    "$advancement_icon": "textures/items/misc/decoration/soul_jar",
+                    "$advancement_text": "§b%bob.toast.bounty.bountyComplete",
+                    "$content_text": "§e%bob.toast.bounty.claimYourRewards"
+                }
+            },
+
+            // Achievements
+            {
+                "bob.achievement.1@hud.achievement_element": {
+                    "$unlock_key": "achievement.1",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/crafting",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.1"
+                }
+            },
+            {
+                "bob.achievement.2@hud.achievement_element": {
+                    "$unlock_key": "achievement.2",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/stone",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.2"
+                }
+            },
+            {
+                "bob.achievement.3@hud.achievement_element": {
+                    "$unlock_key": "achievement.3",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/stone_pickaxe",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.3"
+                }
+            },
+            {
+                "bob.achievement.4@hud.achievement_element": {
+                    "$unlock_key": "achievement.4",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/carrot",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.4"
+                }
+            },
+            {
+                "bob.achievement.5@hud.achievement_element": {
+                    "$unlock_key": "achievement.5",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/iron_ingot",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.5"
+                }
+            },
+            {
+                "bob.achievement.6@hud.achievement_element": {
+                    "$unlock_key": "achievement.6",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/bucket_lava",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.6"
+                }
+            },
+            {
+                "bob.achievement.7@hud.achievement_element": {
+                    "$unlock_key": "achievement.7",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/iron_chestplate",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.7"
+                }
+            },
+            {
+                "bob.achievement.8@hud.achievement_element": {
+                    "$unlock_key": "achievement.8",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/iron_pickaxe",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.8"
+                }
+            },
+            {
+                "bob.achievement.9@hud.achievement_element": {
+                    "$unlock_key": "achievement.9",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/bucket_lava",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.9"
+                }
+            },
+            {
+                "bob.achievement.10@hud.achievement_element": {
+                    "$unlock_key": "achievement.10",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/diamond",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.10"
+                }
+            },
+            {
+                "bob.achievement.11@hud.achievement_element": {
+                    "$unlock_key": "achievement.11",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/diamond_chestplate",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.11"
+                }
+            },
+            {
+                "bob.achievement.12@hud.achievement_element": {
+                    "$unlock_key": "achievement.12",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/paper",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.12"
+                }
+            },
+            {
+                "bob.achievement.13@hud.achievement_element": {
+                    "$unlock_key": "achievement.13",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/apple",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.13"
+                }
+            },
+            {
+                "bob.achievement.14@hud.achievement_element": {
+                    "$unlock_key": "achievement.14",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/ender_eye",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.14"
+                }
+            },
+            {
+                "bob.achievement.15@hud.achievement_element": {
+                    "$unlock_key": "achievement.15",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/honey_bottle",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.15"
+                }
+            },
+            {
+                "bob.achievement.16@hud.achievement_element": {
+                    "$unlock_key": "achievement.16",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/lead",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.16"
+                }
+            },
+            {
+                "bob.achievement.17@hud.achievement_element": {
+                    "$unlock_key": "achievement.17",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/crops/food/wild_carrot",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.17"
+                }
+            },
+            {
+                "bob.achievement.18@hud.achievement_element": {
+                    "$unlock_key": "achievement.18",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/crops/food/coconut",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.18"
+                }
+            },
+            {
+                "bob.achievement.19@hud.achievement_element": {
+                    "$unlock_key": "achievement.19",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/waystone/ender_tear",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.19"
+                }
+            },
+            {
+                "bob.achievement.20@hud.achievement_element": {
+                    "$unlock_key": "achievement.20",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/ui/overworld_waystone",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.20"
+                }
+            },
+            {
+                "bob.achievement.21@hud.achievement_element": {
+                    "$unlock_key": "achievement.21",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/book_enchanted",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.21"
+                }
+            },
+            {
+                "bob.achievement.22@hud.achievement_element": {
+                    "$unlock_key": "achievement.22",
+                    "$uv": [ 0, 32 ],
+                    "$advancement_icon": "textures/items/ingots/stardust/stardust_ingot",
+                    "$advancement_text": "§2%bob.toast.achievementMade",
+                    "$content_text": "%bob.achievement.22"
+                }
+            }
+        ]
+    },
+
+    "root_panel": {
+        "modifications": [
+            {
+                "array_name": "controls",
+                "operation": "insert_front",
+                "value": [
+                    { "wawla_factory@hud.wawla_factory": {} },
+                    { "toast_panel@hud.toasty": {} }
+                ]
+            }
+        ]
+    },
+    
+    "boss_health_panel/boss_name": { "ignored": true },
+    "boss_health_panel/progress_bar_for_collections": { "ignored": true },
+    
+    "boss_health_panel": {
+        "modifications": [
+            {
+                "array_name": "bindings",
+                "operation": "insert_front",
+                "value": {
+                    "binding_name": "#bossName",
+                    "binding_type": "collection",
+                    "binding_collection_name": "boss_bars"
+                }
+            },
+            {
+                "array_name": "controls",
+                "operation": "insert_back",
+                "value": [
+                    {
+                        "vanilla_bossbar": {
+                            "type": "panel",
+                            "controls": [
+                                { "boss_name@boss_name_panel": {} },
+                                {
+                                    "progress_bar_for_collections@common.progress_bar_for_collections": {
+                                        "offset": [ 0, 10 ]
+                                    }
+                                }
+                            ],
+                            "bindings": [
+                                {
+                                    "binding_type": "collection",
+                                    "binding_name": "#bossName",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "( ((#bossName - $seeker_boss_name) = #bossName) and ((#bossName - $samurai_boss_name) = #bossName) and ((#bossName - $poggy_boss_name) = #bossName) and ((#bossName - $iceologer_boss_name) = #bossName) and ((#bossName - $soot_boss_name) = #bossName) and ((#bossName - $inferior_boss_name) = #bossName) and ((#bossName - $flender_boss_name) = #bossName) and ((#bossName - $enchanter_boss_name) = #bossName) and ((#bossName - $willager_boss_name) = #bossName) and ((#bossName - $dragon_boss_name) = #bossName) and ((#bossName - $wither_boss_name) = #bossName) )",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    
+                    {
+                        "samurai_bossbar@boss_commons.samurai_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $samurai_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "seeker_bossbar@boss_commons.seeker_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $seeker_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "soot_bossbar@boss_commons.soot_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $soot_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "poggy_bossbar@boss_commons.poggy_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $poggy_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "iceologer_bossbar@boss_commons.iceologer_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $iceologer_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "inferior_bossbar@boss_commons.inferior_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $inferior_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "flender_bossbar@boss_commons.flender_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $flender_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "enchanter_bossbar@boss_commons.enchanter_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $enchanter_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "willager_bossbar@boss_commons.willager_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $willager_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "dragon_bossbar@boss_commons.dragon_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $dragon_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "wither_bossbar@boss_commons.wither_bossbar": {
+                            "offset": [ 0, -16 ],
+                            "layer": 2,
+                            "bindings": [
+                                {
+                                    "binding_name": "#bossName",
+                                    "binding_type": "collection",
+                                    "binding_collection_name": "boss_bars"
+                                },
+                                {
+                                    "binding_type": "view",
+                                    "source_property_name": "(#bossName = $wither_boss_name)",
+                                    "target_property_name": "#visible"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

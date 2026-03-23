@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:blazing_jewel",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:icon": "blazing_jewel",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.blazing_jewel.name\n%item.better_on_bedrock.blazing_jewel.desc"
+            }
+        }
+    }
+}

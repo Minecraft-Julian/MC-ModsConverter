@@ -1,0 +1,26 @@
+{
+    "format_version": "1.8.0",
+    "render_controllers": {
+      "controller.render.skeleton": {
+        "arrays": {
+            "textures": {
+                "array.skins": [
+                    "Texture.one",
+                    "Texture.default"
+                ]        
+            }
+        },
+
+        "geometry": "Geometry.default",
+        "materials": [ { "*": "q.property('better_on_bedrock:enchanted') ? Material.enchanted_rtx : Material.default" } ],
+        "textures": [ "Array.skins[query.variant]", "Texture.enchanted" ],
+        "overlay_color": {
+          "r": 0.484,
+          "g": 0.0,
+          "b": 0.96,
+          "a": "q.property('better_on_bedrock:enchanted') ? 0.25 : 0.0"
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,30 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:raw_deer_meat",
+            "menu_category": {
+                "category": "nature",
+                "group": "itemGroup.name.rawFood"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:raw_deer_meat",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:raw_deer_meat.name"
+            },
+
+            "minecraft:food": {
+                "nutrition": 3,
+                "saturation_modifier": 0.6
+            },
+            "minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 1.6,
+                "movement_modifier": 0.35
+            },
+            
+            "minecraft:stacked_by_data": false
+        }
+    }
+}

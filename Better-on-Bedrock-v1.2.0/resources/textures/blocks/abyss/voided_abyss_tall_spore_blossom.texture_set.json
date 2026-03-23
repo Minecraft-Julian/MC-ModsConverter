@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "voided_abyss_tall_spore_blossom",
+		"metalness_emissive_roughness": "voided_abyss_tall_spore_blossom_mer",
+		"heightmap": "voided_abyss_tall_spore_blossom_heightmap"
+	}
+}

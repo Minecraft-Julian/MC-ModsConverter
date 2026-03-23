@@ -1,0 +1,34 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:voiding_plains/vp_random"
+        },
+        "features": [
+            [
+                "better_on_bedrock:voiding_plains/vp_medium_1",
+                5
+            ],
+            [
+                "better_on_bedrock:voiding_plains/vp_medium_2",
+                5
+            ],
+            [
+                "better_on_bedrock:voiding_plains/vp_medium_3",
+                5
+            ],
+            [
+                "better_on_bedrock:voiding_plains/vp_medium_4",
+                5
+            ],
+            [
+                "better_on_bedrock:voiding_plains/vp_large_1",
+                5
+            ],
+            [
+                "better_on_bedrock:voiding_plains/vp_large_2",
+                5
+            ]
+        ]
+    }
+}

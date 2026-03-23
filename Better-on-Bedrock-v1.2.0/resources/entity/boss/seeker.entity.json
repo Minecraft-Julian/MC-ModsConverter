@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:seeker",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/bosses/seeker/seeker"
+			},
+			"geometry": {
+				"default": "geometry.seeker"
+			},
+			"particle_effects": {
+				"lazer_test": "pog:seeker_beam",
+				"lazer_charge": "pog:lazer_charge"
+			},
+			"animations": {
+				"new": "animation.Seeker.new",
+				"eye": "animation.Seeker.eye",
+				"charge_beam_charging": "animation.seeker.charge_beam_charging",
+				"lazer": "animation.seeker.beam",
+				"basic": "controller.animation.Seeker.new"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"render_controllers": [
+				"controller.render.seeker"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_seeker"
+			}
+		}
+	}
+}

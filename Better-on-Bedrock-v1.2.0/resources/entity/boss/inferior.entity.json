@@ -1,0 +1,46 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:inferior",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"animations": {
+				"basic": "controller.animation.blaze_keeper.new",
+				"idle": "animation.blaze_keeper.idle",
+				"attack": "animation.blaze_keeper.attack",
+				"attack2": "animation.blaze_keeper.attackv3",
+				"ram_attack": "animation.inferior.ram_attack",
+				"fire_aura_attack": "animation.inferior.fire_aura_attack",
+				"shield": "animation.inferior.shield",
+				"stun": "animation.inferior.stun",
+				"throw_shield": "animation.inferior.throw_shield"
+			},
+			"scripts": {
+				"animate": [
+					"basic",
+					{
+						"throw_shield": "q.variant == 9"
+					}
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"textures": {
+				"default": "textures/entity/bosses/inferior/inferior"
+			},
+			"geometry": {
+				"default": "geometry.inferior"
+			},
+			"sound_effects": {
+				"fire_aura_attack": "mob.inferior.fire_aura_attack"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_inferior"
+			}
+		}
+	}
+}

@@ -1,0 +1,63 @@
+{
+	"format_version": "1.19.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.vacant_vine_spore",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "main",
+					"pivot": [0, 1, 0],
+					"cubes": [
+						{
+							"origin": [-3, -14, -3],
+							"size": [6, 5, 6],
+							"pivot": [0, 1, 0],
+							"rotation": [0, 0, 180],
+							"uv": {
+								"north": {"uv": [0, 5], "uv_size": [6, -5], "material_instance": "base"},
+								"east": {"uv": [6, 5], "uv_size": [6, -5]},
+								"south": {"uv": [0, 5], "uv_size": [6, 5]},
+								"west": {"uv": [6, 5], "uv_size": [6, 5]},
+								"down": {"uv": [0, 16], "uv_size": [6, -6]}
+							}
+						},
+						{
+							"origin": [-8, -9, -8],
+							"size": [16, 0, 16],
+							"pivot": [0, 1, 0],
+							"rotation": [0, 0, 180],
+							"uv": {
+								"up": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "leaf"}
+							}
+						},
+						{
+							"origin": [-6, 0, 0],
+							"size": [12, 11, 0],
+							"pivot": [0, 5.5, 0],
+							"rotation": [0, -45, 180],
+							"uv": {
+								"north": {"uv": [2, 5], "uv_size": [12, 11], "material_instance": "blossom"}
+							}
+						},
+						{
+							"origin": [-6, 0, 0],
+							"size": [12, 11, 0],
+							"pivot": [0, 5.5, 0],
+							"rotation": [180, -45, 0],
+							"uv": {
+								"north": {"uv": [2, 5], "uv_size": [12, 11], "material_instance": "blossom"}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

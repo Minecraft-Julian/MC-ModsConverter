@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:dungeon_well_pool"
+        },
+        "elements": [
+            {
+                "element": {
+                    "element_type": "minecraft:single_pool_element",
+                    "location": "well_dungeon/dungeon_well",
+                    "processors": "better_on_bedrock:empty",
+                    "projection": "rigid"
+                },
+                "weight": 100
+            }
+        ]
+    }
+}

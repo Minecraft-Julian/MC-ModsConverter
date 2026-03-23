@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:ruined_temple_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 1917502711,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 69
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:ruined_temple",
+                "weight": 1
+            }
+        ]
+    }
+}

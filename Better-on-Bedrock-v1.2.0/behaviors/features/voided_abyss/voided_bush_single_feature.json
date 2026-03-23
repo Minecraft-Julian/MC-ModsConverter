@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:single_block_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:voided_abyss/voided_bush_single_feature"
+        },
+        "places_block": "better_on_bedrock:voiding_abyss_bush",
+        "enforce_placement_rules": true,
+        "enforce_survivability_rules": true,
+        "may_replace": [
+            "minecraft:air"
+        ]
+    }
+}

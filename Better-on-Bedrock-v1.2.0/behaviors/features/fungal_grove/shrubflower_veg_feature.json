@@ -1,0 +1,22 @@
+{
+  "format_version": "1.13.0",
+  "minecraft:growing_plant_feature": {
+    "description": {
+"identifier": "better_on_bedrock:fungal_grove/shrubflower_veg_feature"
+    },
+    "height_distribution":  [
+      [{"range_min": 4, "range_max": 4}, 4],
+      [{"range_min": 3, "range_max": 3}, 4],
+      [{"range_min": 2, "range_max": 2}, 4]
+    ],
+    "growth_direction": "UP",
+    "age" : {"range_min": 1, "range_max": 4},
+    "body_blocks" : [
+      ["better_on_bedrock:shrubflower_stem", 4]
+    ],
+    "head_blocks" : [
+      ["better_on_bedrock:shrubflower", 4]
+    ],
+  "allow_water": true
+  }
+}

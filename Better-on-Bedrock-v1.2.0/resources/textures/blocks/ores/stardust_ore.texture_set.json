@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "stardust_ore",
+        "metalness_emissive_roughness": "stardust_ore_mer",
+        "heightmap": "stardust_ore_heightmap"
+    }
+}

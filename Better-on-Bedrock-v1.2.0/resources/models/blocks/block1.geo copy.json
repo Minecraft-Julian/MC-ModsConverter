@@ -1,0 +1,74 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.block",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 3,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "blockmodel",
+					"pivot": [0, 0, 7],
+					"cubes": [
+						{
+							"origin": [-4, 4, -10],
+							"size": [8, 8, 6],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "blockmodel"},
+								"east": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "blockmodel"},
+								"south": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "blockmodel"},
+								"west": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "blockmodel"},
+								"up": {"uv": [16, 16], "uv_size": [-16, -16], "material_instance": "blockmodel"},
+								"down": {"uv": [16, 16], "uv_size": [-16, -16], "material_instance": "blockmodel"}
+							}
+						}
+					]
+				},
+				{
+					"name": "block",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-8, 0, -8],
+							"size": [16, 16, 16],
+							"pivot": [0, 0, 0],
+							"rotation": [-180, 0, 180],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "trigger"},
+								"east": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "trigger"},
+								"south": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "trigger"},
+								"west": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "trigger"},
+								"up": {"uv": [16, 16], "uv_size": [-16, -16], "material_instance": "trigger"},
+								"down": {"uv": [16, 16], "uv_size": [-16, -16], "material_instance": "trigger"}
+							}
+						}
+					]
+				},
+				{
+					"name": "item",
+					"pivot": [0, 0, 11],
+					"cubes": [
+						{
+							"origin": [0, 4, 2],
+							"size": [0, 8, 8],
+							"pivot": [0, 0, 2],
+							"rotation": [-180, 0, 180],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 16]},
+								"south": {"uv": [0, 0], "uv_size": [0, 16]},
+								"west": {"uv": [0, 0], "uv_size": [16, 16], "material_instance": "item_texture"},
+								"up": {"uv": [0, 16], "uv_size": [0, -16]},
+								"down": {"uv": [0, 16], "uv_size": [0, -16]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

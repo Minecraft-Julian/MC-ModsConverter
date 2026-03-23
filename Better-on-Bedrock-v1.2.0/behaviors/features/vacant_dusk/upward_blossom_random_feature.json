@@ -1,0 +1,26 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:vacant_dusk/upward_blossom_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:vacant_dusk/upward_blossom_1",
+                43
+            ],
+            [
+                "better_on_bedrock:vacant_dusk/upward_blossom_2",
+                16
+            ],
+            [
+                "better_on_bedrock:vacant_dusk/upward_blossom_3",
+                43
+            ],
+            [
+                "better_on_bedrock:vacant_dusk/upward_blossom_4",
+                5
+            ]
+        ]
+    }
+}

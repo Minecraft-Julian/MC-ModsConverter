@@ -1,0 +1,16 @@
+[
+    {
+        "flipbook_texture": "textures/blocks/misc/soul_jar_soul",
+        "atlas_tile": "soul_jar_soul",
+        "ticks_per_frame": 1,
+        "blend_frames": false,
+        "frames": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
+    },
+    {
+        "flipbook_texture": "textures/blocks/enchants/miner_bench_book",
+        "atlas_tile": "miner_bench_book",
+        "ticks_per_frame": 5,
+        "blend_frames": true,
+        "frames": [ 1, 2, 3, 4, 5, 6, 7, 8 ]
+    }
+]

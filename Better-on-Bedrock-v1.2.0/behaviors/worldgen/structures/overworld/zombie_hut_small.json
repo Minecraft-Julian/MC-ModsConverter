@@ -1,0 +1,44 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:jigsaw": {
+        "description": {
+            "identifier": "better_on_bedrock:zombie_hut_small"
+        },
+        "biome_filters": [
+            {
+                "all_of": [
+                    {
+                        "any_of": [
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "savanna"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "birch"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "forest"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "step": "surface_structures",
+        "start_pool": "pog:overworld/zombie_hut_small",
+        "max_depth": 6,
+        "start_height": {
+            "type": "constant",
+            "value": {
+                "absolute": 0
+            }
+        },
+        "heightmap_projection": "world_surface",
+        "terrain_adaptation": "none"
+    }
+}

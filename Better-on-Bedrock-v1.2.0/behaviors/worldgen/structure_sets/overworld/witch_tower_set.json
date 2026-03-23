@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:witch_tower_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 1065311204,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 36
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:witch_tower",
+                "weight": 1
+            }
+        ]
+    }
+}

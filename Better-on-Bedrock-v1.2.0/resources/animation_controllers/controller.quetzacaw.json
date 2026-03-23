@@ -1,0 +1,124 @@
+{
+	"format_version": "1.19.0",
+	"animation_controllers": {
+		"controller.animation.quetzacaw.new": {
+			"states": {
+				"walk": {
+					"animations": [
+						"walk"
+					],
+					"transitions": [
+						{
+							"attack": "q.is_delayed_attacking == true && !q.is_sitting == true"
+						},
+						{
+							"idle": "q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true && q.is_sitting == false"
+						},
+						{
+							"sit": "q.is_sitting == true && q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true"
+						}
+					],
+					"blend_transition": 0.2,
+					"blend_via_shortest_path": true
+				},
+				"attack": {
+					"animations": [
+						"attack"
+					],
+					"transitions": [
+						{
+							"walk": "q.modified_move_speed >= 0.05 && !q.is_sitting == true"
+						},
+						{
+							"idle": "q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true && q.is_sitting == false"
+						},
+						{
+							"sit": "q.is_sitting == true && q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"idle": {
+					"animations": [
+						"idle"
+					],
+					"transitions": [
+						{
+							"walk": "q.modified_move_speed >= 0.05 && !q.is_sitting == true"
+						},
+						{
+							"attack": "q.is_delayed_attacking == true && !q.is_sitting == true"
+						},
+						{
+							"sit": "q.is_sitting == true && q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"sit": {
+					"animations": [
+						"sit"
+					],
+					"transitions": [
+						{
+							"walk": "q.modified_move_speed >= 0.05 && !q.is_sitting == true"
+						},
+						{
+							"idle": "q.modified_move_speed <= 0.05 && !q.is_delayed_attacking == true && q.is_sitting == false"
+						},
+						{
+							"attack": "q.is_delayed_attacking == true && !q.is_sitting == true"
+						}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		},
+		"controller.animation.quetzacaw": {
+			"initial_state": "idle",
+			"states": {
+				"idle": {
+					"animations": [
+						"idle"
+					],
+					"transitions": [
+						{
+							"walking": "q.modified_move_speed >= 0.05 && !q.is_delayed_attacking"
+						},
+						{
+							"attack": "q.is_delayed_attacking"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"walking": {
+					"animations": [
+						"walk"
+					],
+					"transitions": [
+						{
+							"idle": "q.modified_move_speed <= 0.05 && !q.is_delayed_attacking"
+						},
+						{
+							"attack": "q.is_delayed_attacking"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"attack": {
+					"animations": [
+						"attack"
+					],
+					"transitions": [
+						{
+							"idle": "q.ground_speed < 0.5 && !q.is_delayed_attacking"
+						},
+						{
+							"walking": "q.ground_speed > 1.0 && !q.is_delayed_attacking"
+						}
+					]
+				}
+			}
+		}
+	}
+}

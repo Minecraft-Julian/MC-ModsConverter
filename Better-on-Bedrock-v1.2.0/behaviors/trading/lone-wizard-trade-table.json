@@ -1,0 +1,113 @@
+{
+    "tiers": [
+        {
+            "total_exp_required": 0,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "max_uses": 2147483647,
+                            "reward_exp": true,
+                            "wants": [
+                                {
+                                    "item": "better_on_bedrock:rune",
+                                    "quantity": 3
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "better_on_bedrock:staff"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 1,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "max_uses": 2147483647,
+                            "reward_exp": true,
+                            "wants": [
+                                {
+                                    "item": "better_on_bedrock:rune",
+                                    "quantity": 2
+                                },
+                                {
+                                    "item": "better_on_bedrock:ice_rune"
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "better_on_bedrock:ice_staff"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 2,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "max_uses": 2147483647,
+                            "reward_exp": true,
+                            "wants": [
+                                {
+                                    "item": "better_on_bedrock:rune",
+                                    "quantity": 2
+                                },
+                                {
+                                    "item": "better_on_bedrock:flame_rune"
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "better_on_bedrock:flame_staff"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "total_exp_required": 3,
+            "groups": [
+                {
+                    "num_to_select": 1,
+                    "trades": [
+                        {
+                            "max_uses": 2147483647,
+                            "reward_exp": true,
+                            "wants": [
+                                {
+                                    "item": "better_on_bedrock:rune",
+                                    "quantity": 3
+                                },
+                                {
+                                    "item": "better_on_bedrock:flender_rune"
+                                }
+                            ],
+                            "gives": [
+                                {
+                                    "item": "better_on_bedrock:flender_staff"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

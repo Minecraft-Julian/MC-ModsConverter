@@ -1,0 +1,21 @@
+{
+	"format_version": "1.21.20",
+	"minecraft:structure_set": {
+		"description": {
+			"identifier": "pog:jungle_village_set"
+		},
+		"placement": {
+			"type": "minecraft:random_spread",
+			"salt": 10387312,
+			"separation": 12,
+			"spacing": 34,
+			"spread_type": "linear"
+		},
+		"structures": [
+			{
+				"structure": "better_on_bedrock:jungle_village",
+				"weight": 1
+			}
+		]
+	}
+}

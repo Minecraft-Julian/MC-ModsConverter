@@ -1,0 +1,74 @@
+{
+	"format_version": "1.21.30",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.flender_trophy",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3,
+				"visible_bounds_offset": [0, 0.5, 0]
+			},
+			"bones": [
+				{
+					"name": "bb_main",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-6, 2.49, 6],
+							"size": [12, 8, 2],
+							"uv": {
+								"north": {"uv": [8, 16], "uv_size": [48, 32], "material_instance": "stone"},
+								"east": {"uv": [0, 16], "uv_size": [8, 32], "material_instance": "stone"},
+								"south": {"uv": [8, 16], "uv_size": [48, 32], "material_instance": "stone"},
+								"west": {"uv": [56, 16], "uv_size": [8, 32], "material_instance": "stone"},
+								"up": {"uv": [56, 8], "uv_size": [-48, -8], "material_instance": "stone"},
+								"down": {"uv": [56, 64], "uv_size": [-48, -8], "material_instance": "stone"}
+							}
+						}
+					]
+				},
+				{
+					"name": "Head",
+					"pivot": [0, 3, 7],
+					"cubes": [
+						{
+							"origin": [-3.49525, 3.57316, 0.69301],
+							"size": [9.8, 4.2, 9.8],
+							"pivot": [0, -20.8, 7],
+							"rotation": [9.94824, 44.56579, 7.02006],
+							"uv": {
+								"north": {"uv": [14, 14], "uv_size": [14, 6]},
+								"east": {"uv": [0, 14], "uv_size": [14, 6]},
+								"south": {"uv": [42, 14], "uv_size": [14, 6]},
+								"west": {"uv": [28, 14], "uv_size": [14, 6]},
+								"up": {"uv": [14, 0], "uv_size": [14, 14]},
+								"down": {"uv": [7, 23.5], "uv_size": [3.5, -3.5]}
+							}
+						},
+						{
+							"origin": [-3.94523, 3, -2.35477],
+							"size": [13.3, 1.4, 13.3],
+							"pivot": [0, -20.8, 7],
+							"rotation": [0, 45, 0],
+							"uv": {
+								"up": {"uv": [1, 21], "uv_size": [19, 19]}
+							}
+						}
+					]
+				}
+			],
+			"item_display_transforms": {
+				"gui": {
+					"rotation": [30, 225, 0],
+					"translation": [0, 0, 0],
+					"scale": [1, 1, 1],
+					"rotation_pivot": [0, 0, 0],
+					"scale_pivot": [0, 0, 0],
+					"fit_to_frame": true
+				}
+			}
+		}
+	]
+}

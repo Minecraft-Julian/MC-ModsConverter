@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "top_tall_chorus",
+        "metalness_emissive_roughness": "top_tall_chorus_mer",
+        "heightmap": "top_tall_chorus_heightmap"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:ruined_adventurer_house_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 936953587,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 63
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:ruined_adventurer_house",
+                "weight": 1
+            }
+        ]
+    }
+}

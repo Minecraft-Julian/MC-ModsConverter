@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:fungal_grove/tree_feature"
+        },
+        "places_feature": "better_on_bedrock:fungal_grove/mushroom_trees_feature",
+        "iterations": "t.end_biome == 0",
+        "scatter_chance": 99,
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:aggregate_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:pale/pale_tree_decorations_feature"
+        },
+        "early_out": "first_failure",
+        "features": [
+            "better_on_bedrock:pale/pale_garden_tree_random_feature",
+            "better_on_bedrock:pale/scatter_pale_hanging_moss_feature",
+            "better_on_bedrock:pale/eye_spore_blossom_scatter",
+            "minecraft:pale_moss_patch_feature"
+        ]
+    }
+}

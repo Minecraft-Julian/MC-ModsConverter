@@ -1,0 +1,99 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.player.armor.hat",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 2, 0]
+			},
+			"bones": [
+				{
+					"name": "waist",
+					"pivot": [0, 12, 0]
+				},
+				{
+					"name": "body",
+					"parent": "waist",
+					"pivot": [0, 25.8, 0]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 26.95, 0]
+				},
+				{
+					"name": "hat",
+					"parent": "head",
+					"pivot": [0, 30.4, 0],
+					"cubes": [
+						{
+							"origin": [-4.8875, 35, -4.8875],
+							"size": [9.775, 11.5, 9.775],
+							"uv": {
+								"north": {"uv": [49, 15], "uv_size": [8, 10]},
+								"east": {"uv": [41, 15], "uv_size": [8, 10]},
+								"south": {"uv": [65, 15], "uv_size": [8, 10]},
+								"west": {"uv": [57, 15], "uv_size": [8, 10]},
+								"up": {"uv": [49, 7], "uv_size": [8, 8]},
+								"down": {"uv": [57, 15], "uv_size": [8, -8]}
+							}
+						},
+						{
+							"origin": [-6.9, 36.15, -6.9],
+							"size": [13.8, 2.3, 13.8],
+							"uv": {
+								"north": {"uv": [12, 12], "uv_size": [12, 2]},
+								"east": {"uv": [0, 12], "uv_size": [12, 2]},
+								"south": {"uv": [36, 12], "uv_size": [12, 2]},
+								"west": {"uv": [24, 12], "uv_size": [12, 2]},
+								"up": {"uv": [12, 0], "uv_size": [12, 12]},
+								"down": {"uv": [24, 12], "uv_size": [12, -12]}
+							}
+						},
+						{
+							"origin": [-6.9, 35, -6.9],
+							"size": [13.8, 1.15, 13.8],
+							"uv": {
+								"north": {"uv": [12, 27], "uv_size": [12, 1]},
+								"east": {"uv": [0, 27], "uv_size": [12, 1]},
+								"south": {"uv": [36, 27], "uv_size": [12, 1]},
+								"west": {"uv": [24, 27], "uv_size": [12, 1]},
+								"up": {"uv": [12, 15], "uv_size": [12, 12]},
+								"down": {"uv": [24, 27], "uv_size": [12, -12]}
+							}
+						}
+					]
+				},
+				{
+					"name": "rightArm",
+					"parent": "body",
+					"pivot": [-5.75, 23.5, 0]
+				},
+				{
+					"name": "rightItem",
+					"parent": "rightArm",
+					"pivot": [-6.9, 15.45, 1.15]
+				},
+				{
+					"name": "leftArm",
+					"parent": "body",
+					"pivot": [5.75, 23.5, 0]
+				},
+				{
+					"name": "rightLeg",
+					"parent": "body",
+					"pivot": [-2.185, 12, 0]
+				},
+				{
+					"name": "leftLeg",
+					"parent": "body",
+					"pivot": [2.185, 12, 0]
+				}
+			]
+		}
+	]
+}

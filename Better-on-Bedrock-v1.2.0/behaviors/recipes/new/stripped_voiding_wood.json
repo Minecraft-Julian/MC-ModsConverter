@@ -1,0 +1,22 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:stripped_voiding_wood"
+        },
+        "tags": [ "crafting_table" ],
+        "pattern": [
+            "##",
+            "##"
+        ],
+        "key": {
+            "#": {
+                "item": "better_on_bedrock:voiding_log_stripped"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:voiding_wood_stripped",
+            "count": 1
+        }
+    }
+}

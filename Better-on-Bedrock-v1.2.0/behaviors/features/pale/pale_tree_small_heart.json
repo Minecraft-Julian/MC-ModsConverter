@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:pale/pale_tree_small_heart"
+        },
+        "structure_name": "pale:pale_tree_small_heart",
+        "adjustment_radius": 8,
+        "facing_direction": "random",
+        "constraints": {
+            "grounded": {}
+        }
+    }
+}

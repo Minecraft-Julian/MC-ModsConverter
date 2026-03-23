@@ -1,0 +1,118 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "better_on_bedrock:pale_dustmite",
+      "spawn_category": "monster",
+      "is_spawnable": true,
+      "is_summonable": true
+    },
+
+    "components": {
+      "minecraft:type_family": { "family": [ "monster", "mob" ] },
+      "minecraft:collision_box": { "width": 0.4, "height": 0.3 },
+      "minecraft:health": { "value": 1, "max": 1 },
+      "minecraft:attack": { "damage": 3 },
+      "minecraft:attack_damage": { "value": 3, "max": 3 },
+      "minecraft:nameable": {},
+      "minecraft:physics": {},
+      "minecraft:jump.static": {},
+      "minecraft:can_climb": {},
+      "minecraft:movement.basic": {},
+      "minecraft:variable_max_auto_step": {
+        "base_value": 1.0625,
+        "jump_prevented_value": 0.5625
+      },
+      "minecraft:follow_range": { "value": 32, "max": 32 },
+      "minecraft:despawn": { "despawn_from_distance": {} }
+    },
+
+    "component_groups": {
+      "boab:base_hostile_scan": {
+        "minecraft:looked_at": {
+          "search_radius": 24.0,
+          "look_at_locations": [
+            { "location": "head" },
+            { "location": "body" },
+            { "location": "feet", "vertical_offset": 0.5 }
+          ],
+          "set_target": "once_and_keep_scanning",
+          "find_players_only": true,
+          "looked_at_cooldown": 0.1,
+          "field_of_view": 120,
+          "scale_fov_by_distance": false,
+          "line_of_sight_obstruction_type": "collision_for_camera",
+          "looked_at_event": { "event": "boab:freeze_when_observed", "filter": "self" },
+          "not_looked_at_event": { "event": "boab:chase_when_unobserved", "filter": "self" },
+          "filters": {
+            "test": "actor_health",
+            "subject": "other",
+            "operator": ">",
+            "value": 0
+          }
+        }
+      },
+
+      "boab:unobserved_mobile_and_attack": {
+        "minecraft:navigation.walk": {
+          "can_path_over_water": true,
+          "can_path_over_lava": false,
+          "avoid_damage_blocks": true
+        },
+        "minecraft:movement": { "value": 0.34 },
+        "minecraft:knockback_resistance": { "value": 0.0 },
+        "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+        "minecraft:behavior.float": { "priority": 0 },
+
+      "minecraft:behavior.nearest_attackable_target": {
+				"priority": 3,
+				"within_radius": 8,
+				"entity_types": {
+					"filters": {
+						"test": "is_family",
+						"subject": "other",
+						"value": "player"
+					}
+				}
+			},
+			"minecraft:attack": {
+				"damage": 3
+			},
+			"minecraft:behavior.melee_attack": {
+				"melee_fov": 90,
+				"track_target": true,
+				"priority": 3,
+				"cooldown_time": 0
+			}
+      },
+
+      "boab:observed_frozen": {
+        "minecraft:movement": { "value": 0.0 },
+        "minecraft:knockback_resistance": { "value": 1.0 },
+        "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+        "minecraft:body_rotation_blocked": {}
+      }
+    },
+
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "boab:base_hostile_scan",
+            "boab:unobserved_mobile_and_attack"
+          ]
+        }
+      },
+
+      "boab:freeze_when_observed": {
+        "add": { "component_groups": [ "boab:observed_frozen" ] },
+        "remove": { "component_groups": [ "boab:unobserved_mobile_and_attack" ] }
+      },
+
+      "boab:chase_when_unobserved": {
+        "add": { "component_groups": [ "boab:unobserved_mobile_and_attack" ] },
+        "remove": { "component_groups": [ "boab:observed_frozen" ] }
+      }
+    }
+  }
+}

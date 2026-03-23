@@ -1,0 +1,22 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:acacia/acacia_tree_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:acacia/acacia_tree_variation_1",
+                5
+            ],
+            [
+                "better_on_bedrock:acacia/acacia_tree_variation_2",
+                5
+            ],
+            [
+                "better_on_bedrock:acacia/acacia_tree_variation_3",
+                5
+            ]
+        ]
+    }
+}

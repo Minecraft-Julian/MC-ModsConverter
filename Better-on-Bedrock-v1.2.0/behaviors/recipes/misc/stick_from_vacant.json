@@ -1,0 +1,20 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "better_on_bedrock:stick_from_vacant"
+        },
+        "tags": [ "crafting_table" ],
+        
+        "ingredients": [
+            {
+                "item": "better_on_bedrock:dusk_planks",
+                "count": 2
+            }
+        ],
+        "result": {
+            "item": "minecraft:stick",
+            "count": 1
+        }
+    }
+}

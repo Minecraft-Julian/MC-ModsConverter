@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:piglin_trader",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/piglin_trader"
+			},
+			"geometry": {
+				"default": "geometry.piglin_trader"
+			},
+			"animations": {
+				"basic": "controller.animation.trader",
+				"walk": "animation.trader.walk",
+				"idle": "animation.trader.idle"
+			},
+			"scripts": {
+				"animate": [
+					"basic"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"base_color": "#7e78e1",
+				"overlay_color": "#40dc0e"
+			}
+		}
+	}
+}

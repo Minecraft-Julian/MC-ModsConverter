@@ -1,0 +1,56 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.animation.base": {
+			"states": {
+				"default": {
+					"animations": ["idle"],
+					"transitions": [
+						{"sword_swipe": "q.is_delayed_attacking"},
+						{"spin": "q.variant == 1"}
+					]
+				},
+				
+				"sword_swipe": {
+					"animations": ["sword_swipe"],
+					"transitions": [
+						{"default": "!q.is_delayed_attacking"}
+					]
+				},
+				"spin": {
+					"animations": ["spin"],
+					"transitions": [
+						{"default": "!q.variant == 1"}
+					]
+				}
+			}
+		},
+		"controller.animation.saumrai.seeth": {
+
+		"initial_state": "sheeth",
+			"states": {
+				"unsheeth": {
+					"animations": [ "unsheeth"],
+					"blend_transition": 0.2,
+					"transitions": [
+						{"unsheethed": "q.any_animation_finished"}
+					]
+				},
+				"unsheethed": {
+					"animations": [ "unsheethed", "idle"],
+					"blend_transition": 0.2,
+					"transitions": [
+						{"sheeth": "!q.has_target"}
+					]
+				},
+				"sheeth": {
+					"animations": [ "sheeth"],
+					"blend_transition": 0.2,
+					"transitions": [
+						{"unsheeth": "q.has_target"}
+					]
+				}
+			}
+		}
+	}
+}

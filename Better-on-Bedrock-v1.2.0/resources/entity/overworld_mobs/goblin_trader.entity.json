@@ -1,0 +1,37 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:goblin_trader",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"animations": {
+				"basic": "controller.animation.tadegolem.walk",
+				"idle": "animation.trader.idle",
+				"walk": "animation.trader.walk",
+				"look_at_target": "animation.common.goblin_look_at_target"
+			},
+			"scripts": {
+				"animate": [
+					"basic",
+					"look_at_target"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"textures": {
+				"default": "textures/entity/overworld/goblin_trader"
+			},
+			"geometry": {
+				"default": "geometry.trader"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			],
+			"spawn_egg": {
+				"texture": "spawn_egg_goblin_trader"
+			},
+			"enable_attachables": true
+		}
+	}
+}

@@ -1,0 +1,101 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:processor_list": {
+        "description": {
+            "identifier": "better_on_bedrock:pillager_camp/grey_wool"
+        },
+        "processors": [
+            {
+                "processor_type": "minecraft:rule",
+                "rules": [
+                    {
+                        "input_predicate": {
+                            "predicate_type": "minecraft:block_match",
+                            "block": "minecraft:cyan_wool"
+                        },
+                        "output_state": {
+                            "name": "minecraft:gray_wool"
+                        }
+                    }
+                ]
+            },
+            {
+        "processor_type": "minecraft:capped",
+        "limit": 6,
+        "delegate": {
+          "processor_type": "minecraft:rule",
+          "rules": [
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/overworld/pillager_camp.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 2 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 2 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/overworld/pillager_camp.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 3 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 3 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/overworld/pillager_camp.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 4 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 4 }
+              }
+            },
+            {
+              "block_entity_modifier": {
+                "type": "minecraft:append_loot",
+                "loot_table": "loot_tables/chests/overworld/pillager_camp.json"
+              },
+              "input_predicate": {
+                "predicate_type": "minecraft:blockstate_match",
+                "block_state": {
+                  "name": "minecraft:barrel",
+                  "states": { "facing_direction": 5 }
+                }
+              },
+              "output_state": {
+                "name": "minecraft:barrel",
+                "states": { "facing_direction": 5 }
+              }
+            }
+          ]
+        }
+      }
+        ]
+    }
+}

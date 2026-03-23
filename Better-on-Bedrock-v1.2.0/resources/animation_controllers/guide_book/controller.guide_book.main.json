@@ -1,0 +1,66 @@
+{
+    "format_version": "1.20.10",
+    "animation_controllers": {
+        "controller.animation.guide_book.main": {
+            "initial_state": "open_book",
+            "states": {
+                "default": {
+                    "animations": [
+                        "opened"
+                    ],
+                    "transitions": [
+                        {
+                            "open_book": "q.property('better_on_bedrock:book_state') == 'spawned'"
+                        },
+                        {
+                            "close_book": "q.property('better_on_bedrock:book_state') == 'drop_item'"
+                        },
+                        {
+                            "turn_page_left": "q.property('better_on_bedrock:book_state') == 'turn_page_left'"
+                        },
+                        {
+                            "turn_page_right": "q.property('better_on_bedrock:book_state') == 'turn_page_right'"
+                        }
+                    ]
+                },
+                "open_book": {
+                    "animations": [
+                        "open"
+                    ],
+                    "transitions": [
+                        {
+                            "default": "q.all_animations_finished && q.property('better_on_bedrock:book_state') != 'spawned'"
+                        }
+                    ]
+                },
+                "close_book": {
+                    "animations": [
+                        "close"
+                    ]
+                },
+                "turn_page_left": {
+                    "animations": [
+                        "turn_right",
+                        "opened"
+                    ],
+                    "transitions": [
+                        {
+                            "default": "q.all_animations_finished && q.property('better_on_bedrock:book_state') != 'turn_page_left'"
+                        }
+                    ]
+                },
+                "turn_page_right": {
+                    "animations": [
+                        "turn_left",
+                        "opened"
+                    ],
+                    "transitions": [
+                        {
+                            "default": "q.all_animations_finished && q.property('better_on_bedrock:book_state') != 'turn_page_right'"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

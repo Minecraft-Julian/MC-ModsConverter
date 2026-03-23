@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:overworld/adventure_camp"
+        },
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "overworld/adventure_camp",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

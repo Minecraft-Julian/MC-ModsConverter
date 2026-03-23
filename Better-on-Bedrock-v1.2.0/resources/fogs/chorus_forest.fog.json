@@ -1,0 +1,57 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:fog_settings": {
+        "description": {
+            "identifier": "pog:chorus_forest"
+        },
+        "distance": {
+            "air": {
+                "fog_color": "#724c79",
+                "fog_start": 0.813,
+                "fog_end": 1.0,
+                "render_distance_type": "render"
+            },
+            "water": {
+                "fog_color": "#0e8eb8",
+                "fog_end": 32,
+                "fog_start": 16,
+                "render_distance_type": "fixed"
+            },
+            "weather": {
+                "fog_color": "#3b7e94",
+                "fog_end": 64,
+                "fog_start": 32,
+                "render_distance_type": "fixed"
+            }
+        },
+        "volumetric": {
+          "density": {
+            "air": {
+              "max_density": 0.214,
+              "uniform": false,
+              "max_density_height": 64,
+              "zero_density_height": 82
+              
+            },
+            "water": {
+              "max_density": 1.0,
+              "uniform": true
+            }
+          },
+          "media_coefficients": {
+            "air": {
+              "scattering": [0.0451, 0.0431, 0.0472],
+              "absorption": [0.027, 0.096, 0.01]
+            },
+            "water": {
+              "scattering": [0.0078, 0.0048, 0.0122],
+              "absorption": [0.200, 0.0395, 0.0415]
+            },
+            "cloud": {
+              "scattering": [0.950, 0.950, 0.950],
+              "absorption": [0.003, 0.003, 0.003]
+             }
+            }   
+        }
+    }
+}

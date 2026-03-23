@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:vacant_dusk/vacant_dusk_house"
+        },
+        "places_feature": "better_on_bedrock:vacant_dusk/vacant_dusk_house_structure",
+        "iterations": "t.end_biome == 1",
+        "scatter_chance": 99,
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

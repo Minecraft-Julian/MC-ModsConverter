@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "flowering_chorus_block",
+        "metalness_emissive_roughness": "flowering_chorus_block_mer",
+        "heightmap": "flowering_chorus_block_heightmap"
+    }
+}
