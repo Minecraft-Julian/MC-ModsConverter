@@ -65,19 +65,28 @@ class ModConverter {
             this.loadedZip = await zip.loadAsync(this.file);
             this.addonZip = new JSZip();
             
+            this.fileNames = Object.keys(this.loadedZip.files).filter(f => !this.loadedZip.files[f].dir);
+            this.totalFiles = this.fileNames.length;
+            this.languages = new Set();
+            
             this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
             
-            self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true });
+            self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true, percent: 0 });
             this.bpFolder.file("manifest.json", this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition"));
             this.rpFolder.file("manifest.json", this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition"));
             
-            self.postMessage({ type: 'status', title: 'Extracting Assets...', desc: 'Scanning Java Mod Structure', isLoading: true });
+            self.postMessage({ type: 'status', title: 'Extracting Assets...', desc: 'Scanning Java Mod Structure', isLoading: true, percent: 0 });
             
             // Phase 1: Categorize and parse all files sequentially
             for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
                 if (zipEntry.dir) continue;
-                await this.categorizeAndProcessFile(relativePath, zipEntry);
+                try {
+                    await this.categorizeAndProcessFile(relativePath, zipEntry);
+                } catch(e) {
+                    this.logWarning(relativePath, e);
+                    this.incrementCounter();
+                }
             }
             
             // Phase 2: Generate cross-dependent Bedrock registries
@@ -87,12 +96,19 @@ class ModConverter {
             await this.generateFlipbooks();
             await this.generateSoundDefinitions();
             
-            self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true });
+            if (this.languages.size > 0) {
+                this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
+            }
+            
+            self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true, percent: 0 });
             
             const content = await this.addonZip.generateAsync({
                 type: "blob",
                 compression: "DEFLATE",
-                compressionOptions: { level: 5 }
+                compressionOptions: { level: 5 },
+                streamFiles: true
+            }, function updateCallback(metadata) {
+                self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: `Compressing ${metadata.percent.toFixed(1)}%`, isLoading: true, percent: metadata.percent });
             });
             
             self.postMessage({ 
@@ -104,18 +120,25 @@ class ModConverter {
             });
             
         } catch (error) {
-            self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.' });
+            self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.', warnings: this.warnings });
         }
     }
     
     incrementCounter() {
         this.fileCount++;
-        if (this.fileCount % 50 === 0) {
-            self.postMessage({ type: 'status', title: 'Converting Assets...', desc: `Migrated ${this.fileCount} files`, isLoading: true });
+        const percent = (this.fileCount / this.totalFiles) * 100;
+        if (this.fileCount % 10 === 0 || this.fileCount === this.totalFiles) {
+            self.postMessage({ type: 'status', title: 'Converting Assets...', desc: `Migrated ${this.fileCount} / ${this.totalFiles} files`, isLoading: true, percent });
         }
     }
 
     async categorizeAndProcessFile(relativePath, zipEntry) {
+        if (relativePath.endsWith('.class')) {
+            this.logWarning(relativePath, "Skipped: Java Logic (Requires Manual Bedrock Scripting)");
+            this.incrementCounter();
+            return;
+        }
+
         // Namespace extraction
         const namespaceMatch = relativePath.match(/^(?:assets|data)\/([^/]+)\//);
         if (namespaceMatch) {
@@ -235,9 +258,15 @@ class ModConverter {
             try {
                 const namespace = langMatch[1];
                 let langCode = langMatch[2].toLowerCase();
-                // map java lang codes to bedrock
-                if (langCode === 'en_us') langCode = 'en_US';
-                if (langCode === 'de_de') langCode = 'de_DE';
+                
+                const langParts = langCode.split('_');
+                if (langParts.length === 2) {
+                    langCode = `${langParts[0]}_${langParts[1].toUpperCase()}`;
+                } else if (langCode === 'en_us') {
+                     langCode = 'en_US';
+                }
+                
+                this.languages.add(langCode);
                 
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
@@ -266,9 +295,6 @@ class ModConverter {
                 if (langLines.length > 0) {
                     const textContent = langLines.join('\n');
                     this.rpFolder.file(`texts/${langCode}.lang`, textContent);
-                    if (langCode === 'en_US') {
-                        this.rpFolder.file(`texts/languages.json`, JSON.stringify(["en_US"], null, 4));
-                    }
                     this.incrementCounter();
                 }
             } catch(e) {
@@ -637,6 +663,20 @@ class ModConverter {
                           bedrockBlock["minecraft:block"].components[tagKey] = {};
                      }
                 }
+                
+                let isRedstoneOrMachine = blockId.includes('redstone') || blockId.includes('machine') || blockId.includes('generator') || blockId.includes('cable') || blockId.includes('wire') || blockId.includes('furnace') || blockId.includes('smelter');
+                if (isRedstoneOrMachine) {
+                    bedrockBlock["minecraft:block"].components["minecraft:redstone_conductivity"] = {
+                        "redstone_conductor": true
+                    };
+                    bedrockBlock["minecraft:block"].components["minecraft:on_interact"] = {
+                        "condition": "query.is_sneaking",
+                        "event": "on_interact_event"
+                    };
+                    if (!bedrockBlock["minecraft:block"].events) bedrockBlock["minecraft:block"].events = {};
+                    if (!bedrockBlock["minecraft:block"].events["on_interact_event"]) bedrockBlock["minecraft:block"].events["on_interact_event"] = {};
+                }
+
                 this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
             }
         } catch(e) {

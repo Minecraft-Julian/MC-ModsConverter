@@ -57,8 +57,17 @@ function handleFiles(files) {
         const data = e.data;
         if (data.type === 'status') {
             updateStatus(data.title, data.desc, data.isLoading);
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBarFill = document.getElementById('progressBarFill');
+            if (data.percent !== undefined) {
+                progressContainer.classList.remove('hidden');
+                progressBarFill.style.width = `${data.percent}%`;
+            } else {
+                progressContainer.classList.add('hidden');
+            }
         } else if (data.type === 'success') {
             updateStatus('Addon Ready!', `Converted ${data.count} assets successfully!`, false);
+            document.getElementById('progressContainer').classList.add('hidden');
             
             const url = URL.createObjectURL(data.blob);
             downloadBtn.href = url;
@@ -69,6 +78,7 @@ function handleFiles(files) {
             worker.terminate();
         } else if (data.type === 'error') {
             updateStatus('Conversion Failed', data.message || 'An error occurred during conversion.', false);
+            document.getElementById('progressContainer').classList.add('hidden');
             worker.terminate();
         }
     };
