@@ -485,6 +485,20 @@ class ModConverter {
             return;
         }
 
+        // ANIMATIONS & CONTROLLERS (GeckoLib or Bedrock defaults)
+        const animMatch = relativePath.match(/^(?:assets|data)\/([^/]+)\/(animations|animation_controllers)\/(.*)\.json$/);
+        if (animMatch) {
+            try {
+                const folderName = animMatch[2]; // animations or animation_controllers
+                const fileName = animMatch[3];
+                const fileContent = await zipEntry.async('string');
+                this.rpFolder.file(`${folderName}/${fileName}.json`, fileContent);
+                this.bpFolder.file(`${folderName}/${fileName}.json`, fileContent);
+                this.incrementCounter();
+            } catch(e) {}
+            return;
+        }
+
         // ITEM MODELS -> BP ITEMS
         const itemModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/item\/(.*)\.json$/);
         if (itemModelMatch) {
@@ -603,6 +617,37 @@ class ModConverter {
             }
 
             this.rpFolder.file("sounds/sound_definitions.json", JSON.stringify(bedrockSoundsData, null, 4));
+        }
+
+        // Generate Bedrock sounds.json mapping for all extracted blocks
+        if (this.blocks.size > 0) {
+            const rpSoundsJson = {
+                "block_sounds": {},
+                "entity_sounds": { "entities": {} },
+                "individual_event_sounds": { "events": {} }
+            };
+            
+            for (const fullId of this.blocks) {
+                const isWood = fullId.includes("wood") || fullId.includes("log") || fullId.includes("plank") || fullId.includes("door") || fullId.includes("fence");
+                const isMetal = fullId.includes("iron") || fullId.includes("gold") || fullId.includes("copper") || fullId.includes("brass") || fullId.includes("steel");
+                const isGlass = fullId.includes("glass");
+
+                let soundType = "stone";
+                if (isWood) soundType = "wood";
+                else if (isMetal) soundType = "metal";
+                else if (isGlass) soundType = "glass";
+                
+                rpSoundsJson.block_sounds[fullId] = {
+                    "events": {
+                        "place": { "sound": `use.${soundType}`, "volume": 1.0, "pitch": 1.0 },
+                        "break": { "sound": `dig.${soundType}`, "volume": 1.0, "pitch": 1.0 },
+                        "hit": { "sound": `dig.${soundType}`, "volume": 0.5, "pitch": 1.0 },
+                        "step": { "sound": `step.${soundType}`, "volume": 0.5, "pitch": 1.0 },
+                        "fall": { "sound": `step.${soundType}`, "volume": 0.8, "pitch": 1.0 }
+                    }
+                };
+            }
+            this.rpFolder.file("sounds.json", JSON.stringify(rpSoundsJson, null, 4));
         }
     }
 }
