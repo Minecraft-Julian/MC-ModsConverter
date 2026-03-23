@@ -118,13 +118,15 @@ async function processFile(file) {
         
         let fileCount = 0;
         let javaSoundsJson = null;
+        let flipbookTextures = [];
         
         // Find texture and sound files
         for (const [relativePath, zipEntry] of Object.entries(loadedZip.files)) {
             if (zipEntry.dir) continue;
             
             // Checks for specific asset types
-            const textureMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*)$/);
+            const textureMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*\.(png|tga|jpg|jpeg))$/);
+            const mcmetaMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*\.png)\.mcmeta$/);
             const soundMatch = relativePath.match(/^assets\/([^/]+)\/sounds\/(.*\.(ogg|wav))$/);
             const soundsJsonMatch = relativePath.match(/^assets\/[^/]+\/sounds\.json$/);
 
@@ -134,6 +136,29 @@ async function processFile(file) {
                 // Place into ResourcePack/textures/
                 rpFolder.file(`textures/${bedrockTexturePath}`, fileContent);
                 fileCount++;
+            } else if (mcmetaMatch) {
+                try {
+                    const texturePathWithExt = mcmetaMatch[1]; // e.g. "block/fire.png"
+                    const texturePath = texturePathWithExt.replace(/\.png$/, ''); // "block/fire"
+                    const fileContent = await zipEntry.async('string');
+                    const parsed = JSON.parse(fileContent);
+
+                    if (parsed.animation) {
+                        const flipbook = {
+                            "flipbook_texture": `textures/${texturePath}`,
+                            "atlas_tile": texturePath.split('/').pop(),
+                            "ticks_per_frame": parsed.animation.frametime || 1
+                        };
+                        
+                        if (parsed.animation.frames) {
+                            // Extract just the index if frame is an object in Java (e.g. {"index": 0, "time": 2})
+                            flipbook.frames = parsed.animation.frames.map(f => typeof f === 'object' ? f.index : f);
+                        }
+                        flipbookTextures.push(flipbook);
+                    }
+                } catch(e) {
+                    console.warn(`Could not parse ${relativePath}`, e);
+                }
             } else if (soundMatch) {
                 const namespace = soundMatch[1];
                 const soundPath = soundMatch[2];
@@ -144,7 +169,6 @@ async function processFile(file) {
             } else if (soundsJsonMatch) {
                 try {
                     const fileContent = await zipEntry.async('string');
-                    // We might find multiple sounds.json if multiple namespaces exist, we merge them
                     const parsed = JSON.parse(fileContent);
                     if (!javaSoundsJson) javaSoundsJson = {};
                     Object.assign(javaSoundsJson, parsed);
@@ -157,6 +181,12 @@ async function processFile(file) {
             if (fileCount % 10 === 0) {
                 updateStatus('Copying Assets...', `Migrated ${fileCount} files`);
             }
+        }
+        
+        // Convert animated textures
+        if (flipbookTextures.length > 0) {
+            updateStatus('Converting Animations...', 'Generating flipbook_textures.json');
+            rpFolder.file("textures/flipbook_textures.json", JSON.stringify(flipbookTextures, null, 4));
         }
         
         // Convert sounds.json to sound_definitions.json for Bedrock
