@@ -1,13 +1,13 @@
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
 
 function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
 
-self.onmessage = function(e) {
+self.onmessage = function (e) {
     if (e.data.type === 'start') {
         const converter = new ModConverter(e.data.file, e.data.options);
         converter.process();
@@ -19,31 +19,29 @@ class ModConverter {
         this.file = file;
         this.options = options;
         this.modNameBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
-        
+
         // Registries
         this.namespaces = new Set();
         this.blocks = new Set();
         this.items = new Set();
         this.geometries = new Set();
         this.blockTags = {};
-        
+
         this.blockTexturesRegistry = {};
         this.itemTexturesRegistry = {};
         this.flipbookTextures = [];
         this.javaSoundsJson = null;
         this.blockProperties = {};
-        
+
         this.fileCount = 0;
         this.skippedClasses = 0;
         this.warnings = [];
-        this.stats = { textures: 0, models: 0, animations: 0, classes: 0, recipes: 0, sounds: 0, items: 0, blocks: 0 };
-        this.startTime = 0;
     }
 
     generateManifest(type, name, description) {
         const headerUUID = generateUUID();
         const moduleUUID = generateUUID();
-        
+
         return JSON.stringify({
             "format_version": 2,
             "header": {
@@ -64,11 +62,8 @@ class ModConverter {
     }
 
     logWarning(path, error) {
-        const msg = error.message || error;
-        this.warnings.push({ path, error: msg });
-        if (this.options.debugMode) {
-            self.postMessage({ type: 'debug', msg: `<span style="color:#EF4444">[ERROR]</span> ${path}: ${msg}` });
-        }
+        console.warn(`[ModConverter] Error processing ${path}:`, error);
+        this.warnings.push({ path, error: error.message || String(error) });
     }
 
     async process() {
@@ -78,65 +73,44 @@ class ModConverter {
             const zip = new JSZip();
             this.loadedZip = await zip.loadAsync(this.file);
             this.addonZip = new JSZip();
-            
+
             this.fileNames = Object.keys(this.loadedZip.files).filter(f => !this.loadedZip.files[f].dir);
             this.totalFiles = this.fileNames.length;
             this.languages = new Set();
-            
+
             this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
-            
-            this.rpFolder.folder("animations");
-            this.rpFolder.folder("textures");
-            this.rpFolder.folder("sounds");
-            this.bpFolder.folder("blocks");
-            this.bpFolder.folder("items");
-            this.bpFolder.folder("recipes");
-            
-            self.postMessage({ type: 'status', title: 'Analyzing Mod...', desc: 'Pre-scanning architecture', isLoading: true, percent: 0 });
-            
-            for (const f of this.fileNames) {
-                if (f.endsWith('.png')) this.stats.textures++;
-                else if (f.endsWith('.class')) this.stats.classes++;
-                else if (f.includes('models/') && f.endsWith('.json')) this.stats.models++;
-                else if (f.includes('animations/') && f.endsWith('.json')) this.stats.animations++;
-            }
-            
-            let totalAnalyzable = this.stats.textures + this.stats.models + this.stats.animations + this.stats.classes;
-            let compatScore = totalAnalyzable > 0 ? Math.round(((totalAnalyzable - this.stats.classes) / totalAnalyzable) * 100) : 100;
-            self.postMessage({ type: 'prescan', stats: this.stats, score: compatScore });
-            this.startTime = Date.now();
-            
+
             self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true, percent: 0 });
             this.bpFolder.file("manifest.json", this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition"));
             this.rpFolder.file("manifest.json", this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition"));
-            
+
             self.postMessage({ type: 'status', title: 'Extracting Assets...', desc: 'Scanning Java Mod Structure', isLoading: true, percent: 0 });
-            
+
             // Phase 1: Categorize and parse all files sequentially
             for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
                 if (zipEntry.dir) continue;
                 try {
                     await this.categorizeAndProcessFile(relativePath, zipEntry);
-                } catch(e) {
+                } catch (e) {
                     this.logWarning(relativePath, e);
                     this.incrementCounter();
                 }
             }
-            
+
             // Phase 2: Generate cross-dependent Bedrock registries
             self.postMessage({ type: 'status', title: 'Building Registries...', desc: 'Generating Textures, Blocks & Sound Definitions', isLoading: true });
             await this.generateBlocks();
             await this.generateTexturesRegistry();
             await this.generateFlipbooks();
             await this.generateSoundDefinitions();
-            
+
             if (this.languages.size > 0) {
                 this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
             }
-            
+
             self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true, percent: 0 });
-            
+
             const content = await this.addonZip.generateAsync({
                 type: "blob",
                 compression: "DEFLATE",
@@ -145,51 +119,36 @@ class ModConverter {
             }, function updateCallback(metadata) {
                 self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: `Compressing ${metadata.percent.toFixed(1)}%`, isLoading: true, percent: metadata.percent });
             });
-            
+
             if (this.skippedClasses > 0) {
                 this.warnings.push({ path: 'Java Classes (.class)', error: `Skipped ${this.skippedClasses} raw logic files. Complex mechanisms cannot natively cross-compile; manual Bedrock scripting required.` });
             }
 
-            this.stats.blocks = this.blocks.size;
-            this.stats.items = this.items.size;
-
-            self.postMessage({ 
-                type: 'success', 
-                blob: content, 
-                fileName: `${this.modNameBase}.mcaddon`, 
+            self.postMessage({
+                type: 'success',
+                blob: content,
+                fileName: `${this.modNameBase}.mcaddon`,
                 count: this.fileCount,
-                warnings: this.warnings,
-                stats: this.stats
+                warnings: this.warnings
             });
-            
+
         } catch (error) {
             self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.', warnings: this.warnings });
         }
     }
-    
-    incrementCounter(fileName = "") {
+
+    incrementCounter() {
         this.fileCount++;
         const percent = (this.fileCount / this.totalFiles) * 100;
-        
-        let elapsed = (Date.now() - this.startTime) / 1000;
-        let speed = this.fileCount / elapsed;
-        let remain = Math.max(0, (this.totalFiles - this.fileCount) / speed);
-        let timeStr = remain > 60 ? `${Math.floor(remain/60)}m ${Math.round(remain % 60)}s remaining` : `${Math.round(remain)}s remaining`;
-        
         if (this.fileCount % 10 === 0 || this.fileCount === this.totalFiles) {
-            self.postMessage({ type: 'progress', current: this.fileCount, total: this.totalFiles, percent, timeStr, file: fileName });
-        }
-        
-        if (this.options.debugMode && fileName) {
-            self.postMessage({ type: 'debug', msg: `<span style="color:#10B981">[LOADED]</span> ${fileName}` });
+            self.postMessage({ type: 'status', title: 'Converting Assets...', desc: `Migrated ${this.fileCount} / ${this.totalFiles} files`, isLoading: true, percent });
         }
     }
 
     async categorizeAndProcessFile(relativePath, zipEntry) {
         if (relativePath.endsWith('.class')) {
             this.skippedClasses++;
-            if (this.options.debugMode) self.postMessage({ type: 'debug', msg: `<span style="color:#F59E0B">[SKIPPED]</span> ${relativePath} (Java Class)` });
-            this.incrementCounter(relativePath);
+            this.incrementCounter();
             return;
         }
 
@@ -206,7 +165,7 @@ class ModConverter {
                 this.bpFolder.file("pack_icon.png", fileContent);
                 this.rpFolder.file("pack_icon.png", fileContent);
                 this.incrementCounter();
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -221,9 +180,9 @@ class ModConverter {
                 const parsedPath = texturePath.split('/');
                 const type = parsedPath[0]; // "block", "item", etc.
                 const name = parsedPath[parsedPath.length - 1].split('.')[0];
-                
+
                 const fileContent = await zipEntry.async('arraybuffer');
-                
+
                 if (type === 'block') {
                     this.rpFolder.file(`textures/blocks/${name}.png`, fileContent);
                     this.blockTexturesRegistry[name] = `textures/blocks/${name}`;
@@ -233,9 +192,9 @@ class ModConverter {
                 } else {
                     this.rpFolder.file(`textures/${texturePath}`, fileContent);
                 }
-                
+
                 this.incrementCounter();
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -249,7 +208,7 @@ class ModConverter {
                 const texturePath = texturePathWithExt.replace(/\.png$/, '');
                 const type = texturePath.split('/')[0];
                 const name = texturePath.split('/').pop();
-                
+
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
 
@@ -257,20 +216,20 @@ class ModConverter {
                     let bedrockTexPath = `textures/${texturePath}`;
                     if (type === 'block') bedrockTexPath = `textures/blocks/${name}`;
                     if (type === 'item') bedrockTexPath = `textures/items/${name}`;
-                    
+
                     const flipbook = {
                         "flipbook_texture": bedrockTexPath,
                         "atlas_tile": name,
                         "ticks_per_frame": parsed.animation.frametime || 2
                     };
-                    
+
                     if (parsed.animation.frames) {
                         flipbook.frames = parsed.animation.frames.map(f => typeof f === 'object' ? f.index : f);
                     }
                     this.flipbookTextures.push(flipbook);
                     this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -284,9 +243,9 @@ class ModConverter {
                 const soundPath = soundMatch[2];
                 const fileContent = await zipEntry.async('arraybuffer');
                 this.rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
-                this.incrementCounter(relativePath);
-            } catch(e) {
-                    this.logWarning(relativePath, e);
+                this.incrementCounter();
+            } catch (e) {
+                this.logWarning(relativePath, e);
             }
             return;
         }
@@ -300,7 +259,7 @@ class ModConverter {
                 if (!this.javaSoundsJson) this.javaSoundsJson = {};
                 Object.assign(this.javaSoundsJson, parsed);
                 this.incrementCounter();
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -312,20 +271,20 @@ class ModConverter {
             try {
                 const namespace = langMatch[1];
                 let langCode = langMatch[2].toLowerCase();
-                
+
                 const langParts = langCode.split('_');
                 if (langParts.length === 2) {
                     langCode = `${langParts[0]}_${langParts[1].toUpperCase()}`;
                 } else if (langCode === 'en_us') {
-                     langCode = 'en_US';
+                    langCode = 'en_US';
                 }
-                
+
                 this.languages.add(langCode);
-                
+
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
                 let langLines = [];
-                
+
                 for (const [key, value] of Object.entries(parsed)) {
                     if (key.startsWith('item.')) {
                         const parts = key.split('.');
@@ -342,16 +301,16 @@ class ModConverter {
                             langLines.push(`tile.${ns}:${id}.name=${value}`);
                         }
                     } else {
-                         langLines.push(`${key}=${value}`);
+                        langLines.push(`${key}=${value}`);
                     }
                 }
-                
+
                 if (langLines.length > 0) {
                     const textContent = langLines.join('\n');
                     this.rpFolder.file(`texts/${langCode}.lang`, textContent);
-                    this.incrementCounter(relativePath);
+                    this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -365,44 +324,38 @@ class ModConverter {
                 const recipeId = recipeMatch[2];
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
-                
+
                 let bedrockRecipe = {
                     "format_version": "1.12.0"
                 };
-                
-                function formatId(id) {
-    if (!id || typeof id !== 'string') return "minecraft:air";
-    if (!id.includes(':')) return `minecraft:${id}`;
-    return id.toLowerCase();
-}
+
+                const formatId = (id) => id.includes(':') ? id : `minecraft:${id}`;
+
                 if (parsed.type === 'minecraft:crafting_shaped') {
-                    // Record recipe component
-                    this.stats.recipes++;
-                    
                     bedrockRecipe["minecraft:recipe_shaped"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["crafting_table"],
                         "pattern": parsed.pattern,
                         "key": {},
-                        "result": typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item), "count": parsed.result.count || 1}
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
                     };
-                    
+
                     for (const [k, v] of Object.entries(parsed.key)) {
-                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = {"item": formatId(v.item || v.tag || "minecraft:air")};
+                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = { "item": formatId(v.item || v.tag || "minecraft:air") };
                     }
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
-                    
+
                 } else if (parsed.type === 'minecraft:crafting_shapeless') {
                     bedrockRecipe["minecraft:recipe_shapeless"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["crafting_table"],
-                        "ingredients": parsed.ingredients.map(i => ({"item": formatId(i.item || i.tag || "minecraft:air")})),
-                        "result": typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item), "count": parsed.result.count || 1}
+                        "ingredients": parsed.ingredients.map(i => ({ "item": formatId(i.item || i.tag || "minecraft:air") })),
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
-                    
+
                 } else if (parsed.type === 'minecraft:smelting' || parsed.type === 'minecraft:blasting' || parsed.type === 'minecraft:campfire_cooking') {
                     bedrockRecipe["minecraft:recipe_furnace"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
@@ -416,8 +369,8 @@ class ModConverter {
                     bedrockRecipe["minecraft:recipe_shapeless"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["stonecutter"],
-                        "ingredients": [{"item": formatId(parsed.ingredient.item || parsed.ingredient.tag)}],
-                        "result": typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item), "count": parsed.result.count || 1}
+                        "ingredients": [{ "item": formatId(parsed.ingredient.item || parsed.ingredient.tag) }],
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -437,20 +390,20 @@ class ModConverter {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": [parsed.type ? parsed.type.replace(':', '_') : "custom_machine"],
                         "ingredients": [],
-                        "result": {"item": formatId("minecraft:air")}
+                        "result": { "item": formatId("minecraft:air") }
                     };
                     if (parsed.ingredients) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = parsed.ingredients.map(i => ({"item": formatId(i.item || i.tag || "minecraft:air")}));
+                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = parsed.ingredients.map(i => ({ "item": formatId(i.item || i.tag || "minecraft:air") }));
                     } else if (parsed.ingredient) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = [{"item": formatId(parsed.ingredient.item || parsed.ingredient.tag || "minecraft:air")}];
+                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = [{ "item": formatId(parsed.ingredient.item || parsed.ingredient.tag || "minecraft:air") }];
                     }
                     if (parsed.result) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].result = typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item || "minecraft:air"), "count": parsed.result.count || 1};
+                        bedrockRecipe["minecraft:recipe_shapeless"].result = typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item || "minecraft:air"), "count": parsed.result.count || 1 };
                     }
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter(relativePath);
+                    this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -464,11 +417,11 @@ class ModConverter {
                 const lootPath = lootMatch[2];
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
-                
+
                 const bedrockLoot = {
                     "pools": []
                 };
-                
+
                 if (parsed.pools) {
                     for (const pool of parsed.pools) {
                         const bedrockPool = {
@@ -491,7 +444,7 @@ class ModConverter {
                     this.bpFolder.file(`loot_tables/${lootPath}.json`, JSON.stringify(bedrockLoot, null, 4));
                     this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -506,13 +459,13 @@ class ModConverter {
                 const parsed = JSON.parse(fileContent);
                 if (parsed.values) {
                     for (const v of parsed.values) {
-                        const blockId = v.replace('minecraft:', '').replace(tagMatch[1]+':', '');
+                        const blockId = v.replace('minecraft:', '').replace(tagMatch[1] + ':', '');
                         if (!this.blockTags[blockId]) this.blockTags[blockId] = [];
                         this.blockTags[blockId].push(tagId);
                     }
                     this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -525,7 +478,7 @@ class ModConverter {
                 const fileContent = await zipEntry.async('string');
                 this.rpFolder.file(`particles/${particleMatch[2]}.json`, fileContent);
                 this.incrementCounter();
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -540,10 +493,10 @@ class ModConverter {
                 const parsed = JSON.parse(fileContent);
                 if (parsed.elements) {
                     const cubes = parsed.elements.map(el => {
-                        let cube = { "origin": el.from, "size": [el.to[0]-el.from[0], el.to[1]-el.from[1], el.to[2]-el.from[2]], "uv": [0,0] };
+                        let cube = { "origin": el.from, "size": [el.to[0] - el.from[0], el.to[1] - el.from[1], el.to[2] - el.from[2]], "uv": [0, 0] };
                         if (el.rotation) {
-                            cube.pivot = el.rotation.origin || [8,8,8];
-                            let rot = [0,0,0];
+                            cube.pivot = el.rotation.origin || [8, 8, 8];
+                            let rot = [0, 0, 0];
                             if (el.rotation.axis === 'x') rot[0] = el.rotation.angle;
                             if (el.rotation.axis === 'y') rot[1] = el.rotation.angle;
                             if (el.rotation.axis === 'z') rot[2] = el.rotation.angle;
@@ -559,14 +512,14 @@ class ModConverter {
                                 "texture_width": 16, "texture_height": 16,
                                 "visible_bounds_width": 2, "visible_bounds_height": 2
                             },
-                            "bones": [{ "name": "bone", "pivot": [8,8,8], "cubes": cubes }]
+                            "bones": [{ "name": "bone", "pivot": [8, 8, 8], "cubes": cubes }]
                         }]
                     };
                     this.rpFolder.file(`models/blocks/${modelId}.geo.json`, JSON.stringify(geo, null, 4));
                     this.geometries.add(modelId);
                     this.incrementCounter();
                 }
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -579,7 +532,7 @@ class ModConverter {
                 const folderName = animMatch[2];
                 const fileName = animMatch[3];
                 const fileContent = await zipEntry.async('string');
-                
+
                 // Inspect for GeckoLib complexities and ensure Bedrock JSON formatting
                 const parsed = JSON.parse(fileContent);
                 if (parsed.format_version || parsed.geckolib_format_version) {
@@ -594,8 +547,8 @@ class ModConverter {
                     this.rpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                     this.bpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                 }
-                this.incrementCounter(relativePath);
-            } catch(e) {
+                this.incrementCounter();
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -608,7 +561,7 @@ class ModConverter {
                 const namespace = itemModelMatch[1];
                 const itemId = itemModelMatch[2];
                 this.items.add(`${namespace}:${itemId}`);
-                
+
                 const bedrockItem = {
                     "format_version": "1.16.100",
                     "minecraft:item": {
@@ -625,7 +578,7 @@ class ModConverter {
                 };
                 this.bpFolder.file(`items/${itemId}.json`, JSON.stringify(bedrockItem, null, 4));
                 this.incrementCounter();
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -638,7 +591,7 @@ class ModConverter {
                 const namespace = blockstateMatch[1];
                 const blockId = blockstateMatch[2];
                 this.blocks.add(`${namespace}:${blockId}`);
-                
+
                 const fileContent = await zipEntry.async('string');
                 const parsed = JSON.parse(fileContent);
 
@@ -666,9 +619,7 @@ class ModConverter {
                     properties: finalProps,
                     hasLogic: Object.keys(finalProps).length > 0
                 };
-                
-                this.incrementCounter(relativePath);
-            } catch(e) {
+            } catch (e) {
                 this.logWarning(relativePath, e);
             }
             return;
@@ -681,10 +632,10 @@ class ModConverter {
                 const parts = fullId.split(':');
                 const namespace = parts[0];
                 const blockId = parts[1];
-                
+
                 let destroyTime = 1.0;
                 let explosionRes = 1.0;
-                
+
                 const isWood = blockId.includes("wood") || blockId.includes("log") || blockId.includes("plank") || blockId.includes("door") || blockId.includes("fence") || blockId.includes("chest");
                 const isMetal = blockId.includes("iron") || blockId.includes("gold") || blockId.includes("copper") || blockId.includes("brass") || blockId.includes("steel") || blockId.includes("netherite") || blockId.includes("machine") || blockId.includes("block");
                 const isGlass = blockId.includes("glass");
@@ -701,7 +652,7 @@ class ModConverter {
                 else if (isLeaves) { destroyTime = 0.2; explosionRes = 0.2; }
 
                 const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": blockId, "render_method": "alpha_test" } }, "minecraft:destroy_time": destroyTime, "minecraft:explosion_resistance": explosionRes } } };
-                
+
                 const bProps = this.blockProperties[fullId];
                 if (bProps && bProps.hasLogic) {
                     bedrockBlock["minecraft:block"].description.properties = {};
@@ -725,7 +676,7 @@ class ModConverter {
                             return val;
                         });
                         bedrockBlock["minecraft:block"].description.properties[propName] = values;
-                        
+
                         for (const val of values) {
                             bedrockBlock["minecraft:block"].permutations.push({
                                 "condition": `query.block_property('${propName}') == ${(typeof val === 'string') ? "'" + val + "'" : val}`,
@@ -739,12 +690,12 @@ class ModConverter {
                     bedrockBlock["minecraft:block"].components["minecraft:geometry"] = `geometry.${blockId}`;
                 }
                 if (this.blockTags[blockId]) {
-                     for (const tag of this.blockTags[blockId]) {
-                          const tagKey = `tag:${tag.replace('/', '_')}`;
-                          bedrockBlock["minecraft:block"].components[tagKey] = {};
-                     }
+                    for (const tag of this.blockTags[blockId]) {
+                        const tagKey = `tag:${tag.replace('/', '_')}`;
+                        bedrockBlock["minecraft:block"].components[tagKey] = {};
+                    }
                 }
-                
+
                 let isRedstoneOrMachine = blockId.includes('redstone') || blockId.includes('machine') || blockId.includes('generator') || blockId.includes('cable') || blockId.includes('wire') || blockId.includes('furnace') || blockId.includes('smelter');
                 if (isRedstoneOrMachine) {
                     bedrockBlock["minecraft:block"].components["minecraft:redstone_conductivity"] = {
@@ -760,7 +711,7 @@ class ModConverter {
 
                 this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
             }
-        } catch(e) {
+        } catch (e) {
             this.logWarning("generateBlocks() loop", e);
         }
     }
@@ -778,7 +729,7 @@ class ModConverter {
                 terrainData.texture_data[name] = { "textures": path };
             }
             this.rpFolder.file("textures/terrain_texture.json", JSON.stringify(terrainData, null, 4));
-            
+
             const itemData = {
                 "resource_pack_name": "converted",
                 "texture_name": "atlas.items",
@@ -788,7 +739,7 @@ class ModConverter {
                 itemData.texture_data[name] = { "textures": path };
             }
             this.rpFolder.file("textures/item_texture.json", JSON.stringify(itemData, null, 4));
-        } catch(e) {
+        } catch (e) {
             this.logWarning("generateTexturesRegistry() loop", e);
         }
     }
@@ -797,7 +748,7 @@ class ModConverter {
         if (this.flipbookTextures.length > 0) {
             try {
                 this.rpFolder.file("textures/flipbook_textures.json", JSON.stringify(this.flipbookTextures, null, 4));
-            } catch(e) {
+            } catch (e) {
                 this.logWarning("textures/flipbook_textures.json", e);
             }
         }
@@ -815,18 +766,18 @@ class ModConverter {
                     if (!eventData.sounds) continue;
 
                     const bedrockSoundsList = eventData.sounds.map(s => {
-                    let soundName = typeof s === 'string' ? s : s.name;
-                    let parts = soundName.split(':');
-                    
-                    let namespace = parts.length > 1 ? parts[0] : 'minecraft';
-                    let path = parts.length > 1 ? parts[1] : soundName;
-                    let bedrockName = `sounds/${namespace}/${path}`;
-                    
-                    if (typeof s === 'object') {
-                        return { ...s, name: bedrockName };
-                    }
-                    return bedrockName;
-                });
+                        let soundName = typeof s === 'string' ? s : s.name;
+                        let parts = soundName.split(':');
+
+                        let namespace = parts.length > 1 ? parts[0] : 'minecraft';
+                        let path = parts.length > 1 ? parts[1] : soundName;
+                        let bedrockName = `sounds/${namespace}/${path}`;
+
+                        if (typeof s === 'object') {
+                            return { ...s, name: bedrockName };
+                        }
+                        return bedrockName;
+                    });
                     bedrockSoundsData.sound_definitions[eventName] = {
                         "category": eventData.category || "neutral",
                         "sounds": bedrockSoundsList
@@ -842,7 +793,7 @@ class ModConverter {
                     "entity_sounds": { "entities": {} },
                     "individual_event_sounds": { "events": {} }
                 };
-                
+
                 for (const fullId of this.blocks) {
                     const isWood = fullId.includes("wood") || fullId.includes("log") || fullId.includes("plank") || fullId.includes("door") || fullId.includes("fence");
                     const isMetal = fullId.includes("iron") || fullId.includes("gold") || fullId.includes("copper") || fullId.includes("brass") || fullId.includes("steel");
@@ -852,7 +803,7 @@ class ModConverter {
                     if (isWood) soundType = "wood";
                     else if (isMetal) soundType = "metal";
                     else if (isGlass) soundType = "glass";
-                    
+
                     rpSoundsJson.block_sounds[fullId] = {
                         "events": {
                             "place": { "sound": `use.${soundType}`, "volume": 1.0, "pitch": 1.0 },
@@ -865,13 +816,13 @@ class ModConverter {
                 }
                 this.rpFolder.file("sounds.json", JSON.stringify(rpSoundsJson, null, 4));
             }
-        } catch(e) {
+        } catch (e) {
             this.logWarning("generateSoundDefinitions() loop", e);
         }
     }
 }
 
-self.onmessage = function(e) {
+self.onmessage = function (e) {
     if (e.data.type === 'start') {
         const converter = new ModConverter(e.data.file);
         converter.process();
