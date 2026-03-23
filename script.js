@@ -113,31 +113,89 @@ async function processFile(file) {
         bpFolder.file("manifest.json", generateManifest('data', `${modNameBase} Behaviors`, "Converted from Java Edition"));
         rpFolder.file("manifest.json", generateManifest('resources', `${modNameBase} Resources`, "Converted from Java Edition"));
         
-        // Basic mapping logic - copy textures
-        updateStatus('Extracting Assets...', 'Locating Java textures');
+        // Basic mapping logic - copy assets
+        updateStatus('Extracting Assets...', 'Locating Java textures and sounds');
         
         let fileCount = 0;
+        let javaSoundsJson = null;
         
-        // Find texture files
+        // Find texture and sound files
         for (const [relativePath, zipEntry] of Object.entries(loadedZip.files)) {
             if (zipEntry.dir) continue;
             
-            // Check if it's a texture in assets/<namespace>/textures/...
+            // Checks for specific asset types
             const textureMatch = relativePath.match(/^assets\/[^/]+\/textures\/(.*)$/);
+            const soundMatch = relativePath.match(/^assets\/([^/]+)\/sounds\/(.*\.(ogg|wav))$/);
+            const soundsJsonMatch = relativePath.match(/^assets\/[^/]+\/sounds\.json$/);
+
             if (textureMatch) {
                 const bedrockTexturePath = textureMatch[1];
-                const content = await zipEntry.async('arraybuffer');
+                const fileContent = await zipEntry.async('arraybuffer');
                 // Place into ResourcePack/textures/
-                rpFolder.file(`textures/${bedrockTexturePath}`, content);
+                rpFolder.file(`textures/${bedrockTexturePath}`, fileContent);
                 fileCount++;
-                
-                // Keep UI updated occasionally
-                if (fileCount % 10 === 0) {
-                    updateStatus('Copying Textures...', `Migrated ${fileCount} files`);
+            } else if (soundMatch) {
+                const namespace = soundMatch[1];
+                const soundPath = soundMatch[2];
+                const fileContent = await zipEntry.async('arraybuffer');
+                // Place into ResourcePack/sounds/namespace/...
+                rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
+                fileCount++;
+            } else if (soundsJsonMatch) {
+                try {
+                    const fileContent = await zipEntry.async('string');
+                    // We might find multiple sounds.json if multiple namespaces exist, we merge them
+                    const parsed = JSON.parse(fileContent);
+                    if (!javaSoundsJson) javaSoundsJson = {};
+                    Object.assign(javaSoundsJson, parsed);
+                } catch(e) {
+                    console.warn("Could not parse sounds.json", e);
                 }
+            }
+                
+            // Keep UI updated occasionally
+            if (fileCount % 10 === 0) {
+                updateStatus('Copying Assets...', `Migrated ${fileCount} files`);
             }
         }
         
+        // Convert sounds.json to sound_definitions.json for Bedrock
+        if (javaSoundsJson) {
+            updateStatus('Converting Sounds...', 'Generating sound_definitions.json');
+            const bedrockSoundsData = {
+                "format_version": "1.14.0",
+                "sound_definitions": {}
+            };
+
+            for (const [eventName, eventData] of Object.entries(javaSoundsJson)) {
+                if (!eventData.sounds) continue;
+
+                const bedrockSoundsList = eventData.sounds.map(s => {
+                    let soundName = typeof s === 'string' ? s : s.name;
+                    let parts = soundName.split(':');
+                    
+                    // e.g., "modid:block/wood" -> "sounds/modid/block/wood"
+                    let bedrockName = parts.length > 1 ? `sounds/${parts[0]}/${parts[1]}` : `sounds/minecraft/${soundName}`;
+                    
+                    // Maintain volume/pitch if represented as an object
+                    if (typeof s === 'object') {
+                        return {
+                            ...s,
+                            name: bedrockName
+                        };
+                    }
+                    return bedrockName;
+                });
+
+                bedrockSoundsData.sound_definitions[eventName] = {
+                    "category": eventData.category || "neutral",
+                    "sounds": bedrockSoundsList
+                };
+            }
+
+            rpFolder.file("sounds/sound_definitions.json", JSON.stringify(bedrockSoundsData, null, 4));
+        }
+
         updateStatus('Packaging Addon...', 'Compressing file to .mcaddon format');
         
         // Generate the final mcaddon
@@ -150,7 +208,7 @@ async function processFile(file) {
         });
         
         // Show success
-        updateStatus('Addon Ready!', `Converted ${fileCount} textures successfully.`, false);
+        updateStatus('Addon Ready!', `Converted ${fileCount} assets successfully.`, false);
         
         // Setup download link
         const url = URL.createObjectURL(content);
