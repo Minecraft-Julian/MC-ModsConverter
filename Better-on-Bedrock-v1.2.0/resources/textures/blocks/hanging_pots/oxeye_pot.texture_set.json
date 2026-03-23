@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "oxeye_pot",
+        "metalness_emissive_roughness": "oxeye_pot_mer",
+        "heightmap": "oxeye_pot_heightmap"
+    }
+}

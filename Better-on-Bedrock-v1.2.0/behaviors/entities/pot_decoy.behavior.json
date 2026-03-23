@@ -1,0 +1,106 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:pot_decoy",
+            "is_spawnable": true,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:physics": {
+                "has_gravity": true,
+                "has_collision": true
+            },
+            "minecraft:pushable": {
+                "is_pushable": false
+            },
+            "minecraft:push_through": {
+                "value": 1
+            },
+            "minecraft:attack": {
+                "damage": 3
+            },
+            "minecraft:health": {
+                "value": 40,
+                "max": 40
+            },
+            "minecraft:on_target_escape": {
+                "event": "transform_into_decoy",
+                "target": "self"
+            },
+            "minecraft:behavior.nearest_attackable_target": {
+                "priority": 3,
+                "within_radius": 8,
+                "entity_types": {
+                    "filters": {
+                        "test": "is_family",
+                        "subject": "other",
+                        "value": "player"
+                    }
+                }
+            },
+
+            "minecraft:behavior.melee_attack": {
+                "melee_fov": 90,
+                "track_target": true,
+                "priority": 3,
+                "cooldown_time": 0
+            }
+        },
+        "component_groups": {
+            "decoy": {
+                "minecraft:transformation": {
+                    "drop_equipment": false,
+                    "drop_inventory": false,
+                    "into": "better_on_bedrock:creaking_pot",
+                    "keep_level": false,
+                    "keep_owner": false,
+                    "preserve_equipment": false
+                    //"transformation_sound": "block.turtle_egg.break"
+                }
+            },
+            "no_movement": {
+                "minecraft:timer": {
+                    "time": 2.5,
+                    "looping": false,
+                    "time_down_event": {
+                        "event": "allow_movement",
+                        "target": "self"
+                    }
+                }
+            },
+            "movement": {
+                "minecraft:movement": {
+                    "value": 0.25
+                },
+                "minecraft:movement.basic": {},
+                "minecraft:jump.static": {},
+                "minecraft:navigation.walk": {
+                    "avoid_water": true
+                },
+                "minecraft:behavior.random_stroll": {
+                    "priority": 3,
+                    "speed_multiplier": 0.8
+                }
+            }
+        },
+        "events": {
+            "minecraft:entity_transformed": {
+                "add": {
+                    "component_groups": [ "no_movement" ]
+                }
+            },
+            "transform_into_decoy": {
+                "add": {
+                    "component_groups": [ "decoy" ]
+                }
+            },
+            "allow_movement": {
+                "add": {
+                    "component_groups": [ "movement" ]
+                }
+            }
+        }
+    }
+}

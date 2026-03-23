@@ -1,0 +1,26 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:bubble_blower"
+        },
+        "tags": [ "crafting_table" ],
+
+        "pattern": [
+            "C#C",
+            " C ",
+            " # "
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:stick"
+            },
+            "C": {
+                "item": "better_on_bedrock:blackstone_crumb"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:blower"
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.mooth.base": {
+			"loop": true,
+			"bones": {
+				"wing": {
+					"rotation": [0, 37.5, "0+math.cos(q.anim_time*1900)*16"]
+				},
+				"bone": {
+					"rotation": [0, -35, "-math.cos(q.anim_time*1900)*16"]
+				}
+			}
+		}
+	}
+}

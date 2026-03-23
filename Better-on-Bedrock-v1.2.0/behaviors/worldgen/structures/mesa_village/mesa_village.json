@@ -1,0 +1,31 @@
+{
+	"format_version": "1.21.20",
+	"minecraft:jigsaw": {
+		"description": {
+			"identifier": "better_on_bedrock:mesa_village"
+		},
+		"biome_filters": [
+			{
+				"test": "has_biome_tag",
+				"operator": "==",
+				"value": "mesa"
+			},
+			{
+				"test": "has_biome_tag",
+				"operator": "!=",
+				"value": "mesa_bryce"
+			}
+		],
+		"step": "surface_structures",
+		"start_pool": "pog:mesa_village/main",
+		"max_depth": 5,
+		"start_height": {
+			"type": "constant",
+			"value": {
+				"absolute": 1
+			}
+		},
+		"heightmap_projection": "world_surface",
+		"terrain_adaptation": "beard_thin"
+	}
+}

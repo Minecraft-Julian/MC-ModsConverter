@@ -1,0 +1,241 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:guide_book",
+            "is_summonable": true,
+            "is_spawnable": false,
+            
+            "properties": {
+                "better_on_bedrock:page_number": {
+                    "client_sync": true,
+                    "type": "int",
+                    "default": 0,
+                    "range": [ 0, 11 ]
+                },
+                "better_on_bedrock:wait_for_process": {
+                    "client_sync": true,
+                    "type": "bool",
+                    "default": false
+                },
+                "better_on_bedrock:book_state": {
+                    "client_sync": true,
+                    "default": "spawned",
+                    "type": "enum",
+                    "values": [
+                        "idle",
+                        "spawned",
+                        "turn_page_left",
+                        "turn_page_right",
+                        "drop_item"
+                    ]
+                }
+            }
+        },
+        "components": {
+            "minecraft:type_family": {
+                "family": [ "guide_book" ]
+            },
+
+            "minecraft:collision_box": { "height": 0, "width": 0 },
+            "minecraft:custom_hit_test": {
+                "hitboxes": [
+                    {
+                        "width": 1.8,
+                        "height": 1.8,
+                        "pivot": [ 0, 1, 0 ]
+                    }
+                ]
+            },
+
+            "minecraft:damage_sensor": {
+                "triggers": [
+                    {
+                        "cause": "entity_attack",
+                        "deals_damage": "no",
+                        "on_damage": {
+                            "event": "better_on_bedrock:pickup",
+                            "filters": {
+                                "all_of": [
+                                    {
+                                        "test": "is_family",
+                                        "subject": "other",
+                                        "value": "player"
+                                    },
+                                    {
+                                        "test": "enum_property",
+                                        "domain": "better_on_bedrock:book_state",
+                                        "subject": "self",
+                                        "operator": "!=",
+                                        "value": "spawned"
+                                    },
+                                    {
+                                        "test": "enum_property",
+                                        "domain": "better_on_bedrock:book_state",
+                                        "subject": "self",
+                                        "operator": "!=",
+                                        "value": "pickup"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    { "deals_damage": "no" }
+                ]
+            },
+            "minecraft:interact": {
+                "interactions": [
+                    {
+                        "swing": true,
+                        "cooldown": 1.2,
+                        "on_interact": {
+                            "event": "better_on_bedrock:triggered",
+                            "target": "self",
+                            "filters": [
+                                {
+                                    "all_of": [
+                                        {
+                                            "test": "is_family",
+                                            "subject": "other",
+                                            "value": "player"
+                                        },
+                                        {
+                                            "test": "bool_property",
+                                            "domain": "better_on_bedrock:wait_for_process",
+                                            "subject": "self",
+                                            "value": false
+                                        },
+                                        {
+                                            "test": "enum_property",
+                                            "domain": "better_on_bedrock:book_state",
+                                            "subject": "self",
+                                            "operator": "!=",
+                                            "value": "spawned"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            
+            "minecraft:equipment": {
+                "table": "loot_tables/entities/guide_book/guide_book.json"
+            },
+            "minecraft:physics": {}
+        },
+        "component_groups": {
+            "better_on_bedrock:despawn": {
+                "minecraft:transformation": {
+                    "drop_equipment": true,
+                    "into": "minecraft:area_effect_cloud"
+                }
+            },
+
+            "better_on_bedrock:drop_item": {
+                "minecraft:timer": {
+                    "time": 0.77,
+                    "time_down_event": { "event": "better_on_bedrock:despawn" }
+                }
+            },
+            "better_on_bedrock:idle_state_timer": {
+                "minecraft:timer": {
+                    "time": 0.1,
+                    "looping": false,
+                    "time_down_event": {
+                        "event": "better_on_bedrock:idle_state",
+                        "target": "self"
+                    }
+                }
+            },
+            "better_on_bedrock:reset_interaction": {
+                "minecraft:timer": {
+                    "time": 0.33,
+                    "looping": false,
+                    "time_down_event": {
+                        "event": "better_on_bedrock:not_triggered",
+                        "target": "self"
+                    }
+                }
+            },
+            "better_on_bedrock:intro_state": {
+                "minecraft:timer": {
+                    "time": 1.53,
+                    "looping": false,
+                    "time_down_event": {
+                        "event": "better_on_bedrock:idle_state",
+                        "target": "self"
+                    }
+                }
+            }
+        },
+        "events": {
+            "better_on_bedrock:despawn": {
+                "add": { "component_groups": [ "better_on_bedrock:despawn" ] }
+            },
+            "minecraft:entity_spawned": {
+                "add": { "component_groups": [ "better_on_bedrock:intro_state" ] }
+            },
+
+            // book drop events
+            "better_on_bedrock:pickup": {
+                "set_property": {
+                    "better_on_bedrock:book_state": "drop_item"
+                },
+                "add": {
+                    "component_groups": [ "better_on_bedrock:drop_item" ]
+                }
+            },
+
+            //we use this to set the book to the default state after it has been spawned or after a page have been turned.
+            "better_on_bedrock:idle_state": {
+                "set_property": {
+                    "better_on_bedrock:book_state": "idle",
+                    "better_on_bedrock:wait_for_process": false
+                },
+                "remove": { "component_groups": [ "better_on_bedrock:idle_state_timer" ] }
+            },
+
+            //page turning behavior. this makes sure the player can't spam the book to turn pages. this acts as a sort of cooldown
+            "better_on_bedrock:triggered": {
+                "set_property": { "better_on_bedrock:wait_for_process": true }
+            },
+            
+            //lets us turn the page again after we turned it
+            "better_on_bedrock:not_triggered": {
+                "set_property": { "better_on_bedrock:wait_for_process": false }
+            },
+
+            //triggers the texture change in the animation controller after the page turned. This runs 0.38 seconds into the page turn animation
+            "better_on_bedrock:guide_book_left_page_turn": {
+                "set_property": {
+                    "better_on_bedrock:page_number": "q.property('better_on_bedrock:page_number') > 0 ? q.property('better_on_bedrock:page_number') - 1 : 11"
+                }
+            },
+
+            //triggers the animation that turns the page over from left to right
+            "better_on_bedrock:trigger_left_page_turn_animation": {
+                "set_property": {
+                    "better_on_bedrock:book_state": "turn_page_left"
+                },
+                "add": { "component_groups": [ "better_on_bedrock:idle_state_timer" ] }
+            },
+
+            //triggers the texture change in the animation controller after the page turned. This runs 0.38 seconds into the page turn animation
+            "better_on_bedrock:guide_book_right_page_turn": {
+                "set_property": {
+                    "better_on_bedrock:page_number": "q.property('better_on_bedrock:page_number') < 11 ? q.property('better_on_bedrock:page_number') + 1 : 0"
+                }
+            },
+
+            //triggers the animation that turns the page over from right to left
+            "better_on_bedrock:trigger_right_page_turn_animation": {
+                "set_property": {
+                    "better_on_bedrock:book_state": "turn_page_right"
+                },
+                "add": { "component_groups": [ "better_on_bedrock:idle_state_timer" ] }
+            }
+        }
+    }
+}

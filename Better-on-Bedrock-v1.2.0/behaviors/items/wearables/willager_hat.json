@@ -1,0 +1,25 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:willager_hat",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:max_stack_size": 1,
+            "minecraft:icon": "better_on_bedrock:willager_hat",
+            "minecraft:wearable": {
+                "slot": "slot.armor.head"
+            },
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:willager_hat",
+				"replace_block_item": true
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:willager_hat.name"
+            }
+        }
+    }
+}

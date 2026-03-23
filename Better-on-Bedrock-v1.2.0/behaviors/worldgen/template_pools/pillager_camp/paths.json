@@ -1,0 +1,55 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:pillager_camp/paths"
+        },
+        "elements": [
+            {
+                "weight": 40,
+                "element": {
+                    "location": "pillager_camp/roads/path_straight_01",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "pillager_camp/roads/crossroad_01",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 30,
+                "element": {
+                    "location": "pillager_camp/roads/crossroad_02",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 10,
+                "element": {
+                    "location": "pillager_camp/roads/crossroad_03",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 50,
+                "element": {
+                    "location": "pillager_camp/pillager_camp",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

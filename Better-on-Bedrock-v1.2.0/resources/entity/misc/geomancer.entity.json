@@ -1,0 +1,25 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:geomancer",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/geomancer"
+			},
+			"geometry": {
+				"default": "geometry.geomancer"
+			},
+			"scripts": {
+                "should_update_bones_and_effects_offscreen": true                
+            },
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#398dae",
+				"overlay_color": "#747474"
+			}
+		}
+	}
+}

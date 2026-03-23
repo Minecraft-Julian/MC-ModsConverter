@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "chiseled_polished_andesite",
+		"metalness_emissive_roughness": "chiseled_polished_andesite_mer",
+		"heightmap": "chiseled_polished_andesite_heightmap"
+	}
+}

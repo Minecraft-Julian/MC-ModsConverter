@@ -1,0 +1,20 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:goblin_outpost/main"
+        },
+        "fallback": "pog:goblin_outpost/decoration",
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "goblin_outpost/goblin_outpost",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

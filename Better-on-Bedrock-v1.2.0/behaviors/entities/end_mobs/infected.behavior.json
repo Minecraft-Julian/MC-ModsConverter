@@ -1,0 +1,75 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:infected",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"components": {
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			},
+			"minecraft:pushable": {
+				"is_pushable": false
+			},
+			"minecraft:push_through": {
+				"value": 1
+			},
+			"minecraft:collision_box": {
+				"width": 1.5,
+				"height": 4.9
+			},
+			"minecraft:health": {
+				"value": 36,
+				"max": 36
+			},
+			"minecraft:movement": {
+				"value": 0.25
+			},
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 2,
+				"entity_types": [
+					{
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "player"
+						},
+						"max_dist": 44
+					}
+				],
+				"must_see": true
+			},
+			"minecraft:behavior.melee_attack": {
+				"melee_fov": 90,
+				"track_target": true,
+				"random_stop_interval": 0,
+				"reach_multiplier": 1,
+				"attack_once": false,
+				"require_complete_path": false,
+				"cooldown_time": 1
+			},
+			"minecraft:attack_damage": {
+				"value": 16
+			},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/infected.json"
+			},
+			"minecraft:attack": {
+				"damage": 16
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:navigation.walk": {
+				"avoid_water": true
+			},
+			"minecraft:behavior.random_stroll": {
+				"priority": 3,
+				"speed_multiplier": 0.8
+			}
+		}
+	}
+}

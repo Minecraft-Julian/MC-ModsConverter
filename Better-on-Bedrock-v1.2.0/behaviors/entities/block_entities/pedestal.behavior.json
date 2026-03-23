@@ -1,0 +1,506 @@
+{
+	"format_version": "1.18.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:pedestal",
+			"is_spawnable": false,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"component_groups": {
+			"despawn": {
+				"minecraft:transformation": {
+					"into": "better_on_bedrock:pedestal_break",
+					"drop_equipment": true,
+					"drop_inventory": true
+				}
+			},
+			"item_equip": {
+				"minecraft:mark_variant": {
+					"value": 0
+				}
+			},
+			"hand_equip": {
+				"minecraft:is_sheared": {},
+				"minecraft:mark_variant": {
+					"value": 0
+				}
+			}
+		},
+		"components": {
+			"minecraft:despawn": {
+				"despawn_from_inactivity": false
+			},
+			"minecraft:environment_sensor": {
+				"triggers": [
+					//hand_equips
+					{
+						"filters": {
+							"any_of": [
+								{
+									"test": "has_equipment",
+									"value": "minecraft:wooden_sword"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:stone_sword"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:iron_sword"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:golden_sword"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:diamond_sword"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:wooden_axe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:stone_axe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:iron_axe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:golden_axe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:diamond_axe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:wooden_shovel"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:stone_shovel"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:iron_shovel"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:golden_shovel"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:diamond_shovel"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:wooden_pickaxe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:stone_pickaxe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:iron_pickaxe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:golden_pickaxe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:diamond_pickaxe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:wooden_hoe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:stone_hoe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:iron_hoe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:golden_hoe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:diamond_hoe"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:bow"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:shield"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:trident"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:carrot_on_a_stick"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:warped_fungus_on_a_stick"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:fishing_rod"
+								},
+								{
+									"test": "has_equipment",
+									"value": "minecraft:spyglass"
+								},
+								{
+									"test": "has_equipment",
+									"value": "better_on_bedrock:blade_of_the_nether"
+								},
+								{
+									"test": "has_equipment",
+									"value": "better_on_bedrock:stardust_sword"
+								}
+							]
+						},
+						"event": "hand_equip"
+					},
+					//item_equip
+					{
+						"filters": {
+							"all_of": [
+								{
+									"test": "has_tag",
+									"value": "hand_equip"
+								},
+								{
+									"all_of": [
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:wooden_sword"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:stone_sword"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:iron_sword"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:golden_sword"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:diamond_sword"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:wooden_axe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:stone_axe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:iron_axe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:golden_axe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:diamond_axe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:wooden_shovel"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:stone_shovel"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:iron_shovel"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:golden_shovel"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:diamond_shovel"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:wooden_pickaxe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:stone_pickaxe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:iron_pickaxe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:golden_pickaxe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:diamond_pickaxe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:wooden_hoe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:stone_hoe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:iron_hoe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:golden_hoe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:diamond_hoe"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:bow"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:shield"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:trident"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:carrot_on_a_stick"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:warped_fungus_on_a_stick"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:fishing_rod"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "minecraft:spyglass"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "better_on_bedrock:blade_of_the_nether"
+										},
+										{
+											"test": "has_equipment",
+											"operator": "!=",
+											"value": "better_on_bedrock:stardust_sword"
+										}
+									]
+								}
+							]
+						},
+						"event": "item_equip"
+					}
+				]
+			},
+			"minecraft:inventory": {
+				"inventory_size": 1
+			},
+			"minecraft:interact": {
+				"interactions": [
+					{
+						"on_interact": {
+							"filters": {
+								"all_of": [
+									{
+										"test": "is_family",
+										"subject": "other",
+										"value": "player"
+									}
+								]
+							}
+						},
+						"give_item": true,
+						"swing": true,
+						"take_item": true,
+						"play_sounds": "item.book.put",
+						"interact_text": "Place Item"
+					}
+				]
+			},
+			"minecraft:block_sensor": {
+				"sensor_radius": 1,
+				"on_break": [
+					{
+						"block_list": [
+							"better_on_bedrock:pedestal_block"
+						],
+						"on_block_broken": "check"
+					}
+				]
+			},
+			"minecraft:type_family": {
+				"family": [
+					"pedestal",
+					"inanimate",
+					"mob",
+					"wawla"
+				]
+			},
+			"minecraft:collision_box": {
+				"width": 0.3,
+				"height": 1.2
+			},
+			"minecraft:health": {
+				"value": 100,
+				"max": 100
+			},
+			"minecraft:damage_sensor": {
+				"triggers": {
+					"cause": "all",
+					"deals_damage": false
+				}
+			},
+			"minecraft:hurt_on_condition": {
+				"damage_conditions": [
+					{
+						"filters": {
+							"test": "in_lava",
+							"subject": "self",
+							"operator": "==",
+							"value": true
+						},
+						"cause": "lava",
+						"damage_per_tick": 4
+					}
+				]
+			},
+			"minecraft:knockback_resistance": {
+				"value": 1.0
+			},
+			"minecraft:nameable": {
+				"allow_name_tag_renaming": false
+			},
+			"minecraft:persistent": {},
+			"minecraft:physics": {
+				"has_collision": false,
+				"has_gravity": false
+			},
+			"minecraft:pushable": {
+				"is_pushable": false,
+				"is_pushable_by_piston": true
+			},
+			"minecraft:conditional_bandwidth_optimization": {}
+		},
+		"events": {
+			"pedestal_glow": {
+				"add": {
+					"component_groups": [
+						"glow"
+					]
+				}
+			},
+			"hand_equip": {
+				"add": {
+					"component_groups": [
+						"hand_equip"
+					]
+				},
+				"queue_command": {
+					"command": "tag @s add hand_equip"
+				}
+			},
+			"item_equip": {
+				"remove": {
+					"component_groups": [
+						"hand_equip"
+					]
+				},
+				"queue_command": {
+					"command": "tag @s remove hand_equip"
+				}
+			},
+			"despawn": {
+				"add": {
+					"component_groups": [
+						"despawn"
+					]
+				}
+			},
+			"test": {
+				"queue_command": {
+					"command": "say test"
+				}
+			},
+			"check": {
+				"add": {
+					"component_groups": [
+						"despawn"
+					]
+				}
+			}
+		}
+	}
+}

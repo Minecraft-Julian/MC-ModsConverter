@@ -1,0 +1,18 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:config",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:icon": "config",
+            "minecraft:interact_button": true,
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:config.name"
+            }
+        }
+    }
+}

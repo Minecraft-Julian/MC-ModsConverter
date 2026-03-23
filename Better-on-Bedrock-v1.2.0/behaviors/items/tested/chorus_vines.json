@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_vines",
+            "menu_category": {
+                "category": "nature"
+            }
+        },
+        "components": {
+            "minecraft:icon": "chorus_vines",
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:chorus_vines",
+				"replace_block_item": true
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:chorus_vines.name"
+            }
+        }
+    }
+}

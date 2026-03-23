@@ -1,0 +1,59 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:projectile",
+            "is_spawnable": false,
+            "is_summonable": true,
+            "runtime_identifier": "minecraft:snowball",
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:physics": {
+                "has_gravity": true,
+                "has_collision": true
+            },
+            "minecraft:type_family": {
+                "family": [
+                    "shield"
+                ]
+            },
+            "minecraft:projectile": {
+                "anchor": 0,
+                "angle_offset": 0,
+                "catch_fire": false,
+                "crit_particle_on_hurt": false,
+                "destroy_on_hurt": false,
+                "fire_affected_by_griefing": false,
+                "gravity": 0.05,
+                "homing": false,
+                "inertia": 0.99,
+                "is_dangerous": false,
+                "knockback": true,
+                "lightning": false,
+                "liquid_inertia": 0.6,
+                "multiple_targets": true,
+                "on_fire_time": 5,
+                "particle": "iconcrack",
+                "power": 1.3,
+                "reflect_on_hurt": false,
+                "semi_random_diff_damage": false,
+                "shoot_target": true,
+                "should_bounce": false,
+                "splash_potion": false,
+                "splash_range": 4,
+                "uncertainty_base": 0,
+                "uncertainty_multiplier": 0
+            },
+            "minecraft:instant_despawn": {
+                "remove_child_entities": false
+            },
+            "minecraft:pushable": {
+                "is_pushable": false
+            },
+            "minecraft:push_through": {
+                "value": 1
+            }
+        }
+    }
+}

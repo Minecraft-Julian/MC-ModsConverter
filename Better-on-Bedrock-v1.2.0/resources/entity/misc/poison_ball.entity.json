@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:poison_ball",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"animations": {
+				"basic": "animation.poison_ball.new",
+				"basic2": "animation.poison_ball.new2"
+			},
+			"particle_effects": {
+				"poison_ball": "pog:poison_ball"
+			},
+			"scripts": {
+				"animate": [
+					"basic",
+					"basic2"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"textures": {
+				"default": "textures/entity/hostile/poison_ball"
+			},
+			"geometry": {
+				"default": "geometry.poison_ball"
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#5f8986",
+				"overlay_color": "#0f4301"
+			}
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:aggregate_feature": {
+        "description": {
+            "identifier": "wiki:biomes/end_block_picker"
+        },
+        "features": [
+            "wiki:conditions/biome_0_condition",
+            "wiki:conditions/biome_1_condition",
+            "wiki:conditions/biome_2_condition",
+            "wiki:conditions/biome_3_condition",
+            "wiki:conditions/biome_4_condition",
+            "wiki:conditions/biome_5_condition"
+        ],
+        "early_out": "first_success"
+    }
+}

@@ -1,0 +1,69 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:lunar2",
+            "menu_category": {
+                "is_hidden_in_commands": false,
+                "category": "none"
+            }
+        },
+        "components": {
+            "minecraft:collision_box": false,
+            "minecraft:selection_box": {
+                "origin": [
+                    -4.5,
+                    0,
+                    -4.5
+                ],
+                "size": [
+                    9,
+                    10,
+                    9
+                ]
+            },
+            "minecraft:destructible_by_mining": {
+                "seconds_to_destroy": 0
+            },
+            "minecraft:destructible_by_explosion": {
+                "explosion_resistance": 0
+            },
+            "minecraft:placement_filter": {
+                "conditions": [
+                    {
+                        "allowed_faces": [
+                            "up"
+                        ],
+                        "block_filter": [
+                            "better_on_bedrock:void_grass",
+                            "better_on_bedrock:fall_nylium",
+                            "better_on_bedrock:shrub_nylium",
+                            "better_on_bedrock:shroom_nylium",
+                            "better_on_bedrock:chorus_grass"
+                        ]
+                    }
+                ]
+            },
+            "minecraft:geometry": "geometry.better_on_bedrock.cross",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "lunar2",
+                    "render_method": "alpha_test",
+                    "face_dimming": false,
+                    "ambient_occlusion": false
+                }
+            },
+            "minecraft:liquid_detection": {
+                "detection_rules": [
+                    {
+                        "can_contain_liquid": false,
+                        "liquid_type": "water",
+                        "on_liquid_touches": "popped"
+                    }
+                ]
+            },
+            "minecraft:light_dampening": 0,
+            "minecraft:map_color": "#32a852"
+        }
+    }
+}

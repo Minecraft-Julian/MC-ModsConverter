@@ -1,0 +1,37 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:toxic_ball",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:icon": "toxic_ball",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.toxic_ball.name\n%item.better_on_bedrock.toxic_ball.desc"
+            },
+            "minecraft:shooter": {
+                "ammunition": [
+                    {
+                        "item": "better_on_bedrock:toxic_ball",
+                        "use_offhand": true,
+                        "search_inventory": true,
+                        "use_in_creative": true
+                    }
+                ],
+                "max_draw_duration": 0,
+                "scale_power_by_draw_duration": true,
+                "charge_on_draw": false
+            },
+            "minecraft:use_modifiers": {
+                "use_duration": 0.1
+            },
+            "minecraft:projectile": {
+                "minimum_critical_power": 1.25,
+                "projectile_entity": "better_on_bedrock:poison_ball"
+            }
+        }
+    }
+}

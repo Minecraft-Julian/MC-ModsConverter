@@ -1,0 +1,27 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.Crystal_Cruncher.new": {
+			"loop": true,
+			"bones": {
+				"bone2": {
+					"rotation": ["-math.cos(q.anim_time*550) * 50", 0, 0]
+				},
+				"bone": {
+					"rotation": ["math.cos(q.anim_time*550) * 50", 0, 0]
+				},
+				"root": {
+					"position": [0, "math.cos(q.anim_time*1100) * 2", 0]
+				}
+			}
+		},
+		"animation.Crystal_Cruncher.idle": {
+			"loop": true,
+			"bones": {
+				"Tophead": {
+					"rotation": ["-10 + math.cos(q.anim_time*150) * 3", 0, 0]
+				}
+			}
+		}
+	}
+}

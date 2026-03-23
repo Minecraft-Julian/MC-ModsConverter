@@ -1,0 +1,21 @@
+{
+	"format_version": "1.21.20",
+	"minecraft:structure_set": {
+		"description": {
+			"identifier": "pog:goblin_outpost_set"
+		},
+		"placement": {
+			"type": "minecraft:random_spread",
+			"salt": 1193738020,
+			"separation": 8,
+			"spacing": 34,
+			"spread_type": "linear"
+		},
+		"structures": [
+			{
+				"structure": "better_on_bedrock:goblin_outpost",
+				"weight": 1
+			}
+		]
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "chorus_grass_top_alt2",
+		"metalness_emissive_roughness": "chorus_grass_top_alt2_mer",
+		"heightmap": "chorus_grass_top_alt2_heightmap"
+	}
+}

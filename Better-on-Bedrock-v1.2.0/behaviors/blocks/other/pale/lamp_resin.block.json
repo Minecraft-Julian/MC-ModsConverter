@@ -1,0 +1,56 @@
+{
+	"format_version": "1.21.50",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:lamp_resin",
+			"menu_category": {
+				"category": "items"
+			},
+			"states": {
+				"pog:is_on": [ false, true ]
+			}
+		},
+		"components": {
+			"minecraft:geometry": {
+				"identifier": "minecraft:geometry.full_block"
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "better_on_bedrock:lamp_resin_off",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:custom_components": [ "pog:resin_lamp" ],
+
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 5
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 30
+			},
+			"minecraft:redstone_conductivity": {
+				"redstone_conductor": true
+			},
+			"minecraft:tick": {
+				"interval_range": [ 4, 4 ],
+				"looping": true
+			},
+			
+			"tag:minecraft:is_pickaxe_item_destructible": {}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('pog:is_on') == true",
+				"components": {
+					"minecraft:light_emission": 15,
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "better_on_bedrock:lamp_resin",
+                            "render_method": "opaque"
+                        }
+                    }
+				}
+			}
+		]
+	}
+}

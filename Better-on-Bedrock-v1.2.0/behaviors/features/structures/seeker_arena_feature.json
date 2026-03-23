@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:structures/seeker_arena_feature"
+        },
+        "structure_name": "mystructure:seeker_arena",
+        "adjustment_radius": 8,
+        "facing_direction": "random",
+        "constraints": {
+            "grounded": {}
+        }
+    }
+}

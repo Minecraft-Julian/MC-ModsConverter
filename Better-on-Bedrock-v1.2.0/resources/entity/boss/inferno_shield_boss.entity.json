@@ -1,0 +1,29 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:inferno_shield_boss",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/bosses/inferior/inferno_shield"
+			},
+			"animations": {
+				"basic2": "animation.inferno_shield.mov"
+			},
+			"scripts": {
+				"animate": [
+					"basic2"
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"geometry": {
+				"default": "geometry.inferno_shield"
+			},
+			"render_controllers": [
+				"controller.render.default"
+			]
+		}
+	}
+}

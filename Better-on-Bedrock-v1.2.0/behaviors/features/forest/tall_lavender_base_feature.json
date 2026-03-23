@@ -1,0 +1,27 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:forest/tall_lavender_base_feature"
+        },
+        "iterations": 16,
+        "x": {
+            "distribution": "triangle",
+            "extent": [
+                -6,
+                6
+            ]
+        },
+        "z": {
+            "distribution": "triangle",
+            "extent": [
+                -6,
+                6
+            ]
+        },
+        "coordinate_eval_order": "zyx",
+        "y": "query.heightmap(variable.worldx, variable.worldz)",
+        "project_input_to_floor": false,
+        "places_feature": "better_on_bedrock:forest/tall_lavender_feature"
+    }
+}

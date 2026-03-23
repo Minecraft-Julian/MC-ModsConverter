@@ -1,0 +1,25 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:small_oak_log"
+        },
+        "tags": [
+            "crafting_table"
+        ],
+        "pattern": [
+            "##",
+            "##",
+            "##"
+        ],
+        "key": {
+            "#": {
+                "item": "minecraft:oak_log"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:oak_small_log",
+            "count": 9
+        }
+    }
+}

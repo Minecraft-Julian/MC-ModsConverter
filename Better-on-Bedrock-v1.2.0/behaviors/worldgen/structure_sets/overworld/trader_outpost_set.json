@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:trader_outpost_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 2077980574,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 54
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:trader_outpost",
+                "weight": 1
+            }
+        ]
+    }
+}

@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "vine_base",
+		"metalness_emissive_roughness": "vine_base_mer",
+		"heightmap": "vine_base_heightmap"
+	}
+}

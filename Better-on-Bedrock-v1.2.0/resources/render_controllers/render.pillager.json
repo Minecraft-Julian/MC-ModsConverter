@@ -1,0 +1,16 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.pillager": {
+      "geometry": "Geometry.default",
+      "materials": [ { "*": "q.property('better_on_bedrock:enchanted') ? Material.enchanted_rtx : Material.default" } ],
+      "textures": [ "Texture.default", "Texture.enchanted" ],
+      "overlay_color": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 0.957,
+        "a": "q.property('better_on_bedrock:enchanted') ? 0.25 : 0.0"
+      }
+    }
+  }
+}

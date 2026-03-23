@@ -1,0 +1,22 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:stardust",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:tags": {
+                "tags": [
+                    "minecraft:transform_materials"
+                ]
+            },
+            "minecraft:icon": "stardust",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:stardust.name"
+            }
+        }
+    }
+}

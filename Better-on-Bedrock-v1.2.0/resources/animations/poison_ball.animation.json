@@ -1,0 +1,22 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.poison_ball.new": {
+			"loop": true,
+			"bones": {
+				"bb_main": {
+					"rotation": ["q.target_x_rotation", 0, 0]
+				}
+			}
+		},
+		"animation.poison_ball.new2": {
+			"loop": true,
+			"animation_length": 0.04167,
+			"particle_effects": {
+				"0.0": {
+					"effect": "poison_ball"
+				}
+			}
+		}
+	}
+}

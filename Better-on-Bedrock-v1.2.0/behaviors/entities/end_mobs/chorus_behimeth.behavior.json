@@ -1,0 +1,78 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:chorus_behimeth",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"components": {
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			},
+			"minecraft:pushable": {
+				"is_pushable": false
+			},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/chorus_behemith.json"
+			},
+			"minecraft:behavior.delayed_attack": {
+				"attack_duration": 1,
+				"attack_once": false,
+				"hit_delay_pct": 0.5,
+				"reach_multiplier": 1,
+				"require_complete_path": true,
+				"track_target": true,
+				"priority": 1
+			},
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 2,
+				"entity_types": [
+					{
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "player"
+						},
+						"max_dist": 44
+					}
+				],
+				"must_see": true
+			},
+			"minecraft:push_through": {
+				"value": 1
+			},
+			"minecraft:attack_damage": {
+				"value": 12
+			},
+			"minecraft:attack": {
+				"damage": 12
+			},
+			"minecraft:health": {
+				"value": 45,
+				"max": 45
+			},
+			"minecraft:movement": {
+				"value": 0.15
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:navigation.walk": {
+				"avoid_water": true
+			},
+			"minecraft:behavior.random_look_around": {
+				"priority": 1
+			},
+			"minecraft:collision_box": {
+				"height": 2.7,
+				"width": 2.7
+			},
+			"minecraft:behavior.random_stroll": {
+				"priority": 3,
+				"speed_multiplier": 0.8
+			}
+		}
+	}
+}

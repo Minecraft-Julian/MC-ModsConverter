@@ -1,0 +1,138 @@
+{
+   "tiers": [
+      {
+         "total_exp_required": 0,
+         "groups": [
+            {
+               "trades": [
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:emerald",
+                           "quantity": 4,
+                           "price_multiplier": 0.05
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "minecraft:netherite_ingot",
+                           "quantity": 3
+                        }
+                     ],
+                     "trader_exp": 1,
+                     "max_uses": 3,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:ancient_debris",
+                           "quantity": 2
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "better_on_bedrock:enderite_ingot",
+                           "quantity": 2
+                        }
+                     ],
+                     "max_uses": 5,
+                     "weight": 10,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:diamond",
+                           "quantity": 9
+                        },
+                        {
+                           "item": "minecraft:gold_block",
+                           "quantity": 1
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "better_on_bedrock:legrang",
+                           "quantity": 16
+                        }
+                     ],
+                     "max_uses": 5,
+                     "weight": 10,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:copper_ingot",
+                           "quantity": 4
+                        },
+                        {
+                           "item": "minecraft:gold_nugget",
+                           "quantity": 4
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "better_on_bedrock:bane_spike",
+                           "quantity": 4
+                        }
+                     ],
+                     "max_uses": 4,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:carrot",
+                           "quantity": 12
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "minecraft:golden_carrot",
+                           "quantity": 6
+                        }
+                     ],
+                     "max_uses": 7,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:bread",
+                           "quantity": 4
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "minecraft:cooked_beef",
+                           "quantity": 4
+                        }
+                     ],
+                     "max_uses": 7,
+                     "reward_exp": true
+                  },
+                  {
+                     "wants": [
+                        {
+                           "item": "minecraft:ender_pearl",
+                           "quantity": 16
+                        }
+                     ],
+                     "gives": [
+                        {
+                           "item": "better_on_bedrock:bought_quest",
+                           "quantity": 1
+                        }
+                     ],
+                     "max_uses": -1,
+                     "reward_exp": true
+                  }
+               ],
+               "num_to_select": 3
+            }
+         ]
+      }
+   ]
+}

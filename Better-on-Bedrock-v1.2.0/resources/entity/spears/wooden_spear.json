@@ -1,0 +1,25 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:thrown_wooden_spear",
+			"geometry": {
+				"default": "geometry.better_on_bedrock.spear"
+			},
+			"textures": {
+				"default": "textures/entity/attachable/spears/wooden_spear"
+			},
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"render_controllers": [ "controller.render.bob.spear" ],
+			"animations": {
+				"rotate": "animation.better_on_bedrock.spear.rotate"
+			},
+			"scripts": {
+				"animate": [ "rotate" ],
+				"should_update_bones_and_effects_offscreen": true
+			}
+		}
+	}
+}

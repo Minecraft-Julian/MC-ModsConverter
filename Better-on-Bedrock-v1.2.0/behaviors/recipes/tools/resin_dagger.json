@@ -1,0 +1,32 @@
+{
+    "format_version": "1.21.100",
+    "minecraft:recipe_shaped": {
+        "description": {
+            "identifier": "better_on_bedrock:resin_dagger"
+        },
+        "tags": [ "crafting_table" ],
+        "unlock": {
+            "context": "None"
+        },
+
+        "pattern": [
+            "R",
+            "S",
+            "#"
+        ],
+        "key": {
+            "R": {
+                "item": "better_on_bedrock:resin_shard"
+            },
+            "S": {
+                "item": "better_on_bedrock:stronger_string"
+            },
+            "#": {
+                "item": "minecraft:stick"
+            }
+        },
+        "result": {
+            "item": "better_on_bedrock:resin_dagger"
+        }
+    }
+}

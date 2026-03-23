@@ -1,0 +1,66 @@
+{
+	"format_version": "1.20.80",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:soul_jar_block"
+		},
+		"components": {
+			"minecraft:tick": {
+				"interval_range": [
+					80,
+					180
+				]
+			},
+			"minecraft:custom_components": [
+				"pog:tick"
+			],
+			"minecraft:collision_box": {
+				"origin": [ -6, 0, -6 ],
+				"size": [ 12, 13, 12 ]
+			},
+			"minecraft:selection_box": {
+				"origin": [ -6, 0, -6 ],
+				"size": [ 12, 13, 12 ]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0.4
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 0
+			},
+			"minecraft:geometry": "geometry.soul_jar",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "soul_jar_side",
+					"render_method": "blend"
+				},
+				"up": {
+					"texture": "soul_jar_top",
+					"render_method": "blend"
+				},
+				"down": {
+					"texture": "soul_jar_bottom",
+					"render_method": "blend"
+				},
+				"cap_top": {
+					"texture": "soul_jar_cap_top",
+					"render_method": "blend"
+				},
+				"cap_side": {
+					"texture": "soul_jar_side",
+					"render_method": "blend"
+				},
+				"cap_bottom": {
+					"texture": "soul_jar_cap_bottom",
+					"render_method": "blend"
+				},
+				"soul": {
+					"texture": "soul_jar_soul",
+					"render_method": "blend"
+				}
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#edf9ff"
+		}
+	}
+}

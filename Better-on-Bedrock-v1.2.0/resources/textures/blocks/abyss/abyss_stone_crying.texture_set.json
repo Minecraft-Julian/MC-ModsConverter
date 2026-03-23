@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "abyss_stone_crying",
+		"metalness_emissive_roughness": "abyss_stone_crying_mer",
+        "heightmap": "abyss_stone_crying_heightmap"
+	}
+}

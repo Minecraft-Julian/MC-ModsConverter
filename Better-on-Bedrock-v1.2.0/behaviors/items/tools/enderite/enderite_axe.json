@@ -1,0 +1,80 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:enderite_axe",
+            "menu_category": {
+                "category": "equipment",
+                "group": "itemGroup.name.axe"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:enderite_axe",
+            "minecraft:enchantable": {
+                "value": 5,
+                "slot": "axe"
+            },
+            "minecraft:durability": {
+                "max_durability": 2100
+            },
+            "minecraft:repairable": {
+                "repair_items": [
+                    {
+                        "items": [
+                            "better_on_bedrock:enderium_smelted"
+                        ],
+                        "repair_amount": "q.max_durability * 0.25"
+                    },
+                    {
+                        "items": [
+                            "better_on_bedrock:enderite_axe"
+                        ],
+                        "repair_amount": "c.other->q.remaining_durability + (0.12 * c.other->q.max_durability)"
+                    }
+                ]
+            },
+            "minecraft:damage": 12,
+            "minecraft:max_stack_size": 1,
+            "minecraft:hand_equipped": true,
+            "minecraft:custom_components": [
+                "pog:tool_durability"
+            ],
+            "minecraft:tags": {
+                "tags": [
+                    "minecraft:is_axe",
+                    "minecraft:netherite_tier"
+                ]
+            },
+            "minecraft:digger": {
+                "use_efficiency": true,
+                "destroy_speeds": [
+                    {
+                        "block": {
+                            "tags": "q.any_tag('minecraft:is_axe_item_destructible')"
+                        },
+                        "speed": 7
+                    },
+                    {
+                        "block": "minecraft:creaking_heart",
+                        "speed": 7
+                    },
+                    {
+                        "speed": 7,
+                        "block": {
+                            "tags": "query.any_tag('log')"
+                        }
+                    },
+                    {
+                        "speed": 7,
+                        "block": {
+                            "tags": "query.any_tag('wood')"
+                        }
+                    }
+                ]
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:enderite_axe.name"
+            }
+        }
+    }
+}

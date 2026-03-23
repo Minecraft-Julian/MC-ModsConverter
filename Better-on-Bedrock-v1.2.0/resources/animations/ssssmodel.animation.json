@@ -1,0 +1,33 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.model.basic_beam": {
+			"loop": true,
+			"animation_length": 0.04167,
+			"particle_effects": {
+				"0.0": {
+					"effect": "lazer_test",
+					"locator": "locator"
+				}
+			}
+		},
+		"animation.model.pulse_beam": {
+			"animation_length": 0.04167,
+			"loop": true,
+			"particle_effects": {
+				"0.0": {
+					"effect": "lazer_charge",
+					"locator": "locator"
+				}
+			}
+		},
+		"animation.model.main": {
+			"loop": true,
+			"bones": {
+				"bone": {
+					"rotation": ["q.target_x_rotation", 0, 0]
+				}
+			}
+		}
+	}
+}

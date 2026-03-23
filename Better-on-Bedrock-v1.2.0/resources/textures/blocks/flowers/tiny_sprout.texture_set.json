@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "tiny_sprout",
+        "metalness_emissive_roughness": "tiny_sprout_mer",
+        "heightmap": "tiny_sprout_heightmap"
+    }
+}

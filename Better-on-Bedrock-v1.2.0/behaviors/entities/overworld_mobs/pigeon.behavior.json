@@ -1,0 +1,296 @@
+{
+	"format_version": "1.20.30",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:pigeon",
+			"is_spawnable": true,
+			"is_summonable": true
+		},
+		"component_groups": {
+			"base_behaviors": {
+				"minecraft:behavior.tempt": {
+					"priority": 3,
+					"speed_multiplier": 0.5,
+					"within_radius": 16,
+					"can_get_scared": true,
+					"items": [
+						"sweet_berries",
+						"glow_berries"
+					]
+				},
+				"minecraft:pushable": {
+					"is_pushable": false
+				},
+				"minecraft:movement.basic": {
+					"max_turn": 30
+				},
+				"minecraft:movement": {
+					"max": 0.2
+				},
+				"minecraft:despawn": {
+					"despawn_from_distance": {}
+				  },
+				"minecraft:navigation.generic": {},
+				"minecraft:timer": {
+					"randomInterval": true,
+					"random_time_choices": [
+						{
+							"value": 3,
+							"weight": 2
+						},
+						{
+							"value": 9,
+							"weight": 5
+						},
+						{
+							"value": 18,
+							"weight": 7
+						}
+					],
+					"looping": false,
+					"time_down_event": {
+						"event": "fly",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.raid_garden": {
+					"priority": 2,
+					"blocks": [
+						"minecraft:sweet_berry_bush",
+						"minecraft:carrots",
+						"minecraft:potatoes"
+					],
+					"speed_multiplier": 1.2,
+					"search_range": 12,
+					"search_height": 2,
+					"goal_radius": 0.8,
+					"max_to_eat": 3,
+					"initial_eat_delay": 2
+				},
+				"minecraft:behavior.avoid_block": {
+					"tick_interval": 0,
+					"search_range": 0,
+					"search_height": 0,
+					"sprint_speed_modifier": 0,
+					"target_blocks": [
+						"minecraft:water"
+					],
+					"walk_speed_modifier": 0,
+					"on_escape": []
+				},
+				"minecraft:push_through": {
+					"value": 1
+				},
+				"minecraft:health": {
+					"value": 10,
+					"max": 10
+				},
+				"minecraft:loot": {
+					"table": "loot_tables/entities/chicken.json"
+				},
+				"minecraft:behavior.float": {
+					"priority": 0
+				},
+				"minecraft:behavior.look_at_player": {
+					"priority": 1,
+					"look_distance": 8.0
+				},
+				"minecraft:behavior.random_stroll": {
+					"interval": 120,
+					"xz_dist": 10,
+					"y_dist": 7
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "fall",
+							"deals_damage": false
+						},
+						{
+							"on_damage": {
+								"filters": {
+									"test": "is_block",
+									"subject": "block",
+									"value": "minecraft:sweet_berry_bush"
+								}
+							},
+							"deals_damage": false
+						}
+					]
+				}
+			},
+			"fly_behavior": {
+				"minecraft:timer": {
+					"time": 12,
+					"looping": false,
+					"time_down_event": {
+						"event": "prepare_landing",
+						"target": "self"
+					}
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "fall",
+							"deals_damage": false
+						},
+						{
+							"on_damage": {
+								"filters": {
+									"test": "is_block",
+									"subject": "block",
+									"value": "minecraft:sweet_berry_bush"
+								}
+							},
+							"deals_damage": false
+						}
+					]
+				},
+				"minecraft:movement": {
+					"value": 0.03
+				},
+				"minecraft:navigation.float": {
+					"can_path_over_water": true
+				},
+				"minecraft:behavior.float_wander": {
+					"priority": 2,
+					"must_reach": true
+				},
+				"minecraft:behavior.raid_garden": {
+					"priority": 2,
+					"blocks": [
+						"minecraft:sweet_berry_bush",
+						"minecraft:carrots",
+						"minecraft:potatoes"
+					],
+					"speed_multiplier": 1.2,
+					"search_range": 12,
+					"search_height": 2,
+					"goal_radius": 0.8,
+					"max_to_eat": 3,
+					"initial_eat_delay": 2
+				},
+				"minecraft:can_fly": {},
+				"minecraft:behavior.float": {
+					"priority": 0
+				},
+				"minecraft:behavior.look_at_player": {
+					"priority": 1,
+					"look_distance": 8.0
+				}
+			},
+			"prepare_landing": {
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "fall",
+							"deals_damage": false
+						},
+						{
+							"on_damage": {
+								"filters": {
+									"test": "is_block",
+									"subject": "block",
+									"value": "minecraft:sweet_berry_bush"
+								}
+							},
+							"deals_damage": false
+						}
+					]
+				},
+				"minecraft:movement": {
+					"value": 0.03
+				},
+				"minecraft:navigation.float": {
+					"can_path_over_water": true
+				},
+				"minecraft:behavior.float_wander": {
+					"priority": 2,
+					"must_reach": true
+				},
+				"minecraft:can_fly": {},
+				"minecraft:behavior.float": {
+					"priority": 0
+				},
+				"minecraft:behavior.move_to_block": {
+					"start_chance": 1,
+					"search_range": 32,
+					"goal_radius": 3,
+					"stay_duration": 2,
+					"on_reach": {
+						"filters": [],
+						"target": "self",
+						"event": "stand"
+					},
+					"target_blocks": [
+						"minecraft:grass_block",
+						"minecraft:leaves",
+						"minecraft:leaves2"
+					]
+				},
+				"minecraft:collision_box": {
+					"width": 0.7,
+					"height": 0.8
+				},
+				"minecraft:behavior.look_at_player": {
+					"priority": 1,
+					"look_distance": 8.0
+				}
+			}
+		},
+		"events": {
+			"minecraft:entity_spawned": {
+				"add": {
+					"component_groups": [
+						"base_behaviors"
+					]
+				}
+			},
+			"prepare_landing": {
+				"add": {
+					"component_groups": [
+						"prepare_landing"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"fly_behavior",
+						"base_behaviors"
+					]
+				}
+			},
+			"stand": {
+				"add": {
+					"component_groups": [
+						"base_behaviors"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"fly_behavior",
+						"prepare_landing"
+					]
+				}
+			},
+			"fly": {
+				"add": {
+					"component_groups": [
+						"fly_behavior"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"base_behaviors",
+						"prepare_landing"
+					]
+				}
+			}
+		},
+		"components": {
+			"minecraft:physics": {
+				"has_gravity": true,
+				"has_collision": true
+			}
+		}
+	}
+}

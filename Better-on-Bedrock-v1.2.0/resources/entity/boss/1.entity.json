@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "better_on_bedrock:geomancer",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/1"
+			},
+			"animations": {
+				"walk": "animation.geomancer.walk",
+				"attack": "animation.geomancer.strong_attack",
+				"idle": "animation.geomancer.general"
+			},
+			"scripts": {
+				"animate": [
+					{"walk": "q.modified_move_speed >= 0.05 || (q.modified_move_speed >= 0.05 && !q.is_casting)"},
+					{"attack": "q.is_casting"},
+					{"idle": "q.modified_move_speed <= 0.05 && !q.is_casting"}
+				],
+				"should_update_bones_and_effects_offscreen": true
+			},
+			"geometry": {
+				"default": "geometry.1"
+			},
+			"render_controllers": ["controller.render.default"],
+			"spawn_egg": {
+				"base_color": "#61e13e",
+				"overlay_color": "#f874a5"
+			}
+		}
+	}
+}

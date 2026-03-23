@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_door",
+            "menu_category": {
+                "category": "construction",
+                "group": "itemGroup.name.door"
+            }
+        },
+        "components": {
+            "minecraft:icon": "chorus_door",
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:chorus_door"
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:chorus_door.name"
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:fungal_grove/mushroom_trees_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:fungal_grove/mushroom_tree2",
+                7
+            ],
+            [
+                "better_on_bedrock:fungal_grove/mushroom_tree3",
+                7
+            ],
+            [
+                "better_on_bedrock:fungal_grove/mushroom_tree4",
+                7
+            ],
+            [
+                "better_on_bedrock:fungal_grove/mushroom_tree5",
+                3
+            ],
+            [
+                "better_on_bedrock:fungal_grove/mushroom_tree6",
+                3
+            ]
+        ]
+    }
+}

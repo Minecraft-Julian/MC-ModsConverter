@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "soul_jar_cap_top",
+        "metalness_emissive_roughness": "soul_jar_cap_top_mer",
+        "heightmap": "soul_jar_cap_top_heightmap"
+    }
+}

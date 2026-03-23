@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:structure_set": {
+        "description": {
+            "identifier": "pog:digsites_surface_set"
+        },
+        "placement": {
+            "type": "minecraft:random_spread",
+            "salt": 120767555,
+            "separation": 8,
+            "spread_type": "linear",
+            "spacing": 44
+        },
+        "structures": [
+            {
+                "structure": "better_on_bedrock:digsites_surface",
+                "weight": 1
+            }
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.enchanter": {
+      "geometry": "Geometry.default",
+      "materials": [ { "*": "v.is_enchanted ? Material.enchanted_rtx : Material.default"} ],
+      "textures": [ "Texture.default", "Texture.enchanted" ],
+      "overlay_color": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 0.957,
+        "a": "v.is_enchanted ? 0.25 : 0.0"
+      }
+    }
+  }
+}

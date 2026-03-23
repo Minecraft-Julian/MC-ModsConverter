@@ -1,0 +1,16 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:single_block_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:vacant_dusk/vacant_blossom_single"
+        },
+        "places_block": {
+            "name": "better_on_bedrock:vacant_blossom"
+        },
+        "enforce_survivability_rules": true,
+        "enforce_placement_rules": true,
+        "may_replace": [
+            "minecraft:air"
+        ]
+    }
+}

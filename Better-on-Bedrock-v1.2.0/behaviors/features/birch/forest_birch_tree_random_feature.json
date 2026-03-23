@@ -1,0 +1,30 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:birch/forest_birch_tree_random_feature"
+        },
+        "features": [
+            [
+                "better_on_bedrock:birch/birch_tree_forest1",
+                9
+            ],
+            [
+                "better_on_bedrock:birch/birch_tree_forest2",
+                8
+            ],
+            [
+                "better_on_bedrock:birch/birch_tree_forest3",
+                9
+            ],
+            [
+                "better_on_bedrock:birch/birch_tree_forest4",
+                3
+            ],
+            [
+                "better_on_bedrock:birch/birch_tree_new_5",
+                12
+            ]
+        ]
+    }
+}

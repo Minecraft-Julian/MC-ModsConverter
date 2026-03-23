@@ -1,0 +1,75 @@
+{
+    "format_version": "1.20.30",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:enchanted_book",
+            "runtime_identifier": "minecraft:snowball",
+            "is_spawnable": false,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:physics": {
+                "has_gravity": true,
+                "has_collision": true
+            },
+            "minecraft:timer": {
+                "time": 2.1,
+                "looping": true,
+                "time_down_event": {
+                    "event": "despawm",
+                    "target": "self"
+                }
+            },
+            "minecraft:projectile": {
+                "anchor": 1,
+                "gravity": 0.01,
+                "is_dangerous": true,
+                "knockback": true,
+                "on_hit": {
+                    "impact_damage": {
+                        "damage": 5
+                    }
+                },
+                "power": 3
+            },
+            "minecraft:damage_sensor": {
+                "triggers": [
+                    {
+                        "cause": "entity_attack",
+                        "deals_damage": false
+                    }
+                ]
+            },
+            "minecraft:pushable": {
+                "is_pushable": false
+            },
+            "minecraft:push_through": {
+                "value": 1
+            }
+        },
+        "component_groups": {
+            "despawn": {
+                "minecraft:instant_despawn": {
+                    "remove_child_entities": false
+                }
+            }
+        },
+        "events": {
+            "despawm": {
+                "add": {
+                    "component_groups": [
+                        "despawn"
+                    ]
+                }
+            },
+            "minecraft:entity_spawned": {
+                "queue_command": {
+                    "command": [
+                        "summon minecraft:zombie ~ ~ ~ only_enchanted"
+                    ]
+                }
+            }
+        }
+    }
+}

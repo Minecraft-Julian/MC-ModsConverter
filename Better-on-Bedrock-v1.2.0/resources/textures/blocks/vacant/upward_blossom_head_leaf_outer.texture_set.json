@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "upward_blossom_head_leaf_outer",
+		"metalness_emissive_roughness": "upward_blossom_head_leaf_outer_mer",
+		"heightmap": "upward_blossom_head_leaf_outer_heightmap"
+	}
+}

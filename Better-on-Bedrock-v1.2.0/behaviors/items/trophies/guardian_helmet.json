@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:lost_guardian_helmet",
+            "menu_category": {
+                "category": "none"
+            }
+        },
+        "components": {
+            "minecraft:icon": "lost_guardian_helmet",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:lost_guardian_helmet.name"
+            }
+        }
+    }
+}

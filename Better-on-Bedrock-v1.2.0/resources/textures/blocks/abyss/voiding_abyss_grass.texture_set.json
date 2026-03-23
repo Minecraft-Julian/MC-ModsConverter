@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "voiding_abyss_grass",
+		"metalness_emissive_roughness": "voiding_abyss_grass_mer",
+		"heightmap": "voiding_abyss_grass_heightmap"
+	}
+}

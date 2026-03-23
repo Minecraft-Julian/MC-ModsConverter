@@ -1,0 +1,26 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:pale/pale_pumpkin_scatter_feature"
+        },
+        "iterations": 8,
+        "x": {
+            "distribution": "triangle",
+            "extent": [
+                -6,
+                6
+            ]
+        },
+        "z": {
+            "distribution": "triangle",
+            "extent": [
+                -6,
+                6
+            ]
+        },
+        "coordinate_eval_order": "zyx",
+        "y": 0,
+        "places_feature": "better_on_bedrock:pale/pale_pumpkin_snap_feature"
+    }
+}

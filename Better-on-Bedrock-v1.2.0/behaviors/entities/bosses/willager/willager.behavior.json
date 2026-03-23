@@ -1,0 +1,1338 @@
+{
+	"format_version": "1.21.0",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "better_on_bedrock:willager",
+			"is_spawnable": true,
+			"is_summonable": true,
+			"is_experimental": false
+		},
+		"component_groups": {
+			"easy": {
+				"minecraft:health": {
+					"value": 450,
+					"max": 450
+				}
+			},
+			"normal": {
+				"minecraft:health": {
+					"value": 666,
+					"max": 666
+				}
+			},
+			"hard": {
+				"minecraft:health": {
+					"value": 888,
+					"max": 888
+				}
+			},
+			"minecraft:celebrate": {
+				"minecraft:behavior.celebrate": {
+					"priority": 5,
+					"celebration_sound": "celebrate",
+					"sound_interval": {
+						"range_min": 2,
+						"range_max": 7
+					},
+					"jump_interval": {
+						"range_min": 1,
+						"range_max": 3.5
+					},
+					"duration": 30,
+					"on_celebration_end_event": {
+						"event": "minecraft:stop_celebrating",
+						"target": "self"
+					}
+				}
+			},
+			"minecraft:raid_configuration": {
+				"minecraft:dweller": {
+					"dwelling_type": "village",
+					"dweller_role": "hostile",
+					"update_interval_base": 60,
+					"update_interval_variant": 40,
+					"can_find_poi": false,
+					"can_migrate": false,
+					"first_founding_reward": 0
+				},
+				"minecraft:behavior.move_to_village": {
+					"priority": 6,
+					"speed_multiplier": 0.7
+				},
+				"minecraft:ambient_sound_interval": {
+					"value": 2,
+					"range": 4,
+					"event_name": "ambient.in.raid"
+				}
+			},
+			"better_on_bedrock:select_attack_type": {
+				"minecraft:timer": {
+					"time": 0.8,
+					"looping": false,
+					"time_down_event": {
+						"event": "select_attack_type",
+						"target": "self"
+					}
+				}
+			},
+			"better_on_bedrock:dodge_attack_initiate": {
+				"minecraft:timer": {
+					"time": 0.7,
+					"looping": false,
+					"time_down_event": {
+						"event": "random_dodge_attack",
+						"target": "self"
+					}
+				}
+			},
+			"better_on_bedrock:no_dodge_attack_initiate": {
+				"minecraft:timer": {
+					"time": 0.04,
+					"looping": false,
+					"time_down_event": {
+						"event": "random_none_dodge_attack",
+						"target": "self"
+					}
+				}
+			},
+			"better_on_bedrock:dodge_line_attack": {
+				"minecraft:timer": {
+					"time": 0.4,
+					"looping": false,
+					"time_down_event": {
+						"event": "select_attack_type",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.summon_entity": {
+					"priority": 2,
+					"summon_choices": [
+						{
+							"min_activation_range": 3,
+							"weight": 8,
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "line",
+									"target": "self",
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 16,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 16,
+									"entity_lifespan": 1.1
+								}
+							]
+						}
+					]
+				}
+			},
+			"better_on_bedrock:none_dodge_attacks": {
+				"minecraft:timer": {
+					"time": 2.1,
+					"looping": false,
+					"time_down_event": {
+						"event": "select_attack_type",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.summon_entity": {
+					"priority": 2,
+					"summon_choices": [
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 16,
+							"cooldown_time": 6,
+							"weight": 3,
+							"cast_duration": 1.5,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 16,
+							"weight": 10,
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "target",
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 2,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 16,
+							"weight": 8,
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "line",
+									"target": "self",
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 16,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 22,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"weight": 1,
+							"cooldown_time": 60,
+							"cast_duration": 60,
+							"particle_color": "#FFB3B3CC",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"num_entities_spawned": 8,
+									"entity_type": "better_on_bedrock:willager_clone",
+									"summon_cap": 8,
+									"summon_cap_radius": 16,
+									"size": 4,
+									"sound_event": "prepare.wololo"
+								}
+							]
+						}
+					]
+				}
+			},
+			"better_on_bedrock:act_as_clone": {
+				"minecraft:movement": {
+					"value": 0.5
+				},
+				"minecraft:behavior.summon_entity": {
+					"priority": 2,
+					"summon_choices": [
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 24,
+							"cooldown_time": 3,
+							"weight": 8,
+							"cast_duration": 0.5,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "line",
+									"target": "target",
+									"base_delay": 0.1,
+									"num_entities_spawned": 3,
+									"entity_type": "better_on_bedrock:willager_target",
+									"summon_cap": 8,
+									"summon_cap_radius": 16,
+									"size": 0,
+									"entity_lifespan": 3,
+									"sound_event": "prepare.summon"
+								}
+							]
+						}
+					]
+				},
+				"minecraft:damage_sensor": {
+					"triggers": [
+						{
+							"cause": "entity_attack",
+							"deals_damage": "yes",
+							"on_damage": {
+								"event": "better_on_bedrock:despawn_clones",
+								"target": "self"
+							}
+						},
+						{
+							"cause": "suffocation",
+							"deals_damage": "false"
+						},
+						{
+							"cause": "entity_explosion",
+							"deals_damage": true
+						},
+						{
+							"cause": "entity_explosion",
+							"deals_damage": true
+						}
+					]
+				}
+			},
+			"better_on_bedrock:normal_attack": {
+				"minecraft:timer": {
+					"time": 25,
+					"looping": false,
+					"time_down_event": {
+						"event": "healing_mode_till_hit",
+						"target": "self"
+					}
+				},
+				"minecraft:behavior.summon_entity": {
+					"priority": 2,
+					"summon_choices": [
+						{
+							"min_activation_range": 0,
+							"max_activation_range": 16,
+							"cooldown_time": 3,
+							"weight": 3,
+							"cast_duration": 1.5,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 1.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"delay": 0.1,
+									"base_delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 2.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 3.5,
+									"entity_lifespan": 1.1,
+									"sound_event": "prepare.attack"
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 4.5,
+									"entity_lifespan": 1.1
+								},
+								{
+									"shape": "circle",
+									"target": "self",
+									"base_delay": 0.1,
+									"delay": 0.1,
+									"delay_per_summon": 0,
+									"num_entities_spawned": 15,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 5.5,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"min_activation_range": 3,
+							"weight": 7,
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "line",
+									"target": "self",
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 16,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 22,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"min_activation_range": 3,
+							"weight": 8,
+							"cooldown_time": 1,
+							"cast_duration": 0.7,
+							"particle_color": "#FF664D59",
+							"start_sound_event": "cast.spell",
+							"sequence": [
+								{
+									"shape": "line",
+									"target": "target",
+									"base_delay": 0.01,
+									"delay_per_summon": 0.03,
+									"num_entities_spawned": 2,
+									"entity_type": "minecraft:evocation_fang",
+									"size": 0,
+									"entity_lifespan": 1.1
+								}
+							]
+						},
+						{
+							"weight": 1,
+							"cooldown_time": 1,
+							"cast_duration": 2,
+							"particle_color": "#FFB3B3CC",
+							"sequence": [
+								{
+									"shape": "circle",
+									"target": "target",
+									"base_delay": 0.1,
+									"num_entities_spawned": 3,
+									"entity_type": "better_on_bedrock:willager_target",
+									"summon_cap": 8,
+									"summon_cap_radius": 7,
+									"size": 0,
+									"sound_event": "prepare.summon"
+								}
+							]
+						}
+					]
+				}
+			}
+		},
+		"components": {
+			"minecraft:environment_sensor": {
+				"triggers": [
+					{
+						"filters": {
+							"all_of": [
+								{
+									"test": "is_difficulty",
+									"value": "easy"
+								}
+							]
+						},
+						"event": "easy"
+					},
+					{
+						"filters": {
+							"all_of": [
+								{
+									"test": "is_difficulty",
+									"value": "normal"
+								}
+							]
+						},
+						"event": "normal"
+					},
+					{
+						"filters": {
+							"all_of": [
+								{
+									"test": "is_difficulty",
+									"value": "hard"
+								}
+							]
+						},
+						"event": "hard"
+					}
+				]
+			},
+			"minecraft:experience_reward": {
+				"on_death": "3000"
+			},
+			"minecraft:on_death": {
+				"event": "toast",
+				"target": "self"
+			},
+			"minecraft:damage_sensor": {
+				"triggers": [
+					{
+						"cause": "entity_explosion",
+						"deals_damage": false
+					},
+					{
+						"cause": "suffocation",
+						"deals_damage": false
+					},
+					{
+						"cause": "entity_explosion",
+						"deals_damage": true
+					},
+					{
+						"cause": "entity_attack",
+						"deals_damage": "yes",
+						"on_damage": {
+							"event": "better_on_bedrock:despawn_clones",
+							"target": "self"
+						}
+					}
+				]
+			},
+			"minecraft:type_family": {
+				"family": [
+					"willager"
+				]
+			},
+			"minecraft:breathable": {
+				"total_supply": 15,
+				"suffocate_time": 0
+			},
+			"minecraft:nameable": {},
+			"minecraft:loot": {
+				"table": "loot_tables/entities/willager.json"
+			},
+			"minecraft:health": {
+				"value": 300,
+				"max": 300
+			},
+			"minecraft:attack_damage": {
+				"value": 3
+			},
+			"minecraft:attack": {
+				"damage": 4
+			},
+			"minecraft:boss": {
+				"hud_range": 55,
+				"name": "Willager",
+				"should_darken_sky": false
+			},
+			"minecraft:hurt_on_condition": {
+				"damage_conditions": [
+					{
+						"filters": {
+							"test": "in_lava",
+							"subject": "self",
+							"operator": "==",
+							"value": true
+						},
+						"cause": "lava",
+						"damage_per_tick": 4
+					}
+				]
+			},
+			"minecraft:collision_box": {
+				"width": 0.6,
+				"height": 1.9
+			},
+			"minecraft:movement": {
+				"value": 0.5
+			},
+			"minecraft:scale": {
+				"value": 1.5
+			},
+			"minecraft:navigation.walk": {
+				"can_path_over_water": true,
+				"can_pass_doors": true,
+				"can_open_doors": true,
+				"avoid_water": true
+			},
+			"minecraft:movement.basic": {},
+			"minecraft:jump.static": {},
+			"minecraft:can_climb": {},
+			"minecraft:behavior.float": {
+				"priority": 0
+			},
+			"minecraft:behavior.send_event": {
+				"priority": 3,
+				"event_choices": [
+					{
+						"min_activation_range": 0,
+						"max_activation_range": 16,
+						"cooldown_time": 1,
+						"cast_duration": 3,
+						"particle_color": "#FFB38033",
+						"weight": 3,
+						"filters": {
+							"all_of": [
+								{
+									"test": "is_family",
+									"subject": "other",
+									"value": "sheep"
+								},
+								{
+									"test": "is_color",
+									"subject": "other",
+									"value": "blue"
+								}
+							]
+						},
+						"start_sound_event": "cast.spell",
+						"sequence": [
+							{
+								"base_delay": 2,
+								"event": "wololo",
+								"sound_event": "prepare.wololo"
+							}
+						]
+					}
+				]
+			},
+			"minecraft:behavior.avoid_mob_type": {
+				"priority": 5,
+				"entity_types": [
+					{
+						"filters": {
+							"test": "is_family",
+							"subject": "other",
+							"value": "player"
+						},
+						"max_dist": 8,
+						"walk_speed_multiplier": 0.6,
+						"sprint_speed_multiplier": 1
+					}
+				]
+			},
+			"minecraft:behavior.random_stroll": {
+				"priority": 8,
+				"speed_multiplier": 0.6
+			},
+			"minecraft:behavior.nearest_attackable_target": {
+				"priority": 2,
+				"entity_types": [
+					{
+						"filters": {
+							"any_of": [
+								{
+									"test": "is_family",
+									"subject": "other",
+									"value": "player"
+								},
+								{
+									"test": "is_family",
+									"subject": "other",
+									"value": "wandering_trader"
+								}
+							]
+						},
+						"max_dist": 20
+					},
+					{
+						"filters": {
+							"all_of": [
+								{
+									"test": "is_family",
+									"subject": "other",
+									"value": "villager"
+								},
+								{
+									"test": "has_component",
+									"subject": "other",
+									"operator": "!=",
+									"value": "minecraft:is_baby"
+								}
+							]
+						},
+						"max_dist": 20
+					}
+				],
+				"must_see": true
+			},
+			"minecraft:behavior.look_at_player": {
+				"priority": 9,
+				"look_distance": 3,
+				"probability": 1
+			},
+			"minecraft:behavior.look_at_entity": {
+				"priority": 10,
+				"look_distance": 8,
+				"filters": {
+					"test": "is_family",
+					"subject": "other",
+					"value": "mob"
+				}
+			},
+			"minecraft:behavior.hurt_by_target": {
+				"priority": 1
+			},
+			"minecraft:persistent": {},
+			"minecraft:physics": {},
+			"minecraft:pushable": {
+				"is_pushable": true,
+				"is_pushable_by_piston": true
+			},
+			"minecraft:follow_range": {
+				"value": 64
+			},
+			"minecraft:conditional_bandwidth_optimization": {}
+		},
+		"events": {
+			"easy": {
+				"add": {
+					"component_groups": [
+						"easy"
+					]
+				}
+			},
+			"normal": {
+				"add": {
+					"component_groups": [
+						"normal"
+					]
+				}
+			},
+			"hard": {
+				"add": {
+					"component_groups": [
+						"hard"
+					]
+				}
+			},
+			"minecraft:entity_spawned": {
+				"add": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type"
+					]
+				}
+			},
+			"random_none_dodge_attack": {
+				"randomize": [
+					{
+						"add": {
+							"component_groups": [
+								"better_on_bedrock:none_dodge_attacks"
+							]
+						},
+						"weight": 5
+					}
+				],
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type",
+						"better_on_bedrock:dodge_attack_initiate",
+						"better_on_bedrock:no_dodge_attack_initiate"
+					]
+				}
+			},
+			"random_dodge_attack": {
+				"randomize": [
+					{
+						"add": {
+							"component_groups": [
+								"better_on_bedrock:dodge_line_attack"
+							]
+						},
+						"weight": 5
+					}
+				],
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type",
+						"better_on_bedrock:dodge_attack_initiate",
+						"better_on_bedrock:no_dodge_attack_initiate"
+					]
+				}
+			},
+			"select_attack_type": {
+				"randomize": [
+					{
+						"add": {
+							"component_groups": [
+								"better_on_bedrock:dodge_attack_initiate"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"better_on_bedrock:select_attack_type",
+								"better_on_bedrock:dodge_line_attack"
+							]
+						},
+						"weight": 5
+					},
+					{
+						"add": {
+							"component_groups": [
+								"better_on_bedrock:none_dodge_attacks"
+							]
+						},
+						"remove": {
+							"component_groups": [
+								"better_on_bedrock:select_attack_type",
+								"better_on_bedrock:dodge_line_attack"
+							]
+						},
+						"weight": 5
+					}
+				]
+			},
+			"healing_mode_till_hit": {
+				"add": {
+					"component_groups": [
+						"better_on_bedrock:healing_mode_till_hit"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:normal_attack"
+					]
+				}
+			},
+			"default_mode": {
+				"add": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:healing_mode_till_hit"
+					]
+				}
+			},
+			"minecraft:spawn_for_raid": {
+				"add": {
+					"component_groups": [
+						"minecraft:raid_configuration"
+					]
+				}
+			},
+			"minecraft:start_celebrating": {
+				"add": {
+					"component_groups": [
+						"minecraft:celebrate"
+					]
+				}
+			},
+			"minecraft:stop_celebrating": {
+				"remove": {
+					"component_groups": [
+						"minecraft:celebrate"
+					]
+				}
+			},
+			"toast": {
+				"queue_command": {
+					"command": [
+						"playsound epic_quest @a ~ ~ ~",
+						"event entity @e better_on_bedrock:despawn"
+					]
+				}
+			},
+			"better_on_bedrock:despawn_clones": {
+				"queue_command": {
+					"command": [
+						"event entity @e better_on_bedrock:despawn"
+					]
+				}, //willager
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:act_as_clone"
+					]
+				},
+				"add": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type"
+					]
+				}
+			},
+			"better_on_bedrock:act_as_clone": {
+				"add": {
+					"component_groups": [
+						"better_on_bedrock:select_attack_type"
+					]
+				},
+				"remove": {
+					"component_groups": [
+						"better_on_bedrock:normal_attack"
+					]
+				}
+			}
+		}
+	}
+}

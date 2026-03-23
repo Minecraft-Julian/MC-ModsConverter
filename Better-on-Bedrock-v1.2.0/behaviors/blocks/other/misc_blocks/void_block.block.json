@@ -1,0 +1,33 @@
+{
+	"format_version": "1.20.80",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:void_block",
+			"menu_category": {
+				"category": "none"
+			}
+		},
+		"components": {
+			"minecraft:geometry": {
+				"identifier": "geometry.voided_bush",
+				"culling": "better_on_bedrock:cube"
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "void_block",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": false,
+			"minecraft:map_color": "#ffffff",
+			"minecraft:loot": "loot_tables/blocks/void_block.json",
+
+			"minecraft:custom_components": [ "pog:tick" ],
+			"minecraft:tick": {
+				"interval_range": [ 20, 40 ],
+				"looping": true
+			}
+		}
+	}
+}

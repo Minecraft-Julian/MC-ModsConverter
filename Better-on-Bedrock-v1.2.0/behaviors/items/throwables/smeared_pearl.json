@@ -1,0 +1,39 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:smeared_pearl",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:icon": "smeared_pearl",
+            "minecraft:glint": true,
+            "minecraft:cooldown": {
+                "category": "attack",
+                "duration": 0.2
+            },
+            "minecraft:throwable": {
+                "do_swing_animation": true,
+                "min_draw_duration": 0,
+                "max_draw_duration": 1,
+                "launch_power_scale": 2,
+                "max_launch_power": 2,
+                "scale_power_by_draw_duration": false
+            },
+            "minecraft:projectile": {
+                "minimum_critical_power": 1.6,
+                "projectile_entity": "better_on_bedrock:smeared_pearl"
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:smeared_pearl.name"
+            },
+            "minecraft:tags": {
+                "tags": [
+                    "oreville:is_throwable"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "format_version": "1.12.0",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_flitter"
+        },
+        "tags": [ "furnace" ],
+
+        "input": "minecraft:popped_chorus_fruit",
+        "output": "better_on_bedrock:chorus_flitter"
+    }
+}

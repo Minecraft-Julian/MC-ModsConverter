@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "lil3",
+		"metalness_emissive_roughness": "lil3_mer",
+		"heightmap": "lil3_heightmap"
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"format_version": "1.20.30",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:dripstone_mossy",
+			"menu_category": {
+				"category": "nature"
+			}
+		},
+		"components": {
+			"minecraft:collision_box": true,
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 5
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 30
+			},
+			"minecraft:geometry": {
+				"identifier": "minecraft:geometry.full_block"
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dripstone_mossy",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:map_color": "#ffffff",
+
+            "tag:stone": {},
+            "tag:minecraft:is_pickaxe_item_destructible": {}
+		}
+	}
+}

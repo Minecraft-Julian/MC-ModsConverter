@@ -1,0 +1,40 @@
+{
+    "format_version": "1.10.0",
+    "animation_controllers": {
+        "controller.animation.poggy.attacks": {
+            "initial_state": "not_dead",
+            "states": {
+                "not_dead": {
+                    "transitions": [
+                        {
+                            "dead": "q.health <= 25 && q.mark_variant == 100"
+                        },
+                        {
+                            "dead2": "q.health <= 45 && q.mark_variant == 10"
+                        }
+                    ]
+                },
+                "dead": {
+                    "on_entry": [
+                        "/event entity @e[type=better_on_bedrock:poggy] phase_1_fail"
+                    ],
+                    "transitions": [
+                        {
+                            "not_dead": "!q.mark_variant == 100"
+                        }
+                    ]
+                },
+                "dead2": {
+                    "on_entry": [
+                        "/event entity @e[type=better_on_bedrock:poggy] phase_2_fail"
+                    ],
+                    "transitions": [
+                        {
+                            "not_dead": "!q.mark_variant == 10"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

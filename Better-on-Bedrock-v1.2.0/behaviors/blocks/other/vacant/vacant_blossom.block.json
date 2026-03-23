@@ -1,0 +1,38 @@
+{
+	"format_version": "1.20.20",
+	"minecraft:block": {
+		"description": {
+			"identifier": "better_on_bedrock:vacant_blossom",
+			"menu_category": {
+				"is_hidden_in_commands": false,
+				"category": "none"
+			}
+		},
+		"components": {
+			"minecraft:collision_box": false,
+			"minecraft:selection_box":  {
+				"origin": [ -4, 0, -4 ],
+				"size": [ 8, 11, 8 ]
+			},
+			"minecraft:geometry": "geometry.better_on_bedrock.cross",
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "vacant_blossom",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				}
+			},
+			"minecraft:placement_filter": {
+				"conditions": [
+					{
+						"allowed_faces": [ "up" ],
+						"block_filter": [ "better_on_bedrock:shrub_nylium" ]
+					}
+				]
+			},
+			"minecraft:light_dampening": 0,
+			"minecraft:map_color": "#32a852"
+		}
+	}
+}

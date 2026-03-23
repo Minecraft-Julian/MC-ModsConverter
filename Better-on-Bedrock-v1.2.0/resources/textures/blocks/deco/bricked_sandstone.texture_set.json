@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "bricked_sandstone",
+		"metalness_emissive_roughness": "bricked_sandstone_mer",
+		"heightmap": "bricked_sandstone_heightmap"
+	}
+}

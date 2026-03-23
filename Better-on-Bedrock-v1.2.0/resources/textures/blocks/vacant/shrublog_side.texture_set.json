@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "shrublog_side",
+		"metalness_emissive_roughness": "shrublog_side_mer",
+		"heightmap": "shrublog_side_heightmap"
+	}
+}

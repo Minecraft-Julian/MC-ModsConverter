@@ -1,0 +1,53 @@
+{
+	"format_version": "1.19.0",
+	"animation_controllers": {
+		"controller.animation.model.hover": {
+			"states": {
+				"default": {
+					"animations": ["idle"],
+					"transitions": [
+						{"active": "variable.ischarging"}
+					],
+					"blend_transition": 0.2
+				},
+				"active": {
+					"animations": ["new"],
+					"transitions": [
+						{"default": "!variable.ischarging\n"}
+					],
+					"blend_transition": 0.2,
+					"blend_via_shortest_path": true
+				}
+			}
+		},
+		"controller.animation.chorus.base": {
+			"initial_state": "idle",
+			"states": {
+				"idle": {
+					"animations": ["idle_chorus"],
+					"transitions": [
+						{"walking": "q.modified_move_speed >= 0.05 && !q.is_delayed_attacking"},
+						{"attack": "q.is_delayed_attacking"}
+					],
+					"blend_transition": 0.2
+				},
+				"walking": {
+					"animations": ["walk"],
+					"transitions": [
+						{"idle": "q.modified_move_speed <= 0.05 && !q.is_delayed_attacking"},
+						{"attack": "q.is_delayed_attacking"}
+					],
+					"blend_transition": 0.2
+				},
+				"attack": {
+					"animations": ["attack_chorus"],
+					"transitions": [
+						{"idle": "!q.is_delayed_attacking && !q.is_delayed_attacking"},
+						{"walking": "!q.is_delayed_attacking && q.modified_move_speed <= 0.05"}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		}
+	}
+}

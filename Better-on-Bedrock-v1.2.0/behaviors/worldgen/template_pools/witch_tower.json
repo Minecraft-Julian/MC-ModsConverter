@@ -1,0 +1,19 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:overworld/witch_tower"
+        },
+        "elements": [
+            {
+                "weight": 50,
+                "element": {
+                    "location": "overworld/ruined_enchant_tower",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "rigid"
+                }
+            }
+        ]
+    }
+}

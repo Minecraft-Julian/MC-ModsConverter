@@ -1,0 +1,135 @@
+{
+    "format_version": "1.21.90",
+    "minecraft:entity": {
+        "description": {
+            "identifier": "better_on_bedrock:creaking_pot",
+            "runtime_identifier": "minecraft:shulker",
+            "is_spawnable": true,
+            "is_summonable": true,
+            "is_experimental": false
+        },
+        "components": {
+            "minecraft:physics": {
+                "has_gravity": true,
+                "has_collision": true
+            },
+            "minecraft:pushable": {
+                "is_pushable": false
+            },
+            "minecraft:push_through": {
+                "value": 1
+            },
+            "minecraft:attack": {
+                "damage": 0
+            },
+            "minecraft:behavior.nearest_attackable_target": {
+                "priority": 3,
+                "within_radius": 0,
+                "entity_types": {
+                    "filters": {
+                        "test": "is_family",
+                        "subject": "other",
+                        "value": "player"
+                    }
+                }
+            },
+            "minecraft:navigation.walk": {
+                "avoid_water": true
+            },
+            "minecraft:movement": {
+                "value": 0,
+                "max": 0
+            },
+            "minecraft:movement.basic": {
+                "max_turn": 30
+            },
+            "minecraft:behavior.melee_attack": {
+                "melee_fov": 90,
+                "track_target": true,
+                "priority": 3,
+                "cooldown_time": 0
+            },
+            "minecraft:is_collidable": {},
+            "minecraft:collision_box": {
+                "width": 0.9,
+                "height": 1
+            },
+            "minecraft:damage_sensor": {
+                "triggers": [
+                    {
+                        "cause": "all",
+                        "deals_damage": "no"
+                    }
+                ]
+            },
+            "minecraft:entity_sensor": {
+                "relative_range": false,
+                "subsensors": [
+                    {
+                        "range": [ 4.0, 5.0 ],
+                        "event_filters": {
+                            "all_of": [
+                                {
+                                    "test": "is_sneaking",
+                                    "subject": "target",
+                                    "operator": "equals",
+                                    "value": false
+                                },
+                                {
+                                    "test": "is_moving",
+                                    "subject": "target",
+                                    "operator": "equals",
+                                    "value": true
+                                }
+                            ]
+                        },
+                        "event": "transform_into_pot"
+                    }
+                ]
+            }
+        },
+        "events": {
+            "minecraft:entity_transformed": {
+                "add": {
+                    "component_groups": [ "spawn_dustmites" ]
+                }
+            },
+            "transform_into_pot": {
+                "add": {
+                    "component_groups": [ "transform_into_pot" ]
+                }
+            }
+        },
+        "component_groups": {
+            "spawn_dustmites": {
+                "minecraft:spawn_entity": {
+                    "entities": [
+                        {
+                            "min_wait_time": 0,
+                            "max_wait_time": 0,
+                            "num_to_spawn": 3,
+                            "spawn_entity": "better_on_bedrock:pale_dustmite",
+                            "spawn_sound": "plop",
+                            "spawn_event": "minecraft:entity_spawned",
+                            "single_use": true
+                        }
+                    ]
+                }
+            },
+            "transform_into_pot": {
+                "minecraft:transformation": {
+                    "drop_equipment": false,
+                    "drop_inventory": false,
+                    "begin_transform_sound": "mob.pot_decoy.rise_step",
+                    "add": {
+                        "component_groups": [ "no_movement" ]
+                    },
+                    "into": "better_on_bedrock:pot_decoy",
+                    "keep_level": false,
+                    "keep_owner": false,
+                    "preserve_equipment": false
+                }
+            }
+        }
+    }
+}

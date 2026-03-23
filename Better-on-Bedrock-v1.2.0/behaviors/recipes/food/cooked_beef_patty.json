@@ -1,0 +1,18 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_furnace": {
+        "description": {
+            "identifier": "better_on_bedrock:cooked_beef_patty"
+        },
+        "group": "foods",
+        "tags": [
+            "furnace",
+            "smoker",
+            "campfire",
+            "soul_campfire"
+        ],
+
+        "input": "better_on_bedrock:beef_patty_raw",
+        "output": "better_on_bedrock:beef_patty"
+    }
+}

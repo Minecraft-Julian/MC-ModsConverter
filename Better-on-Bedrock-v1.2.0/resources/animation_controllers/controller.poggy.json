@@ -1,0 +1,136 @@
+{
+	"format_version": "1.19.0",
+	"animation_controllers": {
+		"controller.animation.poggy.attacks": {
+			"states": {
+				"default": {
+					"animations": ["idle"],
+					"transitions": [
+						{"summon": "q.variant == 1"},
+						{"fireball_charge": "q.variant == 2"},
+						{"fly": "q.variant == 3"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"summon": {
+					"animations": ["summon"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"fireball_charge": "q.variant == 2"},
+						{"fly": "q.variant == 3"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2,
+					"blend_via_shortest_path": true
+				},
+				"fireball_charge": {
+					"animations": ["fireball_attack"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"fly": {
+					"animations": ["fly"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fireball_charge": "q.variant == 2"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"sit": {
+					"animations": ["sit"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"fireball_charge": "q.variant == 2"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"spawn": {
+					"animations": ["spawn"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"fireball_charge": "q.variant == 2"},
+						{"sit": "q.variant == 4"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"beam": {
+					"animations": ["beam", "fireball_attack"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"fireball_charge": "q.variant == 2"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"ball": "q.variant == 12"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"ball": {
+					"animations": ["ball"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"fireball_charge": "q.variant == 2"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"beam2": "q.variant == 15"}
+					],
+					"blend_transition": 0.2
+				},
+				"beam2": {
+					"animations": ["beam2", "fireball_attack"],
+					"transitions": [
+						{"default": "q.variant == 0 || q.variant == 13"},
+						{"summon": "q.variant == 1"},
+						{"fly": "q.variant == 3"},
+						{"fireball_charge": "q.variant == 2"},
+						{"sit": "q.variant == 4"},
+						{"spawn": "q.variant == 10"},
+						{"beam": "q.variant == 11"},
+						{"ball": "q.variant == 12"}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,37 @@
+{
+    "format_version": "1.20.80",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:eyepale_vines_head"
+        },
+        "components": {
+            "minecraft:geometry": "geometry.better_on_bedrock.cross",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "better_on_bedrock:lower_eyepale_vines",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                }
+            },
+            "minecraft:map_color": "#32a852",
+            "minecraft:collision_box": false,
+            "minecraft:selection_box": {
+                "origin": [ -3, 0, -3 ],
+                "size": [ 6, 16, 6 ]
+            },
+            "minecraft:placement_filter": {
+                "conditions": [
+                    {
+                        "allowed_faces": [ "down" ],
+                        "block_filter": [
+                            "better_on_bedrock:eyepale_vines_body",
+                            "minecraft:pale_oak_log",
+                            "minecraft:pale_oak_leaves"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "lil4",
+		"metalness_emissive_roughness": "lil4_mer",
+		"heightmap": "lil4_heightmap"
+	}
+}

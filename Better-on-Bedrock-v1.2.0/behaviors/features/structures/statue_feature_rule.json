@@ -1,0 +1,18 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:weighted_random_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:structures/statue_feature_rule"
+        },
+        "features": [
+            [
+                "better_on_bedrock:structures/statue_1",
+                5
+            ],
+            [
+                "better_on_bedrock:structures/statue_2",
+                5
+            ]
+        ]
+    }
+}

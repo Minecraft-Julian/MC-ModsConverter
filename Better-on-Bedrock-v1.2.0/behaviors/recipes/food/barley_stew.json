@@ -1,0 +1,38 @@
+{
+    "format_version": "1.12.50",
+    "minecraft:recipe_shapeless": {
+        "description": {
+            "identifier": "better_on_bedrock:barley_stew"
+        },
+        "group": "foods",
+        "tags": [ "crafting_table" ],
+
+        "ingredients": [
+            {
+                "item": "better_on_bedrock:barley_straw"
+            },
+            {
+                "item": "minecraft:red_mushroom"
+            },
+            {
+                "item": "better_on_bedrock:baked_onion"
+            },
+            {
+                "item": "minecraft:sugar"
+            },
+            {
+                "item": "better_on_bedrock:tomato_seed"
+            },
+            {
+                "item": "better_on_bedrock:baked_eggplant"
+            },
+            {
+                "item": "minecraft:bowl"
+            }
+        ],
+        "result": {
+            "item": "better_on_bedrock:barley_soup",
+            "count": 2
+        }
+    }
+}

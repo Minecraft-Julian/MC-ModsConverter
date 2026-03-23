@@ -1,0 +1,1045 @@
+{
+    "resource_pack_name": "better_on_bedrock",
+    "texture_name": "atlas.items",
+    "texture_data": {
+        "better_on_bedrock:guide_book": {
+            "textures": "textures/items/guide_book/guide_book"
+        },
+
+        "better_on_bedrock:tall_eyeblossom_close_top": {
+            "textures": "textures/blocks/pale_garden/upper_tall_blossom"
+        },
+        "better_on_bedrock:upper_eyeblossom_closed": {
+            "textures": "textures/blocks/pale_garden/upper_eyeblossom_closed"
+        },
+        "better_on_bedrock:rune": {
+            "textures": "textures/items/staffs/runes/rune"
+        },
+        "better_on_bedrock:ice_rune": {
+            "textures": "textures/items/staffs/runes/upgraded_ice_rune"
+        },
+        "better_on_bedrock:flame_rune": {
+            "textures": "textures/items/staffs/runes/upgraded_flame_rune"
+        },
+        "better_on_bedrock:flender_rune": {
+            "textures": "textures/items/staffs/runes/protection_rune"
+        },
+        "better_on_bedrock:staff": {
+            "textures": "textures/items/staffs/staff"
+        },
+        "better_on_bedrock:flender_staff": {
+            "textures": "textures/items/staffs/flender_staff"
+        },
+        "better_on_bedrock:flame_staff": {
+            "textures": "textures/items/staffs/flame_staff"
+        },
+        "better_on_bedrock:ice_staff": {
+            "textures": "textures/items/staffs/ice_staff"
+        },
+        "better_on_bedrock:anenome": {
+            "textures": "textures/blocks/flowers/anenome"
+        },
+        "better_on_bedrock:bellflower": {
+            "textures": "textures/blocks/flowers/bellflower"
+        },
+        "better_on_bedrock:big_sprout": {
+            "textures": "textures/blocks/flowers/big_sprout"
+        },
+        "better_on_bedrock:bluegrod": {
+            "textures": "textures/blocks/flowers/bluegrod_top"
+        },
+        "better_on_bedrock:clematis": {
+            "textures": "textures/blocks/flowers/clematis"
+        },
+        "better_on_bedrock:desert_grass": {
+            "textures": "textures/blocks/flowers/desert_grass"
+        },
+        "better_on_bedrock:hydrangea": {
+            "textures": "textures/blocks/flowers/hydrangea"
+        },
+        "better_on_bedrock:iris": {
+            "textures": "textures/blocks/flowers/iris"
+        },
+        "better_on_bedrock:lilax_heads": {
+            "textures": "textures/blocks/flowers/lilax_heads"
+        },
+        "better_on_bedrock:lush_grass": {
+            "textures": "textures/blocks/flowers/lush_grass_top"
+        },
+        "better_on_bedrock:pink_lavender": {
+            "textures": "textures/blocks/flowers/pink_lavender"
+        },
+        "better_on_bedrock:tall_lavender": {
+            "textures": "textures/blocks/flowers/tall_lavender_top"
+        },
+        "better_on_bedrock:taller_grass": {
+            "textures": "textures/blocks/flowers/taller_grass"
+        },
+        "better_on_bedrock:tiny_sprout": {
+            "textures": "textures/blocks/flowers/tiny_sprout"
+        },
+        "better_on_bedrock:wildflower": {
+            "textures": "textures/blocks/flowers/wildflower"
+        },
+        "better_on_bedrock:wooden_spear": {
+            "textures": "textures/items/spears/wooden_spear"
+        },
+        "better_on_bedrock:stone_spear": {
+            "textures": "textures/items/spears/stone_spear"
+        },
+        "better_on_bedrock:iron_spear": {
+            "textures": "textures/items/spears/iron_spear"
+        },
+        "better_on_bedrock:amethyst_spear": {
+            "textures": "textures/items/spears/amethyst_spear"
+        },
+        "better_on_bedrock:golden_spear": {
+            "textures": "textures/items/spears/golden_spear"
+        },
+        "better_on_bedrock:diamond_spear": {
+            "textures": "textures/items/spears/diamond_spear"
+        },
+        "better_on_bedrock:stardust_spear": {
+            "textures": "textures/items/spears/stardust_spear"
+        },
+        "better_on_bedrock:waystone": {
+            "textures": "textures/items/waystone/waystone"
+        },
+        "better_on_bedrock:waypoint_marker": {
+            "textures": "textures/items/waystone/waypoint_marker"
+        },
+        "better_on_bedrock:bought_quest": {
+            "textures": "textures/items/bounty_system/bought_quest"
+        },
+        "better_on_bedrock:bounty_paper_open": {
+            "textures": "textures/items/bounty_system/bounty_paper_open"
+        },
+        "better_on_bedrock:quest_paper": {
+            "textures": "textures/items/bounty_system/bounty_paper"
+        },
+        "better_on_bedrock:quest_scroll_opened": {
+            "textures": "textures/items/bounty_system/bounty_scroll_open"
+        },
+        "better_on_bedrock:quest_scroll_closed": {
+            "textures": "textures/items/bounty_system/bounty_scroll_closed"
+        },
+        "better_on_bedrock:baguette": {
+            "textures": "textures/items/crops/food/baguette"
+        },
+        "better_on_bedrock:baked_eggplant": {
+            "textures": "textures/items/crops/food/eggplant_baked"
+        },
+        "better_on_bedrock:baked_onion": {
+            "textures": "textures/items/crops/food/onion_baked"
+        },
+        "better_on_bedrock:barley_seed": {
+            "textures": "textures/items/crops/barley_seeds"
+        },
+        "better_on_bedrock:barley_soup": {
+            "textures": "textures/items/crops/food/barley_stew"
+        },
+        "better_on_bedrock:barley_straw": {
+            "textures": "textures/items/crops/food/barley"
+        },
+        "better_on_bedrock:beef_burger": {
+            "textures": "textures/items/crops/food/beef_burger"
+        },
+        "better_on_bedrock:beef_patty_raw": {
+            "textures": "textures/items/crops/food/beef_patty_raw"
+        },
+        "better_on_bedrock:beef_patty": {
+            "textures": "textures/items/crops/food/beef_patty_cooked"
+        },
+        "better_on_bedrock:berry_pie_slice": {
+            "textures": "textures/items/crops/food/berry_pie_slice"
+        },
+        "better_on_bedrock:berry_pie": {
+            "textures": "textures/items/crops/food/berry_pie"
+        },
+        "better_on_bedrock:blueberries": {
+            "textures": "textures/items/crops/food/blueberries"
+        },
+        "better_on_bedrock:broken_open_coconut": {
+            "textures": "textures/items/crops/food/coconut_open"
+        },
+        "better_on_bedrock:cabbage_seed": {
+            "textures": "textures/items/crops/cabbage_seeds"
+        },
+        "better_on_bedrock:cabbage_leaf": {
+            "textures": "textures/items/crops/food/cabbage_leaf"
+        },
+        "better_on_bedrock:coconut_nut": {
+            "textures": "textures/items/crops/food/coconut"
+        },
+        "better_on_bedrock:cooked_deer_meat": {
+            "textures": "textures/items/crops/food/cooked_deer_meat"
+        },
+        "better_on_bedrock:cooked_mutton_chops": {
+            "textures": "textures/items/crops/food/mutton_chops_cooked"
+        },
+        "better_on_bedrock:dough": {
+            "textures": "textures/items/crops/food/dough"
+        },
+        "better_on_bedrock:egg_sandwich": {
+            "textures": "textures/items/crops/food/egg_sandwich"
+        },
+        "better_on_bedrock:eggplant_food": {
+            "textures": "textures/items/crops/food/eggplant"
+        },
+        "better_on_bedrock:eggplant_seed": {
+            "textures": "textures/items/crops/eggplant_seeds"
+        },
+        "better_on_bedrock:enchanted_golden_carrot": {
+            "textures": "textures/items/carrot_golden"
+        },
+        "better_on_bedrock:end_berry": {
+            "textures": "textures/items/crops/food/end_berry"
+        },
+        "better_on_bedrock:end_cookie": {
+            "textures": "textures/items/crops/food/end_cookie"
+        },
+        "better_on_bedrock:ender_stew": {
+            "textures": "textures/items/crops/food/ender_stew"
+        },
+        "better_on_bedrock:fried_egg": {
+            "textures": "textures/items/crops/food/fried_egg"
+        },
+        "better_on_bedrock:fungus_stew": {
+            "textures": "textures/items/crops/food/fungus_stew"
+        },
+        "better_on_bedrock:grape": {
+            "textures": "textures/items/crops/food/grape"
+        },
+        "better_on_bedrock:grape_pie": {
+            "textures": "textures/items/crops/food/grape_pie"
+        },
+        "better_on_bedrock:grape_pie_slice": {
+            "textures": "textures/items/crops/food/grape_pie_slice"
+        },
+        "better_on_bedrock:healthy_carrot": {
+            "textures": "textures/items/crops/food/healthy_carrot"
+        },
+        "better_on_bedrock:lava_salad": {
+            "textures": "textures/items/crops/food/lava_salad"
+        },
+        "better_on_bedrock:onion_seed": {
+            "textures": "textures/items/crops/food/onion"
+        },
+        "better_on_bedrock:orange": {
+            "textures": "textures/items/crops/food/orange"
+        },
+        "better_on_bedrock:peach": {
+            "textures": "textures/items/crops/food/peach"
+        },
+        "better_on_bedrock:raw_deer_meat": {
+            "textures": "textures/items/crops/food/raw_deer_meat"
+        },
+        "better_on_bedrock:raw_mutton_chops": {
+            "textures": "textures/items/crops/food/mutton_chops_raw"
+        },
+        "better_on_bedrock:salad": {
+            "textures": "textures/items/crops/food/salad"
+        },
+        "better_on_bedrock:sandwich": {
+            "textures": "textures/items/crops/food/beef_sandwich"
+        },
+        "better_on_bedrock:tomato_seed": {
+            "textures": "textures/items/crops/food/tomato"
+        },
+        "better_on_bedrock:voidberry_pie": {
+            "textures": "textures/items/crops/food/voidberry_pie"
+        },
+        "better_on_bedrock:wild_carrot": {
+            "textures": "textures/items/crops/food/wild_carrot"
+        },
+        "better_on_bedrock:armored_pyroclast_eye": {
+            "textures": "textures/items/boss_eyes/inferno_eye"
+        },
+        "better_on_bedrock:enchanter_eye": {
+            "textures": "textures/items/boss_eyes/enchanter_eye"
+        },
+        "better_on_bedrock:lich_eye": {
+            "textures": "textures/items/boss_eyes/lich_eye"
+        },
+        "better_on_bedrock:samurai_eye": {
+            "textures": "textures/items/boss_eyes/samurai_eye"
+        },
+        "better_on_bedrock:willager_eye": {
+            "textures": "textures/items/boss_eyes/willager_eye"
+        },
+        "better_on_bedrock:stardust_template": {
+            "textures": "textures/items/tool_progression/stardust_upgrade"
+        },
+        "better_on_bedrock:record_fox": {
+            "textures": "textures/items/record/fox_record"
+        },
+        "better_on_bedrock:stellar_crystals": {
+            "textures": "textures/items/record/record_stellar"
+        },
+        "better_on_bedrock:broken_stellar": {
+            "textures": "textures/items/record/broken_stellar"
+        },
+        "better_on_bedrock:record_stardust": {
+            "textures": "textures/items/record/record_stardust"
+        },
+        "better_on_bedrock:record_travels": {
+            "textures": "textures/items/record/record_travelers"
+        },
+        "better_on_bedrock:small_backpack": {
+            "textures": "textures/items/backpacks/backpack_small"
+        },
+        "better_on_bedrock:medium_backpack": {
+            "textures": "textures/items/backpacks/backpack_medium"
+        },
+        "better_on_bedrock:large_backpack": {
+            "textures": "textures/items/backpacks/backpack_large"
+        },
+        "better_on_bedrock:stronger_string": {
+            "textures": "textures/items/backpacks/string_belt"
+        },
+        "better_on_bedrock:blank_pottery_sherd": {
+            "textures": "textures/items/pottery_sherds/blank_pottery_sherd"
+        },
+        "better_on_bedrock:forger_pottery_sherd": {
+            "textures": "textures/items/pottery_sherds/forger_pottery_sherd"
+        },
+        "better_on_bedrock:party_pottery_sherd": {
+            "textures": "textures/items/pottery_sherds/party_pottery_sherd"
+        },
+        "better_on_bedrock:piglin_pottery_sherd": {
+            "textures": "textures/items/pottery_sherds/piglin_pottery_sherd"
+        },
+        "better_on_bedrock:amethyst_helmet": {
+            "textures": "textures/items/armor/amethyst/amethyst_helmet"
+        },
+        "better_on_bedrock:amethyst_chestplate": {
+            "textures": "textures/items/armor/amethyst/amethyst_chestplate"
+        },
+        "better_on_bedrock:amethyst_leggings": {
+            "textures": "textures/items/armor/amethyst/amethyst_leggings"
+        },
+        "better_on_bedrock:amethyst_boots": {
+            "textures": "textures/items/armor/amethyst/amethyst_boots"
+        },
+        "better_on_bedrock:amethyst_sword": {
+            "textures": "textures/items/tools/amethyst/amethyst_sword"
+        },
+        "better_on_bedrock:amethyst_axe": {
+            "textures": "textures/items/tools/amethyst/amethyst_axe"
+        },
+        "better_on_bedrock:amethyst_pickaxe": {
+            "textures": "textures/items/tools/amethyst/amethyst_pickaxe"
+        },
+        "better_on_bedrock:corstinite_helmet": {
+            "textures": "textures/items/armor/corstinite/corstinite_helmet"
+        },
+        "better_on_bedrock:corstinite_chestplate": {
+            "textures": "textures/items/armor/corstinite/corstinite_chestplate"
+        },
+        "better_on_bedrock:corstinite_leggings": {
+            "textures": "textures/items/armor/corstinite/corstinite_leggings"
+        },
+        "better_on_bedrock:corstinite_boots": {
+            "textures": "textures/items/armor/corstinite/corstinite_boots"
+        },
+        "better_on_bedrock:enderite_sword": {
+            "textures": "textures/items/tools/enderite/enderite_sword"
+        },
+        "better_on_bedrock:enderite_axe": {
+            "textures": "textures/items/tools/enderite/enderite_axe"
+        },
+        "better_on_bedrock:enderite_pickaxe": {
+            "textures": "textures/items/tools/enderite/enderite_pickaxe"
+        },
+        "better_on_bedrock:shulker_leggings": {
+            "textures": "textures/items/armor/shulker/shulker_legging"
+        },
+        "better_on_bedrock:shulker_boots": {
+            "textures": "textures/items/armor/shulker/shulker_boots"
+        },
+        "better_on_bedrock:shulker_chestplate": {
+            "textures": "textures/items/armor/shulker/shulker_chestplate"
+        },
+        "better_on_bedrock:shulker_helmet": {
+            "textures": "textures/items/armor/shulker/shulker_helmet"
+        },
+        "better_on_bedrock:stardust_helmet": {
+            "textures": "textures/items/armor/stardust/stardust_helmet"
+        },
+        "better_on_bedrock:stardust_chestplate": {
+            "textures": "textures/items/armor/stardust/stardust_chestplate"
+        },
+        "better_on_bedrock:stardust_leggings": {
+            "textures": "textures/items/armor/stardust/stardust_leggings"
+        },
+        "better_on_bedrock:stardust_boots": {
+            "textures": "textures/items/armor/stardust/stardust_boots"
+        },
+        "better_on_bedrock:stardust_sword": {
+            "textures": "textures/items/tools/stardust/stardust_sword"
+        },
+        "better_on_bedrock:stardust_axe": {
+            "textures": "textures/items/tools/stardust/stardust_axe"
+        },
+        "better_on_bedrock:stardust_pickaxe": {
+            "textures": "textures/items/tools/stardust/stardust_pickaxe"
+        },
+        "better_on_bedrock:stardust_shovel": {
+            "textures": "textures/items/tools/stardust/stardust_shovel"
+        },
+        "better_on_bedrock:stardust_hoe": {
+            "textures": "textures/items/tools/stardust/stardust_hoe"
+        },
+        "better_on_bedrock:bane_spike": {
+            "textures": "textures/items/tools/bane_spike"
+        },
+        "better_on_bedrock:blade_of_the_nether": {
+            "textures": "textures/items/tools/blade_of_the_nether"
+        },
+        "bound_rod": {
+            "textures": "textures/items/tool_progression/bound_rod"
+        },
+        "pickaxe_head": {
+            "textures": "textures/items/tool_progression/pickaxe_head"
+        },
+        "end_blossom_spore_head": {
+            "textures": "textures/items/misc/block_placers/end_blossom_spore_head"
+        },
+        "lost_journal": {
+            "textures": "textures/items/misc/extra_misc/lost_journal"
+        },
+        "enderium_smelted": {
+            "textures": "textures/items/ingots/enderite/enderium_smelted"
+        },
+        "rage_potion": {
+            "textures": "textures/items/potions/rage_potion"
+        },
+        "schroom_hat": {
+            "textures": "textures/items/wearables/schroom_hat"
+        },
+        "toxic_ball": {
+            "textures": "textures/items/mob_drops/toxic_ball"
+        },
+        "the_ardent_crystal": {
+            "textures": "textures/items/misc/poggy_boss/the_ardent_crystal"
+        },
+        "schroom_sample": {
+            "textures": "textures/items/mob_drops/schroom_sample"
+        },
+        "persisting_embodiment": {
+            "textures": "textures/items/mob_drops/persisting_embodiment"
+        },
+        "legrang": {
+            "textures": "textures/items/mob_drops/legrang"
+        },
+        "horn": {
+            "textures": "textures/items/mob_drops/horn"
+        },
+        "fragment_of_soul": {
+            "textures": "textures/items/mob_drops/fragment_of_soul"
+        },
+        "combustible_scrap": {
+            "textures": "textures/items/mob_drops/combustible_scrap"
+        },
+        "carnivorous_mandibile": {
+            "textures": "textures/items/mob_drops/carnivorous_mandibile"
+        },
+        "blazing_jewel": {
+            "textures": "textures/items/mob_drops/blazing_jewel"
+        },
+        "enderium": {
+            "textures": "textures/items/ingots/enderite/enderium"
+        },
+        "end_lantern": {
+            "textures": "textures/items/misc/unused/end_lantern"
+        },
+        "end_scroll": {
+            "textures": "textures/items/misc/extra_misc/end_scroll"
+        },
+        "end_shard": {
+            "textures": "textures/items/mob_drops/end_shard"
+        },
+        "chorus_flitter": {
+            "textures": "textures/items/crops/food/chorus_flitter"
+        },
+        "enderite_ingot": {
+            "textures": "textures/items/ingots/enderite/enderite_ingot"
+        },
+        "void_totem": {
+            "textures": "textures/items/misc/void_family/void_totem"
+        },
+        "voiding_boots": {
+            "textures": "textures/items/misc/void_family/voiding_boots"
+        },
+        "ring_of_care": {
+            "textures": "textures/items/Rings/ring_of_care"
+        },
+        "ring_of_hate": {
+            "textures": "textures/items/Rings/ring_of_hate"
+        },
+        "ring_of_hope": {
+            "textures": "textures/items/Rings/ring_of_hope"
+        },
+        "multi_ring": {
+            "textures": "textures/items/misc/unused/multi_ring"
+        },
+        "tall_chorus_grass": {
+            "textures": "textures/blocks/chorus/top_tall_chorus"
+        },
+        "chorus_door": {
+            "textures": "textures/blocks/chorus/chorus_door_item"
+        },
+        "better_on_bedrock:vacant_door": {
+            "textures": "textures/blocks/vacant/vacant_dusk_door_item"
+        },
+        "better_on_bedrock:voiding_door": {
+            "textures": "textures/blocks/voiding/voiding_door_item"
+        },
+        "flare": {
+            "textures": "textures/blocks/end_flowers/flare"
+        },
+        "flare2": {
+            "textures": "textures/blocks/end_flowers/flare2"
+        },
+        "flare3": {
+            "textures": "textures/blocks/end_flowers/flare3"
+        },
+        "flare4": {
+            "textures": "textures/blocks/end_flowers/flare4"
+        },
+        "gloomy": {
+            "textures": "textures/blocks/end_flowers/gloomy"
+        },
+        "gloomy2": {
+            "textures": "textures/blocks/end_flowers/gloomy2"
+        },
+        "gloomy3": {
+            "textures": "textures/blocks/end_flowers/gloomy3"
+        },
+        "gloomy4": {
+            "textures": "textures/blocks/end_flowers/gloomy4"
+        },
+        "lil": {
+            "textures": "textures/blocks/end_flowers/lil"
+        },
+        "lil2": {
+            "textures": "textures/blocks/end_flowers/lil2"
+        },
+        "lil3": {
+            "textures": "textures/blocks/end_flowers/lil3"
+        },
+        "lil4": {
+            "textures": "textures/blocks/end_flowers/lil4"
+        },
+        "lunar": {
+            "textures": "textures/blocks/end_flowers/lunar"
+        },
+        "lunar2": {
+            "textures": "textures/blocks/end_flowers/lunar2"
+        },
+        "lunar3": {
+            "textures": "textures/blocks/end_flowers/lunar3"
+        },
+        "lunar4": {
+            "textures": "textures/blocks/end_flowers/lunar4"
+        },
+        "chorus_vines": {
+            "textures": "textures/blocks/chorus/chorus_vines"
+        },
+        "chorus_vine_head": {
+            "textures": "textures/blocks/chorus/chorus_vine_head"
+        },
+        "glowshroom_furr": {
+            "textures": "textures/blocks/fungal/glowshroom_furr"
+        },
+        "glowshroom_stem": {
+            "textures": "textures/blocks/fungal/glowshroom_stem"
+        },
+        "glowshroom_stem_base": {
+            "textures": "textures/blocks/fungal/glowshroom_stem_base"
+        },
+        "mushroom_vine_base": {
+            "textures": "textures/blocks/fungal/vine_base_head_head"
+        },
+        "mushroom_vine_body": {
+            "textures": "textures/blocks/fungal/vine_base_head"
+        },
+        "mushroom_vine_head": {
+            "textures": "textures/blocks/fungal/vine_base"
+        },
+        "tall_abyss_grass": {
+            "textures": "textures/blocks/abyss/voided_abyss_grass_top"
+        },
+        "chorus_lily": {
+            "textures": "textures/blocks/chorus/chorus_lily"
+        },
+        "shroom_shrub": {
+            "textures": "textures/blocks/fungal/shroom_shrub"
+        },
+        "shrub": {
+            "textures": "textures/blocks/fungal/shrub"
+        },
+        "shrubflower": {
+            "textures": "textures/blocks/vacant/shrubflower"
+        },
+        "lumen_flower": {
+            "textures": "textures/blocks/fungal/flower"
+        },
+        "shrubshroom": {
+            "textures": "textures/blocks/vacant/shrubshroom"
+        },
+        "small_spore": {
+            "textures": "textures/blocks/chorus/small_not_lily"
+        },
+        "tentacled_vacant_grass": {
+            "textures": "textures/blocks/vacant/tenticaled_lilly"
+        },
+        "vacant_tree_vines": {
+            "textures": "textures/items/misc/extra_misc/vacant_tree_furr"
+        },
+        "voiding_abyss_bush": {
+            "textures": "textures/blocks/abyss/voiding_abyss_bush"
+        },
+        "better_on_bedrock:voiding_grass": {
+            "textures": "textures/blocks/voiding/voiding_grass"
+        },
+        "voiding_shortgrass": {
+            "textures": "textures/blocks/voiding/voiding_shortgrass"
+        },
+        "small_lilly": {
+            "textures": "textures/blocks/chorus/small_lily"
+        },
+        "end_spore": {
+            "textures": "textures/blocks/voiding/end_spore"
+        },
+        "vacant_vines": {
+            "textures": "textures/blocks/vacant/vacant_vine"
+        },
+        "voiding_abyss_grass": {
+            "textures": "textures/blocks/abyss/voiding_abyss_grass"
+        },
+        "tentacaled_chorus_lilly": {
+            "textures": "textures/blocks/chorus/chorus_lily"
+        },
+        "soul_jar": {
+            "textures": "textures/items/misc/decoration/soul_jar"
+        },
+        "double_plant_rose_top": {
+            "textures": "textures/blocks/double_plant_rose_top"
+        },
+        "necklace_fragment": {
+            "textures": "textures/items/trophies/ghost_necklace_fragment"
+        },
+        "double_plant_syringa_top": {
+            "textures": "textures/blocks/syringa_top"
+        },
+        "double_plant_paeonia_top": {
+            "textures": "textures/blocks/double_plant_paeonia_top"
+        },
+        "double_plant_sunflower_front": {
+            "textures": "textures/blocks/double_plant_sunflower_front"
+        },
+        "special_brush": {
+            "textures": "textures/items/misc/unused/new_brush"
+        },
+        "better_on_bedrock:hanging_pot": {
+            "textures": "textures/items/hanging_pots/hanging_flowerpot"
+        },
+        "allium": {
+            "textures": "textures/blocks/flower_allium"
+        },
+        "blue_rose": {
+            "textures": "textures/blocks/flower_rose"
+        },
+        "cornflower": {
+            "textures": "textures/blocks/flower_cornflower"
+        },
+        "flower_blue": {
+            "textures": "textures/blocks/flower_blue_orchid"
+        },
+        "houstinia": {
+            "textures": "textures/blocks/flower_houstonia"
+        },
+        "lilly": {
+            "textures": "textures/blocks/flower_lily_of_the_valley"
+        },
+        "orange_tulip": {
+            "textures": "textures/blocks/flower_tulip_orange"
+        },
+        "oxeye": {
+            "textures": "textures/blocks/flower_oxeye_daisy"
+        },
+        "pink_tulip": {
+            "textures": "textures/blocks/flower_tulip_pink"
+        },
+        "red_tulip": {
+            "textures": "textures/blocks/flower_tulip_red"
+        },
+        "white_tulip": {
+            "textures": "textures/blocks/flower_tulip_white"
+        },
+        "smeared_pearl": {
+            "textures": "textures/items/throwables/smeared_pearl"
+        },
+        "firey_ingot": {
+            "textures": "textures/items/ingots/fire/firey_ingot"
+        },
+        "record_9": {
+            "textures": "textures/items/record/record_8"
+        },
+        "corstinite_ingot": {
+            "textures": "textures/items/ingots/corstinite/corstinite_ingot"
+        },
+        "resistance_potion": {
+            "textures": "textures/items/potions/potion_bottle_resistance"
+        },
+        "combined_elements": {
+            "textures": "textures/items/misc/extra_misc/combined_elements"
+        },
+        "corrupt_potion": {
+            "textures": "textures/items/potions/potion_bottle_corrupt"
+        },
+        "blackstone_crumb": {
+            "textures": "textures/items/mob_drops/blackstone_crumb"
+        },
+        "quetzacaw_egg": {
+            "textures": "textures/items/misc/eggs/green_bird_egg"
+        },
+        "quetzacaw_feather": {
+            "textures": "textures/items/mob_drops/flender_wing"
+        },
+        "nether_amulet_empty": {
+            "textures": "textures/items/misc/amulete/empty_gauntlet"
+        },
+        "nether_amulet_1_stone_green": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_green"
+        },
+        "nether_amulet_2_stone_green_red": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_green_red"
+        },
+        "bether_amulet_2_stone_green_yellow": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_green_purple"
+        },
+        "nether_amulet_1_stone_red": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_red"
+        },
+        "nether_amulet_1_stone_red_green": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_red_green"
+        },
+        "nether_amulet_1_stone_red_yellow": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_red_yellow"
+        },
+        "nether_amulet_1_stone_yellow": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_yellow"
+        },
+        "nether_amulet_2_stone_yellow_green": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_yellow_green"
+        },
+        "nether_amulet_2_stone_yellow_red": {
+            "textures": "textures/items/misc/amulete/nether_gauntlet_yellow_red"
+        },
+        "nether_amulet_3_stone_yellow_red_green": {
+            "textures": "textures/items/misc/amulete/full_gauntlet"
+        },
+        "blower": {
+            "textures": "textures/items/misc/blower"
+        },
+        "green_stone": {
+            "textures": "textures/items/misc/stones/green_stone"
+        },
+        "red_stone": {
+            "textures": "textures/items/misc/stones/red_stone"
+        },
+        "yellow_stone": {
+            "textures": "textures/items/misc/stones/yellow_stone"
+        },
+        "fused_soul_helmet": {
+            "textures": "textures/items/ores/soul_fused_aluminum_helmet"
+        },
+        "config": {
+            "textures": "textures/items/gear"
+        },
+        "deer_hide": {
+            "textures": "textures/items/mob_drops/deer_hide"
+        },
+        "better_on_bedrock:stone_dagger": {
+            "textures": "textures/items/tools/stone_dagger"
+        },
+        "better_on_bedrock:resin_dagger": {
+            "textures": "textures/items/tools/resin_dagger"
+        },
+        "better_on_bedrock:resin_shard": {
+            "textures": "textures/items/misc/resin_shard"
+        },
+        "better_on_bedrock:resin_candy": {
+            "textures": "textures/items/crops/food/resin_candy"
+        },
+        "better_on_bedrock:resin_candy_boots": {
+            "textures": "textures/items/wearables/resin_candy_boots"
+        },
+        "fused_soul_chestplate": {
+            "textures": "textures/items/ores/soul_fused_aluminum_chestplate"
+        },
+        "fused_soul_leggings": {
+            "textures": "textures/items/ores/soul_fused_aluminum_leggings"
+        },
+        "fused_soul_boots": {
+            "textures": "textures/items/ores/soul_fused_aluminum_boots"
+        },
+        "adventure_hat": {
+            "textures": "textures/items/wearables/adventure_hat"
+        },
+        "soul_star": {
+            "textures": "textures/items/trophies/soul_star"
+        },
+        "stardust": {
+            "textures": "textures/items/ingots/stardust/star_dust"
+        },
+        "tin_ingot": {
+            "textures": "textures/items/ingots/tin/tin_ingot"
+        },
+        "raw_tin": {
+            "textures": "textures/items/ingots/tin/raw_tin"
+        },
+        "alluminum_ingot": {
+            "textures": "textures/items/ingots/alluminum/alluminum_ingot"
+        },
+        "raw_alluminum": {
+            "textures": "textures/items/ingots/alluminum/raw_alluminum_ore"
+        },
+        "stardust_nugget": {
+            "textures": "textures/items/ingots/stardust/stardust_nugget"
+        },
+        "fixed_ghost_necklace": {
+            "textures": "textures/items/trophies/fixed_ghost_necklace"
+        },
+        "fused_soul_aluminum_ingot": {
+            "textures": "textures/items/ores/soul_dorget_alluminum"
+        },
+        "broken_ghost_necklace": {
+            "textures": "textures/items/trophies/borken_ghost_necklace"
+        },
+        "torch": {
+            "textures": "textures/blocks/torch_on"
+        },
+        "glow_flower_item": {
+            "textures": "textures/blocks/glow_flower"
+        },
+        "wild_flower_item": {
+            "textures": "textures/blocks/wild_flower"
+        },
+        "cornflower_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_cornflower"
+        },
+        "glowberry_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_glow_berry"
+        },
+        "lilac_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_lilac"
+        },
+        "moss_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_moss"
+        },
+        "oxeye_pot_item": {
+            "textures": "textures/items/hanging_pots/oxeye_hanging_pot"
+        },
+        "berry_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_sweet_berry_bush"
+        },
+        "tulip_pot_item": {
+            "textures": "textures/items/hanging_pots/tulip_hanging_pot"
+        },
+        "rose_pot_item": {
+            "textures": "textures/items/hanging_pots/hanging_rose_pot"
+        },
+        "dead_tall_grass": {
+            "textures": "textures/blocks/dead_tall_grass_top"
+        },
+        "stardust_ingot": {
+            "textures": "textures/items/ingots/stardust/stardust_ingot"
+        },
+        "birch_sapling": {
+            "textures": "textures/blocks/sapling_birch"
+        },
+        "fishing_hook": {
+            "textures": "textures/items/misc/extra_misc/fishing_hook"
+        },
+        "bag_of_sugar": {
+            "textures": "textures/items/misc/unused/bag_of_sugar"
+        },
+        "raider_horn": {
+            "textures": "textures/items/misc/extra_misc/raider_horn"
+        },
+        "oak_sapling": {
+            "textures": "textures/blocks/sapling_oak"
+        },
+        "lost_guardian_helmet": {
+            "textures": "textures/items/trophies/lost_warrior_helmet"
+        },
+        "wooden_pickaxe": {
+            "textures": "textures/items/wood_pickaxe"
+        },
+        "diamond_axe": {
+            "textures": "textures/items/diamond_axe"
+        },
+        "iron_axe": {
+            "textures": "textures/items/iron_axe"
+        },
+        "stone_axe": {
+            "textures": "textures/items/stone_axe"
+        },
+        "better_on_bedrock:willager_hat": {
+            "textures": "textures/items/wearables/willager_hat"
+        },
+        "wood_axe": {
+            "textures": "textures/items/wood_axe"
+        },
+        "enchanted_book": {
+            "textures": "textures/items/book_enchanted"
+        },
+        "netherite_pickaxe": {
+            "textures": "textures/items/netherite_pickaxe"
+        },
+        "netherite_axe": {
+            "textures": "textures/items/netherite_axe"
+        },
+        "stone_pickaxe": {
+            "textures": "textures/items/stone_pickaxe"
+        },
+        "iron_pickaxe": {
+            "textures": "textures/items/iron_pickaxe"
+        },
+        "diamond_pickaxe": {
+            "textures": "textures/items/diamond_pickaxe"
+        },
+        "ender_tear": {
+            "textures": "textures/items/waystone/ender_tear"
+        },
+        "common_lootbag": {
+            "textures": "textures/items/loot_bags/common_bag"
+        },
+        "rare_lootbag": {
+            "textures": "textures/items/loot_bags/rare_bag"
+        },
+        "uncommon_lootbag": {
+            "textures": "textures/items/loot_bags/uncommon_bag"
+        },
+        "open_uncommon_lootbag": {
+            "textures": "textures/items/loot_bags/open_uncommon_bag"
+        },
+        "spawn_egg_longleg": {
+            "textures": "textures/items/spawn_eggs/egg_longleg"
+        },
+        "spawn_egg_soot_collector": {
+            "textures": "textures/items/spawn_eggs/egg_soot_collector"
+        },
+        "spawn_egg_infected": {
+            "textures": "textures/items/spawn_eggs/egg_infected"
+        },
+        "spawn_egg_fireorb": {
+            "textures": "textures/items/spawn_eggs/egg_fireorb"
+        },
+        "spawn_egg_hell_hound": {
+            "textures": "textures/items/spawn_eggs/egg_hell_hound"
+        },
+        "spawn_egg_raccoon": {
+            "textures": "textures/items/spawn_eggs/egg_raccoon"
+        },
+        "spawn_egg_flasp": {
+            "textures": "textures/items/spawn_eggs/egg_flasp"
+        },
+        "spawn_egg_spooder_fox": {
+            "textures": "textures/items/spawn_eggs/egg_spooder_fox"
+        },
+        "spawn_egg_withered_samurai": {
+            "textures": "textures/items/spawn_eggs/egg_withered_samurai"
+        },
+        "spawn_egg_squirrel": {
+            "textures": "textures/items/spawn_eggs/egg_squirrel"
+        },
+        "spawn_egg_flender": {
+            "textures": "textures/items/spawn_eggs/egg_flender"
+        },
+        "spawn_egg_lonely_wizard": {
+            "textures": "textures/items/spawn_eggs/egg_lonely_wizard"
+        },
+        "spawn_egg_shroomy": {
+            "textures": "textures/items/spawn_eggs/egg_shroomy"
+        },
+        "spawn_egg_soot_eye": {
+            "textures": "textures/items/spawn_eggs/egg_soot_eye"
+        },
+        "spawn_egg_sparrow": {
+            "textures": "textures/items/spawn_eggs/egg_sparrow"
+        },
+        "spawn_egg_enchantaegis": {
+            "textures": "textures/items/spawn_eggs/egg_enchantaegis"
+        },
+        "spawn_egg_seeker": {
+            "textures": "textures/items/spawn_eggs/egg_seeker"
+        },
+        "spawn_egg_bacterio": {
+            "textures": "textures/items/spawn_eggs/egg_bacterio"
+        },
+        "spawn_egg_pigeon": {
+            "textures": "textures/items/spawn_eggs/egg_pigeon"
+        },
+        "spawn_egg_toucan": {
+            "textures": "textures/items/spawn_eggs/egg_toucan"
+        },
+        "spawn_egg_owl": {
+            "textures": "textures/items/spawn_eggs/egg_owl"
+        },
+        "spawn_egg_goblin_trader": {
+            "textures": "textures/items/spawn_eggs/egg_goblin_trader"
+        },
+        "spawn_egg_deer": {
+            "textures": "textures/items/spawn_eggs/egg_deer"
+        },
+        "spawn_egg_quetzacaw": {
+            "textures": "textures/items/spawn_eggs/egg_quetzacaw"
+        },
+        "spawn_egg_fire_wisp": {
+            "textures": "textures/items/spawn_eggs/egg_fire_wisp"
+        },
+        "spawn_egg_basalt_crobber": {
+            "textures": "textures/items/spawn_eggs/egg_basalt_crobber"
+        },
+        "spawn_egg_mooth": {
+            "textures": "textures/items/spawn_eggs/egg_mooth"
+        },
+        "spawn_egg_jelly": {
+            "textures": "textures/items/spawn_eggs/egg_jelly"
+        },
+        "spawn_egg_hover": {
+            "textures": "textures/items/spawn_eggs/egg_hover"
+        },
+        "spawn_egg_groohog": {
+            "textures": "textures/items/spawn_eggs/egg_groohog"
+        },
+        "spawn_egg_end_merchant": {
+            "textures": "textures/items/spawn_eggs/egg_end_merchant"
+        },
+        "spawn_egg_croaker": {
+            "textures": "textures/items/spawn_eggs/egg_croaker"
+        },
+        "spawn_egg_chorus_golem": {
+            "textures": "textures/items/spawn_eggs/egg_chorus_golem"
+        },
+        "spawn_egg_chorus_behemoth": {
+            "textures": "textures/items/spawn_eggs/egg_chorus_behemoth"
+        },
+        "spawn_egg_willager": {
+            "textures": "textures/items/spawn_eggs/egg_willager"
+        },
+        "spawn_egg_inferior": {
+            "textures": "textures/items/spawn_eggs/egg_inferior"
+        },
+        "spawn_egg_bloob": {
+            "textures": "textures/items/spawn_eggs/egg_bloob"
+        },
+        "spawn_egg_frostaeris": {
+            "textures": "textures/items/spawn_eggs/egg_frostaeris"
+        }
+    }
+}

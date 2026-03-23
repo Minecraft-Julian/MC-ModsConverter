@@ -1,0 +1,19 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:snap_to_surface_feature": {
+    "description": {
+      "identifier": "better_on_bedrock:pale/pale_pumpkin_snap_feature"
+    },
+    "feature_to_snap": "better_on_bedrock:pale/pale_garden_pumpkin_random_feature",
+    "vertical_search_range": 18,
+    "surface": "floor",
+    "allowed_surface_blocks": [
+      {
+        "name": "minecraft:grass_block"
+      },
+      {
+        "name": "minecraft:pale_moss_block"
+      }
+    ]
+  }
+}

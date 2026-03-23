@@ -1,0 +1,70 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.inferno_shield",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "bone",
+					"parent": "root",
+					"pivot": [0, -20, 0]
+				},
+				{
+					"name": "bone5",
+					"parent": "bone",
+					"pivot": [0, -19, 0]
+				},
+				{
+					"name": "bone6",
+					"parent": "bone5",
+					"pivot": [0, 3, -9],
+					"locators": {
+						"locator3": [3, 3, -9],
+						"locator2": [-3, 3, -9],
+						"locator": [0, 3, -9],
+						"locator4": [-6, 3, -7],
+						"locator5": [5, 3, -7],
+						"locator6": [7, 3, -5],
+						"locator7": [-8.5, 3, -5]
+					}
+				},
+				{
+					"name": "bone7",
+					"parent": "bone5",
+					"pivot": [6, 19, 0],
+					"rotation": [0, 40, 0],
+					"cubes": [
+						{"origin": [2.89579, 0, -2.94602], "size": [8, 20, 2], "pivot": [6.89579, 19, -4.94602], "rotation": [0, 90, 0], "uv": [36, 34]}
+					]
+				},
+				{
+					"name": "bone8",
+					"parent": "bone5",
+					"pivot": [0, 17, -6],
+					"cubes": [
+						{"origin": [-4, 0, -10], "size": [8, 20, 2], "uv": [54, 54]}
+					]
+				},
+				{
+					"name": "bone9",
+					"parent": "bone5",
+					"pivot": [-6, 18, 0],
+					"cubes": [
+						{"origin": [-8.49303, 0, -8.36467], "size": [8, 20, 2], "pivot": [-4.49303, 18, -4.36467], "rotation": [0, 40, 0], "uv": [16, 34]}
+					]
+				}
+			]
+		}
+	]
+}

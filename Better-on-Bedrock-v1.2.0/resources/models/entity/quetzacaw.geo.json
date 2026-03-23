@@ -1,0 +1,94 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.quetzacaw",
+				"texture_width": 256,
+				"texture_height": 256,
+				"visible_bounds_width": 5,
+				"visible_bounds_height": 5.5,
+				"visible_bounds_offset": [0, 2.25, 0]
+			},
+			"bones": [
+				{
+					"name": "Queztacaw",
+					"pivot": [0, 14, -4],
+					"rotation": [0, 90, 0]
+				},
+				{
+					"name": "body",
+					"parent": "Queztacaw",
+					"pivot": [-4, 24, -3],
+					"cubes": [
+						{"origin": [-26, 37.6, -6], "size": [35, 13, 4], "pivot": [-11, 58.6, -3], "rotation": [0, 0, -12.5], "uv": [0, 38]},
+						{"origin": [-17, 21, -14], "size": [34, 18, 20], "pivot": [0, 17, -4], "rotation": [0, 0, -12.5], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "tail",
+					"parent": "body",
+					"pivot": [-17, 26, -4],
+					"cubes": [
+						{"origin": [-34, 15.9, -6], "size": [12, 9, 4], "pivot": [-79, 29.9, -3], "rotation": [0, 0, -12.5], "uv": [88, 0]},
+						{"origin": [-31, 10, -12], "size": [12, 12, 16], "pivot": [-50, 21, -6], "rotation": [0, 0, -12.5], "uv": [58, 55]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [12, 34, -3],
+					"cubes": [
+						{"origin": [12, 47, -6], "size": [16, 10, 4], "uv": [78, 38]},
+						{"origin": [12, 29, -10], "size": [16, 18, 12], "uv": [1, 56]},
+						{"origin": [28, 31, -10], "size": [14, 9, 12], "uv": [100, 97]}
+					]
+				},
+				{
+					"name": "Beakbottom",
+					"parent": "head",
+					"pivot": [28, 31, -4],
+					"cubes": [
+						{"origin": [28, 29, -10], "size": [14, 2, 12], "uv": [0, 86]}
+					]
+				},
+				{
+					"name": "left_wing",
+					"parent": "body",
+					"pivot": [0, 33, 6],
+					"cubes": [
+						{"origin": [-25.48492, 6.83407, 6], "size": [32, 30, 2], "pivot": [0, 33, 6], "rotation": [0, 0, -12.5], "uv": [19, 142]}
+					]
+				},
+				{
+					"name": "right_wing",
+					"parent": "body",
+					"pivot": [0, 33, -14],
+					"cubes": [
+						{"origin": [-27, 7, -16], "size": [32, 30, 2], "pivot": [0, 40, -9], "rotation": [0, 0, -12.5], "uv": [19, 142]}
+					]
+				},
+				{
+					"name": "Leg1",
+					"parent": "Queztacaw",
+					"pivot": [-4, 21.5, 2],
+					"cubes": [
+						{"origin": [-8, 13, -1], "size": [6, 8, 6], "uv": [98, 52]},
+						{"origin": [-6, 0, 1], "size": [2, 21, 2], "uv": [52, 107]},
+						{"origin": [-6, 0, -1], "size": [6, 2, 6], "uv": [45, 55], "mirror": true}
+					]
+				},
+				{
+					"name": "Leg2",
+					"parent": "Queztacaw",
+					"pivot": [-4, 21.5, -10],
+					"cubes": [
+						{"origin": [-8, 13, -13], "size": [6, 8, 6], "uv": [98, 52]},
+						{"origin": [-6, 0, -11], "size": [2, 21, 2], "uv": [52, 107]},
+						{"origin": [-6, 0, -13], "size": [6, 2, 6], "uv": [45, 55], "mirror": true}
+					]
+				}
+			]
+		}
+	]
+}

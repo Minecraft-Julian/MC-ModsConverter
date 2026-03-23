@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "gloomy3",
+		"metalness_emissive_roughness": "gloomy3_mer",
+		"heightmap": "gloomy3_heightmap"
+	}
+}

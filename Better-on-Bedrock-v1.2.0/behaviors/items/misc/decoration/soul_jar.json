@@ -1,0 +1,20 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:soul_jar",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:icon": "soul_jar",
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:soul_jar_block"
+            },
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:soul_jar.name"
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:beef_patty",
+            "menu_category": {
+                "category": "equipment",
+                "group": "itemGroup.name.cookedFood"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:beef_patty",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:beef_patty.name"
+            },
+
+            "minecraft:food": {
+                "nutrition": 8,
+                "saturation_modifier": 0.8
+            },
+            "minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 1.6,
+                "movement_modifier": 0.35
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:voiding_boots",
+            "menu_category": {
+                "category": "equipment",
+                "group": "itemGroup.name.boots"
+            }
+        },
+        "components": {
+            "minecraft:icon": "voiding_boots",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.voiding_boots.name\n%item.better_on_bedrock.voiding_boots.desc\n%item.better_on_bedrock.voiding_boots.desc.1"
+            },
+            "minecraft:wearable": {
+                "protection": 4,
+                "slot": "slot.armor.feet"
+            },
+            "minecraft:enchantable": {
+                "value": 8,
+                "slot": "armor_feet"
+            },
+            "minecraft:durability": {
+                "max_durability": 64
+            },
+            "minecraft:max_stack_size": 1,
+            "minecraft:tags": {
+                "tags": [ "minecraft:trimmable_armors" ]
+            }
+        }
+    }
+}

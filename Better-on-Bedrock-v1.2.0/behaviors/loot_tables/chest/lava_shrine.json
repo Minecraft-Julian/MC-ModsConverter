@@ -1,0 +1,14 @@
+{
+    "pools": [
+        {
+            "rolls": 5,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "name": "loot_tables/chest/lava_shrine_once",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

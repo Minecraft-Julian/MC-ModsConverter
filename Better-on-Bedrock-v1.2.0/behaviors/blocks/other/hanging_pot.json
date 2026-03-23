@@ -1,0 +1,777 @@
+{
+    "format_version": "1.20.80",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:hanging_pot_base",
+            "menu_category": {
+                "category": "none"
+            },
+            "states": {
+                "pog:pot_plant": [
+                    "none",
+                    "allium",
+                    "flower_blue",
+                    "blue_rose",
+                    "cornflower",
+                    "houstonia",
+                    "lilly",
+                    "orange_tulip",
+                    "oxeye",
+                    "paeonia",
+                    "pink_tulip",
+                    "red_tulip",
+                    "rose_bush",
+                    "sunflower",
+                    "syringa",
+                    "white_tulip"
+                ]
+            }
+        },
+        "components": {
+            "minecraft:geometry": {
+                "identifier": "geometry.hanging_pot",
+                "bone_visibility": {
+                    "flower": "q.block_state('pog:pot_plant') != 'none'"
+                }
+            },
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "hanging_pot_side",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                },
+                "up": {
+                    "texture": "hanging_pot_top",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                },
+                "down": {
+                    "texture": "hanging_pot_bottom",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                },
+                "dirt": {
+                    "texture": "hanging_pot_dirt",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                },
+                "rope": {
+                    "texture": "hanging_pot_rope",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                }
+            },
+            "minecraft:custom_components": [ "pog:interact_placeholder" ],
+
+            "minecraft:loot": "loot_tables/blocks/hanging_pot.json",
+            "minecraft:collision_box": {
+                "origin": [ -4, 0, -4 ],
+                "size": [ 8, 16, 8 ]
+            },
+            "minecraft:selection_box": {
+                "origin": [ -4, 0, -4 ],
+                "size": [ 8, 16, 8 ]
+            },
+            "minecraft:placement_filter": {
+                "conditions": [
+                    { "allowed_faces": [ "down" ] }
+                ]
+            }
+        },
+        "permutations": [
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'none'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "empty_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'allium'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "allium_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'flower_blue'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "cornflower_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'blue_rose'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "blue_rose_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'cornflower'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "cornflower_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'houstonia'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "houstonia_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'lilly'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "lily_of_the_valley_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'orange_tulip'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "orange_tulip_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'oxeye'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "oxeye_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'paeonia'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "lilac_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'pink_tulip'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "pink_tulip_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'red_tulip'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "red_tulip_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'rose_bush'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "rose_bush_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'sunflower'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "sunflower_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'syringa'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "syringa_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            },
+            {
+                "condition": "q.block_state('pog:pot_plant') == 'white_tulip'",
+                "components": {
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "hanging_pot_side",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "up": {
+                            "texture": "hanging_pot_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "down": {
+                            "texture": "hanging_pot_bottom",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "dirt": {
+                            "texture": "hanging_pot_dirt",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "rope": {
+                            "texture": "hanging_pot_rope",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        },
+                        "flower": {
+                            "texture": "white_tulip_pot",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

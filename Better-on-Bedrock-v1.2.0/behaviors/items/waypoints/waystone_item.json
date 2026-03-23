@@ -1,0 +1,21 @@
+{
+    "format_version": "1.21.50",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:waystone_block",
+            "menu_category": {
+                "category": "items"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:waystone",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:waystone.name"
+            },
+            "minecraft:block_placer": {
+                "block": "better_on_bedrock:waystone_block"
+            },
+            "minecraft:rarity": "rare"
+        }
+    }
+}

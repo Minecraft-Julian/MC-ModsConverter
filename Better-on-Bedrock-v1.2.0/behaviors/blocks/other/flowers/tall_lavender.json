@@ -1,0 +1,121 @@
+{
+    "format_version": "1.21.60",
+    "minecraft:block": {
+        "description": {
+            "identifier": "better_on_bedrock:tall_lavender",
+            "states": {
+                "pog:double_plant": [
+                    "default",
+                    "top_bit"
+                ]
+            }
+        },
+        "components": {
+            "minecraft:geometry": "geometry.lavender_flower",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "tall_lavender_bottom",
+                    "render_method": "alpha_test",
+                    "ambient_occlusion": false,
+                    "face_dimming": false
+                }
+            },
+            "minecraft:transformation": {
+                "translation": [
+                    0,
+                    0.5,
+                    0
+                ],
+                "scale": [
+                    1,
+                    2,
+                    1
+                ]
+            },
+            "minecraft:liquid_detection": {
+                "detection_rules": [
+                    {
+                        "can_contain_liquid": false,
+                        "liquid_type": "water",
+                        "on_liquid_touches": "popped"
+                    }
+                ]
+            },
+            "minecraft:map_color": "#32a852",
+            "minecraft:collision_box": false,
+            "minecraft:selection_box": {
+                "origin": [
+                    -3,
+                    0,
+                    -3
+                ],
+                "size": [
+                    6,
+                    16,
+                    6
+                ]
+            },
+            "minecraft:placement_filter": {
+                "conditions": [
+                    {
+                        "allowed_faces": [
+                            "up"
+                        ],
+                        "block_filter": [
+                            "grass_block",
+                            "dirt"
+                        ]
+                    }
+                ]
+            },
+            "minecraft:custom_components": [
+                "content:turn_to_air"
+            ]
+        },
+        "permutations": [
+            {
+                "condition": "q.block_state('pog:double_plant') == 'default'",
+                "components": {
+                    "minecraft:loot": "loot_tables/empty.json"
+                }
+            },
+            {
+                "condition": "q.block_state('pog:double_plant') == 'top_bit'",
+                "components": {
+                    "minecraft:geometry": "geometry.lavender_flower_top",
+                    "minecraft:material_instances": {
+                        "*": {
+                            "texture": "tall_lavender_top",
+                            "render_method": "alpha_test",
+                            "ambient_occlusion": false,
+                            "face_dimming": false
+                        }
+                    },
+                    "minecraft:transformation": {
+                        "rotation": [
+                            0, 0, 180
+                        ],
+                        "translation": [
+                            0, -0.5, 0
+                        ],
+                        "scale": [
+                            1, 2, 1
+                        ]
+                    },
+                    "minecraft:placement_filter": {
+                        "conditions": [
+                            {
+                                "allowed_faces": [
+                                    "up"
+                                ],
+                                "block_filter": [
+                                    "better_on_bedrock:tall_lavender"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

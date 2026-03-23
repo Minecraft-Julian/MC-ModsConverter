@@ -1,0 +1,32 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "minecraft:phantom",
+      "materials": {
+        "enchanted": "entity_enchant",
+        "enchanted_rtx": "entity_alphatest_glint"
+      },
+      "textures": {
+        "enchanted": "textures/misc/enchanted_glint_entity",
+        "invisible": "textures/entity/phantom/phantom_invisible"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.wingRotZ = 16.0 * Math.sin((variable.RuntimeID * 3 + query.life_time * 20.0) * 7.448454);",
+          "variable.tailRotX = -5.0 * Math.sin((variable.RuntimeID * 3 + query.life_time * 20.0) * 14.896908) - 5.0;"
+        ],
+        "should_update_bones_and_effects_offscreen": true
+      },
+      "particle_effects": {
+        "wing_dust": "minecraft:phantom_trail_particle"
+      },
+      "render_controllers": [
+        "controller.render.phantom",
+        {
+          "controller.render.enchanted": "q.property('better_on_bedrock:enchanted') && !q.graphics_mode_is_any('raytraced')"
+        }
+      ]
+    }
+  }
+}

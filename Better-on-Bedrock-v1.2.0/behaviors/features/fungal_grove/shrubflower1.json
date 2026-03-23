@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:fungal_grove/shrubflower1"
+        },
+        "structure_name": "mystructure:shrubflower1",
+        "adjustment_radius": 8,
+        "facing_direction": "south",
+        "constraints": {
+            "grounded": {}
+        }
+    }
+}

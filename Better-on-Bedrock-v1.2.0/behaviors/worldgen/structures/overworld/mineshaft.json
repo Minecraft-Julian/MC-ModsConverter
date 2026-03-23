@@ -1,0 +1,43 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:jigsaw": {
+        "description": {
+            "identifier": "better_on_bedrock:mineshaft"
+        },
+        "biome_filters": [
+            {
+                "all_of": [
+                    {
+                        "any_of": [
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "plains"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "forest"
+                            },
+                            {
+                                "test": "has_biome_tag",
+                                "operator": "==",
+                                "value": "birch_forest"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "step": "surface_structures",
+        "start_pool": "pog:mineshaft/mineshaft",
+        "max_depth": 6,
+        "start_height": {
+			"type": "uniform",
+			"min": {"above_bottom": 1},
+			"max": {"above_bottom": 2}
+		},
+        "heightmap_projection": "world_surface",
+        "terrain_adaptation": "bury"
+    }
+}

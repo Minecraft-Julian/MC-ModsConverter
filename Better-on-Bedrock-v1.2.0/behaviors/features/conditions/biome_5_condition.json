@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "wiki:conditions/biome_5_condition"
+        },
+        "places_feature": "wiki:blocks/purple_wool",
+        "iterations": "t.end_biome == 5",
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

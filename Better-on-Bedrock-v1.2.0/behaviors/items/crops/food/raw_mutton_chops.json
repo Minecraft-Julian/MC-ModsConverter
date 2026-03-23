@@ -1,0 +1,28 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:raw_mutton_chops",
+            "menu_category": {
+                "category": "nature",
+                "group": "itemGroup.name.rawFood"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:raw_mutton_chops",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:raw_mutton_chops.name"
+            },
+
+            "minecraft:food": {
+                "nutrition": 2,
+                "saturation_modifier": 0.6
+            },
+            "minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 1.6,
+                "movement_modifier": 0.35
+            }
+        }
+    }
+}

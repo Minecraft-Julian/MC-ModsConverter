@@ -1,0 +1,155 @@
+{
+	"format_version": "1.19.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.upward_blossom_head",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "blossom",
+					"pivot": [0, 5.5, 0],
+					"cubes": [
+						{
+							"origin": [-3, 0, -3],
+							"size": [6, 2, 6],
+							"uv": {
+								"north": {"uv": [1, 8], "uv_size": [6, 2]},
+								"east": {"uv": [9, 8], "uv_size": [6, 2]},
+								"south": {"uv": [1, 11], "uv_size": [6, 2]},
+								"west": {"uv": [9, 11], "uv_size": [6, 2]},
+								"up": {"uv": [1, 1], "uv_size": [6, 6]},
+								"down": {"uv": [9, 7], "uv_size": [6, -6]}
+							}
+						},
+						{
+							"origin": [-7, 2, 0],
+							"size": [14, 15, 0],
+							"pivot": [0, -31, 0],
+							"rotation": [0, 45, 0],
+							"uv": {
+								"north": {"uv": [1, 1], "uv_size": [14, 15], "material_instance": "blossom"}
+							}
+						},
+						{
+							"origin": [-7, 2, 0],
+							"size": [14, 15, 0],
+							"pivot": [0, 9.5, 0],
+							"rotation": [0, -45, 0],
+							"uv": {
+								"north": {"uv": [1, 1], "uv_size": [14, 15], "material_instance": "blossom"}
+							}
+						}
+					]
+				},
+				{
+					"name": "leaf",
+					"parent": "blossom",
+					"pivot": [0, 0.01932, 0.24755],
+					"cubes": [
+						{
+							"origin": [-6, 0.80991, -9.15566],
+							"size": [12, 0, 9],
+							"pivot": [0, 0.80991, -0.15566],
+							"rotation": [-45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 7], "uv_size": [12, 9], "material_instance": "leaf_inner"}
+							}
+						},
+						{
+							"origin": [-6, 6.1392, -20.15703],
+							"size": [12, 0, 11],
+							"pivot": [0, 9.90991, -9.15566],
+							"rotation": [45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 0], "uv_size": [12, 11], "material_instance": "leaf_outer"}
+							}
+						}
+					]
+				},
+				{
+					"name": "leaf2",
+					"parent": "blossom",
+					"pivot": [0, 0.01932, 0.24755],
+					"rotation": [0, 90, 0],
+					"cubes": [
+						{
+							"origin": [-6, 0.80991, -9.15566],
+							"size": [12, 0, 9],
+							"pivot": [0, 0.80991, -0.15566],
+							"rotation": [-45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 7], "uv_size": [12, 9], "material_instance": "leaf_inner"}
+							}
+						},
+						{
+							"origin": [-6, 6.1392, -20.15703],
+							"size": [12, 0, 11],
+							"pivot": [0, 9.90991, -9.15566],
+							"rotation": [45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 0], "uv_size": [12, 11], "material_instance": "leaf_outer"}
+							}
+						}
+					]
+				},
+				{
+					"name": "leaf3",
+					"parent": "blossom",
+					"pivot": [0, 0.01932, 0.24755],
+					"rotation": [0, -90, 0],
+					"cubes": [
+						{
+							"origin": [-6, 0.80991, -9.15566],
+							"size": [12, 0, 9],
+							"pivot": [0, 0.80991, -0.15566],
+							"rotation": [-45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 7], "uv_size": [12, 9], "material_instance": "leaf_inner"}
+							}
+						},
+						{
+							"origin": [-6, 6.1392, -20.15703],
+							"size": [12, 0, 11],
+							"pivot": [0, 9.90991, -9.15566],
+							"rotation": [45, 0, 0],
+							"uv": {
+								"up": {"uv": [2, 0], "uv_size": [12, 11], "material_instance": "leaf_outer"}
+							}
+						}
+					]
+				},
+				{
+					"name": "leaf4",
+					"parent": "blossom",
+					"pivot": [0, 0.01932, -0.24755],
+					"cubes": [
+						{
+							"origin": [-6, 0.80991, 0.15566],
+							"size": [12, 0, 9],
+							"pivot": [0, 0.80991, 0.15566],
+							"rotation": [45, 0, 0],
+							"uv": {
+								"up": {"uv": [14, 16], "uv_size": [-12, -9], "material_instance": "leaf_inner"}
+							}
+						},
+						{
+							"origin": [-6, 6.1392, 9.15703],
+							"size": [12, 0, 11],
+							"pivot": [0, 9.90991, 9.15566],
+							"rotation": [-45, 0, 0],
+							"uv": {
+								"up": {"uv": [14, 11], "uv_size": [-12, -11], "material_instance": "leaf_outer"}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

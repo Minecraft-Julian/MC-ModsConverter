@@ -1,0 +1,54 @@
+{
+    "format_version": "1.21.20",
+    "minecraft:template_pool": {
+        "description": {
+            "identifier": "pog:swamp_village/roads/straight_road"
+        },
+        "elements": [
+            {
+                "weight": 1,
+                "element": {
+                    "location": "swamp_village/roads/swamp_t_road",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 4,
+                "element": {
+                    "location": "swamp_village/roads/straight_road_01",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "swamp_village/roads/corssroad_04",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 1,
+                "element": {
+                    "location": "swamp_village/roads/corssroad_05",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element",
+                    "projection": "terrain_matching"
+                }
+            },
+            {
+                "weight": 2,
+                "element": {
+                    "location": "swamp_village/roads/corssroad_06",
+                    "processors": "better_on_bedrock:empty",
+                    "element_type": "minecraft:single_pool_element"
+                }
+            }
+        ]
+    }
+}

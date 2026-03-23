@@ -1,0 +1,31 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.lone_wizard.controller": {
+			"states": {
+				"default": {
+					"animations": [
+						"idle"
+					],
+					"transitions": [
+						{
+							"walk": "q.modified_move_speed >= 0.05"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"walk": {
+					"animations": [
+						"move"
+					],
+					"transitions": [
+						{
+							"default": "q.modified_move_speed < 0.05 && !query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		}
+	}
+}

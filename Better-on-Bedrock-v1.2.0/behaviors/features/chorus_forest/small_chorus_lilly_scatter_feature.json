@@ -1,0 +1,13 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:scatter_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_forest/small_chorus_lilly_scatter_feature"
+        },
+        "places_feature": "better_on_bedrock:chorus_forest/small_chorus_lilly_snap_feature",
+        "iterations": "t.end_biome == 2",
+        "x": 0,
+        "z": 0,
+        "y": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:structure_template_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:chorus_forest/tall_chorus_grass_single_feature"
+        },
+        "structure_name": "mystructure:tall_chorus_grass",
+        "adjustment_radius": 8,
+        "facing_direction": "south",
+        "constraints": {
+            "grounded": {}
+        }
+    }
+}

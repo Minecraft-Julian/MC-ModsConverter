@@ -1,0 +1,27 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.rabbit": {
+      "arrays": {
+        "textures": {
+          "Array.skins": [ "Texture.brown", "Texture.white", "Texture.black", "Texture.white_splotched", "Texture.gold", "Texture.salt" ]
+        }
+      },
+      "geometry": "Geometry.default",
+      "materials": [ { "*": "q.property('better_on_bedrock:enchanted') ? Material.enchanted_rtx : Material.default" } ],
+      "textures": [ "query.get_name == 'Toast' ? Texture.toast : Array.skins[query.variant]", "Texture.enchanted" ],
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "overlay_color": {
+        "r": 1.0,
+        "g": 0.0,
+        "b": 0.957,
+        "a": "q.property('better_on_bedrock:enchanted') ? 0.25 : 0.0"
+      }
+    }
+  }
+}

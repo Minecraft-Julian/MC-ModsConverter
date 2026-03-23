@@ -1,0 +1,8 @@
+{
+	"format_version": "1.16.100",
+	"minecraft:texture_set": {
+		"color": "fall_nylium_side",
+		"metalness_emissive_roughness": "fall_nylium_side_mer",
+		"heightmap": "fall_nylium_side_heightmap"
+	}
+}

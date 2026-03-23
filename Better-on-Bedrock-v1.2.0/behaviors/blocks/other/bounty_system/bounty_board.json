@@ -1,0 +1,135 @@
+{
+  "format_version": "1.20.60",
+  "minecraft:block": {
+    "description": {
+      "identifier": "better_on_bedrock:quest_block",
+      "states": {
+        "better_on_bedrock:interact": ["default", "used"]
+      },
+      "traits": {
+        "minecraft:placement_direction": {
+          "enabled_states": ["minecraft:cardinal_direction"]
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.bounty_board",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "bounty_board_rim",
+          "render_method": "opaque"
+        },
+        "north": {
+          "texture": "bounty_board_front",
+          "render_method": "opaque"
+        },
+        "south": {
+          "texture": "bounty_board_back",
+          "render_method": "opaque"
+        }
+      },
+
+      "minecraft:map_color": "#a53a3a",
+      "minecraft:collision_box": {
+        "origin": [-8, 0, -2],
+        "size": [16, 16, 4]
+      },
+      "minecraft:selection_box": {
+        "origin": [-8, 0, -2],
+        "size": [16, 16, 4]
+      },
+      "minecraft:transformation": {
+        "scale_pivot": [0.0, -0.5, 0.0],
+        "scale": [1.375, 1.8125, 1.0]
+      },
+
+      "minecraft:destructible_by_mining": false,
+      "minecraft:destructible_by_explosion": false,
+
+      "minecraft:custom_components": ["pog:int"],
+
+      "tag:wood": {},
+      "tag:minecraft:is_axe_item_destructible": {}
+    },
+    "permutations": [
+      {
+        "condition": "query.block_state('better_on_bedrock:interact') == 'default'",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "bounty_board_rim",
+              "render_method": "opaque"
+            },
+            "front": {
+              "texture": "bounty_board_front",
+              "render_method": "opaque"
+            },
+            "back": {
+              "texture": "bounty_board_back",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "query.block_state('better_on_bedrock:interact') == 'used'",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "bounty_board_rim",
+              "render_method": "opaque"
+            },
+            "front": {
+              "texture": "bounty_board_front_used",
+              "render_method": "opaque"
+            },
+            "back": {
+              "texture": "bounty_board_back",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'north' ",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [0, 180, 0],
+            "scale_pivot": [0.0, -0.5, 0.0],
+            "scale": [1.375, 1.8125, 1.0]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'south' ",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [0, 0, 0],
+            "scale_pivot": [0.0, -0.5, 0.0],
+            "scale": [1.375, 1.8125, 1.0]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'east' ",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [0, 90, 0],
+            "scale_pivot": [0.0, -0.5, 0.0],
+            "scale": [1.375, 1.8125, 1.0]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'west' ",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [0, 270, 0],
+            "scale_pivot": [0.0, -0.5, 0.0],
+            "scale": [1.375, 1.8125, 1.0]
+          }
+        }
+      }
+    ]
+  }
+}

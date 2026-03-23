@@ -1,0 +1,28 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:peach",
+            "menu_category": {
+                "category": "nature",
+                "group": "itemGroup.name.crop"
+            }
+        },
+        "components": {
+            "minecraft:icon": "better_on_bedrock:peach",
+            "minecraft:display_name": {
+                "value": "item.better_on_bedrock:peach.name"
+            },
+
+            "minecraft:food": {
+                "nutrition": 3,
+                "saturation_modifier": 0.6
+            },
+            "minecraft:use_animation": "eat",
+            "minecraft:use_modifiers": {
+                "use_duration": 1.6,
+                "movement_modifier": 0.35
+            }
+        }
+    }
+}

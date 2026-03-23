@@ -1,0 +1,13 @@
+{
+    "format_version": "1.13.0",
+    "minecraft:aggregate_feature": {
+        "description": {
+            "identifier": "better_on_bedrock:forest/tall_bluegrod_feature"
+        },
+        "early_out": "first_failure",
+        "features": [
+            "better_on_bedrock:forest/tall_bluegrod_flower_bottom_feature",
+            "better_on_bedrock:forest/tall_bluegrod_scatter_feature"
+        ]
+    }
+}

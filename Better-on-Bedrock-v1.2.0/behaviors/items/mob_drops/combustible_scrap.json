@@ -1,0 +1,17 @@
+{
+    "format_version": "1.21.10",
+    "minecraft:item": {
+        "description": {
+            "identifier": "better_on_bedrock:combustible_scrap",
+            "menu_category": {
+                "category": "equipment"
+            }
+        },
+        "components": {
+            "minecraft:icon": "combustible_scrap",
+            "minecraft:display_name": {
+                "value": "%item.better_on_bedrock.combustible_scrap.name\n%item.better_on_bedrock.combustible_scrap.desc"
+            }
+        }
+    }
+}

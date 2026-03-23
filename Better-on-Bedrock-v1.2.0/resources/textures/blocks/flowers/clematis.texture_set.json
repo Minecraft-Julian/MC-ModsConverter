@@ -1,0 +1,8 @@
+{
+    "format_version": "1.16.100",
+    "minecraft:texture_set": {
+        "color": "clematis",
+        "metalness_emissive_roughness": "clematis_mer",
+        "heightmap": "clematis_heightmap"
+    }
+}

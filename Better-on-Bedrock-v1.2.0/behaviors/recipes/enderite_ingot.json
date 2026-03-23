@@ -1,0 +1,34 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "better_on_bedrock:enderite_ingot"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "#AB",
+      "ACA",
+      "BA#"
+    ],
+    "key": {
+      "#": {
+        "item": "better_on_bedrock:end_shard"
+      },
+      "A": {
+        "item": "better_on_bedrock:enderium_smelted"
+      },
+      "B": {
+        "item": "better_on_bedrock:stardust_ingot"
+      },
+      "C": {
+        "item": "better_on_bedrock:end_scroll"
+      }
+    },
+    "result": {
+      "item": "better_on_bedrock:enderite_ingot",
+      "count": 1
+    }
+  }
+}
