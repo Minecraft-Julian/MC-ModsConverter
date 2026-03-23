@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "chiseled_malbite",
-        "metalness_emissive_roughness": "chiseled_malbite_mer",
-        "heightmap": "chiseled_malbite_heightmap"
-    }
-}

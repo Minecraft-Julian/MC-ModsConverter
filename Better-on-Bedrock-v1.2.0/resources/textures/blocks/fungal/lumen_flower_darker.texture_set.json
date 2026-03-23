@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "lumen_flower_darker",
-        "metalness_emissive_roughness": "lumen_flower_darker_mer",
-        "heightmap": "lumen_flower_darker_heightmap"
-    }
-}

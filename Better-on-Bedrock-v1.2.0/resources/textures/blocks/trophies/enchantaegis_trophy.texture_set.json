@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "enchantaegis_trophy",
-        "metalness_emissive_roughness": "enchantaegis_trophy_mer",
-        "heightmap": "enchantaegis_trophy_heightmap"
-    }
-}

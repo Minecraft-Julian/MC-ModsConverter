@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "vacant_door_bottom",
-        "metalness_emissive_roughness": "vacant_door_bottom_mer",
-        "heightmap": "vacant_door_bottom_heightmap"
-    }
-}

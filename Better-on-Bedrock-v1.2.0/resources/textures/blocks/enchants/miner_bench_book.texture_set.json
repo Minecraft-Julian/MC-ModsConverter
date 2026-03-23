@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "miner_bench_book",
-		"metalness_emissive_roughness": "miner_bench_book_mer",
-		"heightmap": "miner_bench_book_heightmap"
-	}
-}

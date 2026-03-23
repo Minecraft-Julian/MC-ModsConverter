@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "tall_lavender_bottom",
-        "metalness_emissive_roughness": "tall_lavender_bottom_mer",
-        "heightmap": "tall_lavender_bottom_heightmap"
-    }
-}

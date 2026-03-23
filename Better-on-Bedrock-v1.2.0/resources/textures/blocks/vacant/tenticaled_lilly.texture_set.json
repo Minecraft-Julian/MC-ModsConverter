@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "tenticaled_lilly",
-		"metalness_emissive_roughness": "tenticaled_lilly_mer",
-		"heightmap": "tenticaled_lilly_heightmap"
-	}
-}

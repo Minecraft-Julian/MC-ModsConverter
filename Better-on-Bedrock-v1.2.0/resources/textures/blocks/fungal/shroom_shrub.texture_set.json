@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "shroom_shrub",
-        "metalness_emissive_roughness": "shroom_shrub_mer",
-        "heightmap": "shroom_shrub_heightmap"
-    }
-}

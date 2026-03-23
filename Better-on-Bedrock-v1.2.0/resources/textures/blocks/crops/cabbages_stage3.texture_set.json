@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "cabbages_stage3",
-        "metalness_emissive_roughness": "cabbages_stage3_mer",
-        "heightmap": "cabbages_stage3_heightmap"
-    }
-}

@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "pink_tulip_pot",
-        "metalness_emissive_roughness": "tulip_pot_mer",
-        "heightmap": "tulip_pot_heightmap"
-    }
-}

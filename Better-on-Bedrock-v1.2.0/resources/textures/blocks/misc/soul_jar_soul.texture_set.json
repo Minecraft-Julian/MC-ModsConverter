@@ -1,7 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "soul_jar_soul",
-        "metalness_emissive_roughness": "soul_jar_soul_mer"
-    }
-}

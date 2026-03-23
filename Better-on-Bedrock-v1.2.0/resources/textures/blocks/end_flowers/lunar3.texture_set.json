@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "lunar3",
-		"metalness_emissive_roughness": "lunar3_mer",
-		"heightmap": "lunar3_heightmap"
-	}
-}

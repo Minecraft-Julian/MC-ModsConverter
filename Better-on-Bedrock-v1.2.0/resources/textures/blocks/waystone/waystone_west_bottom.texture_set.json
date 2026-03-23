@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "waystone_west_bottom",
-        "metalness_emissive_roughness": "waystone_west_bottom_mer",
-        "heightmap": "waystone_west_bottom_heightmap"
-    }
-}
