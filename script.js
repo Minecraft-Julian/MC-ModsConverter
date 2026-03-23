@@ -180,6 +180,17 @@ class ModConverter {
             this.namespaces.add(namespaceMatch[1]);
         }
 
+        // PACK ICON
+        if (relativePath.toLowerCase() === 'pack.png' || relativePath.toLowerCase() === 'icon.png' || relativePath.toLowerCase() === 'logo.png') {
+            try {
+                const fileContent = await zipEntry.async('arraybuffer');
+                this.bpFolder.file("pack_icon.png", fileContent);
+                this.rpFolder.file("pack_icon.png", fileContent);
+                this.incrementCounter();
+            } catch(e) {}
+            return;
+        }
+
         // TEXTURES
         const textureMatch = relativePath.match(/^assets\/([^/]+)\/textures\/(.*\.(png|tga|jpg|jpeg))$/);
         if (textureMatch) {
