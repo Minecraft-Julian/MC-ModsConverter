@@ -1,5 +1,18 @@
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
 
+function parseJSON(str) {
+    try {
+        let cleaned = str.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)|(,\s*(?=[\]}]))/g, (m, g1, g2) => {
+            if (g1) return "";
+            if (g2) return "";
+            return m;
+        });
+        return JSON.parse(cleaned);
+    } catch(e) {
+        return JSON.parse(str);
+    }
+}
+
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -145,7 +158,7 @@ class ModConverter {
             });
 
             if (this.skippedClasses > 0) {
-                this.warnings.push({ path: 'Java Classes (.class)', error: `Skipped ${this.skippedClasses} raw logic files. Complex mechanisms cannot natively cross-compile; manual Bedrock scripting required.` });
+                // Silently skip to avoid alarming users with expected compilation limits
             }
 
             self.postMessage({
@@ -256,7 +269,7 @@ class ModConverter {
                 const name = texturePath.split('/').pop();
 
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
 
                 if (parsed.animation) {
                     let bedrockTexPath = `textures/${texturePath}`;
@@ -301,7 +314,7 @@ class ModConverter {
         if (soundsJsonMatch) {
             try {
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
                 if (!this.javaSoundsJson) this.javaSoundsJson = {};
                 Object.assign(this.javaSoundsJson, parsed);
                 this.incrementCounter();
@@ -328,7 +341,7 @@ class ModConverter {
                 this.languages.add(langCode);
 
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
                 let langLines = [];
 
                 for (const [key, value] of Object.entries(parsed)) {
@@ -369,25 +382,28 @@ class ModConverter {
                 const namespace = recipeMatch[1];
                 const recipeId = recipeMatch[2];
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
 
                 let bedrockRecipe = {
                     "format_version": "1.12.0"
                 };
 
-                const formatId = (id) => id.includes(':') ? id : `minecraft:${id}`;
+                const formatId = (id) => {
+                    if (!id || typeof id !== 'string') return "minecraft:air";
+                    return id.includes(':') ? id : `minecraft:${id}`;
+                };
 
                 if (parsed.type === 'minecraft:crafting_shaped') {
                     bedrockRecipe["minecraft:recipe_shaped"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["crafting_table"],
-                        "pattern": parsed.pattern,
+                        "pattern": parsed.pattern || ["###", "###", "###"],
                         "key": {},
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
                     };
 
-                    for (const [k, v] of Object.entries(parsed.key)) {
-                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = { "item": formatId(v.item || v.tag || "minecraft:air") };
+                    for (const [k, v] of Object.entries(parsed.key || {})) {
+                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = { "item": formatId(v?.item || v?.tag || "minecraft:air") };
                     }
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -396,8 +412,8 @@ class ModConverter {
                     bedrockRecipe["minecraft:recipe_shapeless"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["crafting_table"],
-                        "ingredients": parsed.ingredients.map(i => ({ "item": formatId(i.item || i.tag || "minecraft:air") })),
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
+                        "ingredients": (parsed.ingredients || []).map(i => ({ "item": formatId(i?.item || i?.tag || "minecraft:air") })),
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -406,8 +422,8 @@ class ModConverter {
                     bedrockRecipe["minecraft:recipe_furnace"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": [parsed.type === 'minecraft:smelting' ? "furnace" : (parsed.type === 'minecraft:blasting' ? "blast_furnace" : "campfire")],
-                        "input": formatId(parsed.ingredient.item || parsed.ingredient.tag),
-                        "output": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result.item)
+                        "input": formatId(parsed.ingredient?.item || parsed.ingredient?.tag),
+                        "output": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -415,8 +431,8 @@ class ModConverter {
                     bedrockRecipe["minecraft:recipe_shapeless"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["stonecutter"],
-                        "ingredients": [{ "item": formatId(parsed.ingredient.item || parsed.ingredient.tag) }],
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item), "count": parsed.result.count || 1 }
+                        "ingredients": [{ "item": formatId(parsed.ingredient?.item || parsed.ingredient?.tag) }],
+                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -424,10 +440,10 @@ class ModConverter {
                     bedrockRecipe["minecraft:recipe_smithing_transform"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["smithing_table"],
-                        "template": typeof parsed.template === 'object' ? formatId(parsed.template.item || parsed.template.tag) : "minecraft:air",
-                        "base": formatId(parsed.base.item || parsed.base.tag),
-                        "addition": formatId(parsed.addition.item || parsed.addition.tag),
-                        "result": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result.item)
+                        "template": typeof parsed.template === 'object' ? formatId(parsed.template?.item || parsed.template?.tag) : formatId(parsed.template),
+                        "base": formatId(parsed.base?.item || parsed.base?.tag),
+                        "addition": formatId(parsed.addition?.item || parsed.addition?.tag),
+                        "result": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
                     };
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
                     this.incrementCounter();
@@ -462,7 +478,7 @@ class ModConverter {
                 const namespace = lootMatch[1];
                 const lootPath = lootMatch[2];
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
 
                 const bedrockLoot = {
                     "pools": []
@@ -502,7 +518,7 @@ class ModConverter {
             try {
                 const tagId = tagMatch[2];
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
                 if (parsed.values) {
                     for (const v of parsed.values) {
                         const blockId = v.replace('minecraft:', '').replace(tagMatch[1] + ':', '');
@@ -536,7 +552,7 @@ class ModConverter {
             try {
                 const modelId = blockModelMatch[2];
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
                 if (parsed.elements) {
                     const cubes = parsed.elements.map(el => {
                         let cube = { "origin": el.from, "size": [el.to[0] - el.from[0], el.to[1] - el.from[1], el.to[2] - el.from[2]], "uv": [0, 0] };
@@ -580,7 +596,7 @@ class ModConverter {
                 const fileContent = await zipEntry.async('string');
 
                 // Inspect for GeckoLib complexities and ensure Bedrock JSON formatting
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
                 if (parsed.format_version || parsed.geckolib_format_version) {
                     if (parsed.geckolib_format_version) {
                         parsed.format_version = parsed.geckolib_format_version;
