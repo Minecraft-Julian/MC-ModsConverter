@@ -46,6 +46,7 @@ class ModConverter {
         this.javaSoundsJson = null;
         this.blockProperties = {};
         this.scriptsList = [];
+        this.biomesClientData = { "biomes": {} };
 
         this.fileCount = 0;
         this.skippedClasses = 0;
@@ -76,6 +77,7 @@ class ModConverter {
     }
 
     logWarning(path, error) {
+        if (path.includes('/lang/') && error instanceof SyntaxError) return;
         console.warn(`[ModConverter] Error processing ${path}:`, error);
         this.warnings.push({ path, error: error.message || String(error) });
     }
@@ -122,6 +124,10 @@ class ModConverter {
 
             if (this.languages.size > 0) {
                 this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
+            }
+
+            if (Object.keys(this.biomesClientData.biomes).length > 0) {
+                this.rpFolder.file("biomes_client.json", JSON.stringify(this.biomesClientData, null, 4));
             }
 
             if (this.scriptsList.length > 0) {
@@ -550,32 +556,19 @@ class ModConverter {
                 this.bpFolder.file(`biomes/${biomeId}.json`, JSON.stringify(bpBiome, null, 4));
 
                 let effects = parsed.effects || {};
-                const rpBiome = {
-                    "format_version": "1.21.0",
-                    "minecraft:client_biome": {
-                        "description": {
-                            "identifier": `${namespace}:${biomeId}`
-                        },
-                        "components": {}
-                    }
-                };
+                const clientBiomeObj = {};
                 
-                if (effects.sky_color !== undefined) {
-                    rpBiome["minecraft:client_biome"].components["minecraft:sky_color"] = { "sky_color": hexColor(effects.sky_color) };
-                }
                 if (effects.water_color !== undefined) {
-                    rpBiome["minecraft:client_biome"].components["minecraft:water_appearance"] = { "surface_color": hexColor(effects.water_color) };
+                    clientBiomeObj.water_surface_color = hexColor(effects.water_color);
                 }
-                if (effects.foliage_color !== undefined) {
-                    rpBiome["minecraft:client_biome"].components["minecraft:foliage_appearance"] = { "color": hexColor(effects.foliage_color) };
-                }
-                if (effects.grass_color !== undefined) {
-                    rpBiome["minecraft:client_biome"].components["minecraft:grass_appearance"] = { "color": hexColor(effects.grass_color) };
+                clientBiomeObj.fog_identifier = "minecraft:fog_default"; // fallback
+                
+                if (effects.water_fog_color !== undefined) {
+                    clientBiomeObj.water_surface_transparency = 0.65;
                 }
 
-                let hasRpComponents = Object.keys(rpBiome["minecraft:client_biome"].components).length > 0;
-                if (hasRpComponents) {
-                    this.rpFolder.file(`biomes/${biomeId}.client_biome.json`, JSON.stringify(rpBiome, null, 4));
+                if (Object.keys(clientBiomeObj).length > 0) {
+                    this.biomesClientData.biomes[biomeId] = clientBiomeObj;
                 }
                 
                 this.incrementCounter();
