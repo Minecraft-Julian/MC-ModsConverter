@@ -32,6 +32,7 @@ class ModConverter {
         this.flipbookTextures = [];
         this.javaSoundsJson = null;
         this.blockProperties = {};
+        this.scriptsList = [];
 
         this.fileCount = 0;
         this.skippedClasses = 0;
@@ -42,14 +43,14 @@ class ModConverter {
         const headerUUID = generateUUID();
         const moduleUUID = generateUUID();
 
-        return JSON.stringify({
+        return {
             "format_version": 2,
             "header": {
                 "name": name,
                 "description": description,
                 "uuid": headerUUID,
                 "version": [1, 0, 0],
-                "min_engine_version": [1, 16, 0]
+                "min_engine_version": [1, 19, 0]
             },
             "modules": [
                 {
@@ -58,7 +59,7 @@ class ModConverter {
                     "version": [1, 0, 0]
                 }
             ]
-        }, null, 4);
+        };
     }
 
     logWarning(path, error) {
@@ -82,8 +83,9 @@ class ModConverter {
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
 
             self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true, percent: 0 });
-            this.bpFolder.file("manifest.json", this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition"));
-            this.rpFolder.file("manifest.json", this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition"));
+            this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition");
+            this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition");
+            this.rpFolder.file("manifest.json", JSON.stringify(this.rpManifest, null, 4));
 
             self.postMessage({ type: 'status', title: 'Extracting Assets...', desc: 'Scanning Java Mod Structure', isLoading: true, percent: 0 });
 
@@ -108,6 +110,28 @@ class ModConverter {
             if (this.languages.size > 0) {
                 this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
             }
+
+            if (this.scriptsList.length > 0) {
+                this.bpManifest.modules.push({
+                    "type": "script",
+                    "language": "javascript",
+                    "uuid": generateUUID(),
+                    "entry": "scripts/main.js",
+                    "version": [1, 0, 0]
+                });
+                this.bpManifest.dependencies = [
+                    {
+                        "module_name": "@minecraft/server",
+                        "version": "1.0.0"
+                    }
+                ];
+                let mainJs = "";
+                for (let scr of this.scriptsList) {
+                    mainJs += `import "./${scr}";\n`;
+                }
+                this.bpFolder.file("scripts/main.js", mainJs);
+            }
+            this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
 
             self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true, percent: 0 });
 
@@ -149,6 +173,28 @@ class ModConverter {
         if (relativePath.endsWith('.class')) {
             this.skippedClasses++;
             this.incrementCounter();
+            return;
+        }
+
+        // JAVASCRIPT / SCRIPTS
+        if (relativePath.endsWith('.js')) {
+            try {
+                const fileContent = await zipEntry.async('string');
+                let scriptName = relativePath.split('/').pop();
+                
+                let finalName = scriptName;
+                let counter = 1;
+                while(this.scriptsList.includes(finalName)) {
+                    finalName = scriptName.replace('.js', `_${counter}.js`);
+                    counter++;
+                }
+                this.scriptsList.push(finalName);
+                
+                this.bpFolder.file(`scripts/${finalName}`, fileContent);
+                this.incrementCounter();
+            } catch (e) {
+                this.logWarning(relativePath, e);
+            }
             return;
         }
 
