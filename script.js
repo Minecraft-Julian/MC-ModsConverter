@@ -80,6 +80,8 @@ class ModConverter {
         this.namespaces = new Set();
         this.blocks = new Set();
         this.items = new Set();
+        this.geometries = new Set();
+        this.blockTags = {};
         
         this.blockTexturesRegistry = {};
         this.itemTexturesRegistry = {};
@@ -137,7 +139,8 @@ class ModConverter {
             }
             
             // Phase 2: Generate cross-dependent Bedrock registries
-            updateStatus('Building Registries...', 'Generating Textures & Sound Definitions');
+            updateStatus('Building Registries...', 'Generating Textures, Blocks & Sound Definitions');
+            await this.generateBlocks();
             await this.generateTexturesRegistry();
             await this.generateFlipbooks();
             await this.generateSoundDefinitions();
@@ -311,7 +314,7 @@ class ModConverter {
         }
 
         // RECIPES
-        const recipeMatch = relativePath.match(/^data\/([^/]+)\/recipes\/(.*)\.json$/);
+        const recipeMatch = relativePath.match(/^data\/([^/]+)\/(?:recipes|recipe)\/(.*)\.json$/);
         if (recipeMatch) {
             try {
                 const namespace = recipeMatch[1];
@@ -366,7 +369,7 @@ class ModConverter {
         }
 
         // LOOT TABLES
-        const lootMatch = relativePath.match(/^data\/([^/]+)\/loot_tables\/(.*)\.json$/);
+        const lootMatch = relativePath.match(/^data\/([^/]+)\/(?:loot_tables|loot_table)\/(.*)\.json$/);
         if (lootMatch) {
             try {
                 const namespace = lootMatch[1];
@@ -404,6 +407,73 @@ class ModConverter {
             return;
         }
 
+        // TAGS
+        const tagMatch = relativePath.match(/^data\/([^/]+)\/tags\/blocks\/(.*)\.json$/);
+        if (tagMatch) {
+            try {
+                const tagId = tagMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                if (parsed.values) {
+                    for (const v of parsed.values) {
+                        const blockId = v.replace('minecraft:', '').replace(tagMatch[1]+':', '');
+                        if (!this.blockTags[blockId]) this.blockTags[blockId] = [];
+                        this.blockTags[blockId].push(tagId);
+                    }
+                }
+            } catch(e) {}
+            return;
+        }
+
+        // PARTICLES
+        const particleMatch = relativePath.match(/^assets\/([^/]+)\/particles\/(.*)\.json$/);
+        if (particleMatch) {
+            try {
+                const fileContent = await zipEntry.async('string');
+                this.rpFolder.file(`particles/${particleMatch[2]}.json`, fileContent);
+                this.incrementCounter();
+            } catch(e) {}
+            return;
+        }
+
+        // BLOCK MODELS -> BEDROCK GEOMETRY
+        const blockModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/block\/(.*)\.json$/);
+        if (blockModelMatch) {
+            try {
+                const modelId = blockModelMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = JSON.parse(fileContent);
+                if (parsed.elements) {
+                    const cubes = parsed.elements.map(el => {
+                        let cube = { "origin": el.from, "size": [el.to[0]-el.from[0], el.to[1]-el.from[1], el.to[2]-el.from[2]], "uv": [0,0] };
+                        if (el.rotation) {
+                            cube.pivot = el.rotation.origin || [8,8,8];
+                            let rot = [0,0,0];
+                            if (el.rotation.axis === 'x') rot[0] = el.rotation.angle;
+                            if (el.rotation.axis === 'y') rot[1] = el.rotation.angle;
+                            if (el.rotation.axis === 'z') rot[2] = el.rotation.angle;
+                            cube.rotation = rot;
+                        }
+                        return cube;
+                    });
+                    const geo = {
+                        "format_version": "1.12.0",
+                        "minecraft:geometry": [{
+                            "description": {
+                                "identifier": `geometry.${modelId}`,
+                                "texture_width": 16, "texture_height": 16,
+                                "visible_bounds_width": 2, "visible_bounds_height": 2
+                            },
+                            "bones": [{ "name": "bone", "pivot": [8,8,8], "cubes": cubes }]
+                        }]
+                    };
+                    this.rpFolder.file(`models/blocks/${modelId}.geo.json`, JSON.stringify(geo, null, 4));
+                    this.geometries.add(modelId);
+                }
+            } catch(e) {}
+            return;
+        }
+
         // ITEM MODELS -> BP ITEMS
         const itemModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/item\/(.*)\.json$/);
         if (itemModelMatch) {
@@ -435,40 +505,29 @@ class ModConverter {
         // BLOCKSTATES -> BP BLOCKS
         const blockstateMatch = relativePath.match(/^assets\/([^/]+)\/blockstates\/(.*)\.json$/);
         if (blockstateMatch) {
-            try {
-                const namespace = blockstateMatch[1];
-                const blockId = blockstateMatch[2];
-                this.blocks.add(`${namespace}:${blockId}`);
-                
-                const bedrockBlock = {
-                    "format_version": "1.16.100",
-                    "minecraft:block": {
-                        "description": {
-                            "identifier": `${namespace}:${blockId}`,
-                            "is_experimental": false,
-                            "register_to_creative_menu": true
-                        },
-                        "components": {
-                            // Assign a basic material instance, assumes texture id matches block id
-                            "minecraft:material_instances": {
-                                "*": {
-                                    "texture": blockId,
-                                    "render_method": "alpha_test"
-                                }
-                            },
-                            "minecraft:destroy_time": 1.0,
-                            "minecraft:explosion_resistance": 1.0
-                        }
-                    }
-                };
-                
-                // Read blockstate to find models, could be expanded for complex geometries
-                // But keeping it to basic block generation for 1:1 translation wrapper
-                
-                this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
-                this.incrementCounter();
-            } catch(e) {}
+            const namespace = blockstateMatch[1];
+            const blockId = blockstateMatch[2];
+            this.blocks.add(`${namespace}:${blockId}`);
             return;
+        }
+    }
+
+    async generateBlocks() {
+        for (const fullId of this.blocks) {
+            const parts = fullId.split(':');
+            const namespace = parts[0];
+            const blockId = parts[1];
+            const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": blockId, "render_method": "alpha_test" } }, "minecraft:destroy_time": 1.0, "minecraft:explosion_resistance": 1.0 } } };
+            if (this.geometries.has(blockId)) {
+                bedrockBlock["minecraft:block"].components["minecraft:geometry"] = `geometry.${blockId}`;
+            }
+            if (this.blockTags[blockId]) {
+                 for (const tag of this.blockTags[blockId]) {
+                      const tagKey = `tag:${tag.replace('/', '_')}`;
+                      bedrockBlock["minecraft:block"].components[tagKey] = {};
+                 }
+            }
+            this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
         }
     }
 
