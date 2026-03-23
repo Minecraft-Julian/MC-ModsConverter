@@ -512,6 +512,79 @@ class ModConverter {
             return;
         }
 
+        // BIOMES
+        const biomeMatch = relativePath.match(/^data\/([^/]+)\/worldgen\/biome\/(.*)\.json$/);
+        if (biomeMatch) {
+            try {
+                const namespace = biomeMatch[1];
+                const biomeId = biomeMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = parseJSON(fileContent);
+
+                const hexColor = (colorInt) => {
+                    if (typeof colorInt === 'number') {
+                        return '#' + colorInt.toString(16).padStart(6, '0');
+                    }
+                    if (typeof colorInt === 'string' && colorInt.startsWith('#')) return colorInt;
+                    return "#FFFFFF";
+                };
+
+                const bpBiome = {
+                    "format_version": "1.21.0",
+                    "minecraft:biome": {
+                        "description": {
+                            "identifier": `${namespace}:${biomeId}`
+                        },
+                        "components": {}
+                    }
+                };
+
+                const climate = {};
+                if (parsed.temperature !== undefined) climate.temperature = parsed.temperature;
+                if (parsed.downfall !== undefined) climate.downfall = parsed.downfall;
+
+                if (Object.keys(climate).length > 0) {
+                    bpBiome["minecraft:biome"].components["minecraft:climate"] = climate;
+                }
+
+                this.bpFolder.file(`biomes/${biomeId}.json`, JSON.stringify(bpBiome, null, 4));
+
+                let effects = parsed.effects || {};
+                const rpBiome = {
+                    "format_version": "1.21.0",
+                    "minecraft:client_biome": {
+                        "description": {
+                            "identifier": `${namespace}:${biomeId}`
+                        },
+                        "components": {}
+                    }
+                };
+                
+                if (effects.sky_color !== undefined) {
+                    rpBiome["minecraft:client_biome"].components["minecraft:sky_color"] = { "sky_color": hexColor(effects.sky_color) };
+                }
+                if (effects.water_color !== undefined) {
+                    rpBiome["minecraft:client_biome"].components["minecraft:water_appearance"] = { "surface_color": hexColor(effects.water_color) };
+                }
+                if (effects.foliage_color !== undefined) {
+                    rpBiome["minecraft:client_biome"].components["minecraft:foliage_appearance"] = { "color": hexColor(effects.foliage_color) };
+                }
+                if (effects.grass_color !== undefined) {
+                    rpBiome["minecraft:client_biome"].components["minecraft:grass_appearance"] = { "color": hexColor(effects.grass_color) };
+                }
+
+                let hasRpComponents = Object.keys(rpBiome["minecraft:client_biome"].components).length > 0;
+                if (hasRpComponents) {
+                    this.rpFolder.file(`biomes/${biomeId}.client_biome.json`, JSON.stringify(rpBiome, null, 4));
+                }
+                
+                this.incrementCounter();
+            } catch (e) {
+                this.logWarning(relativePath, e);
+            }
+            return;
+        }
+
         // TAGS
         const tagMatch = relativePath.match(/^data\/([^/]+)\/tags\/blocks\/(.*)\.json$/);
         if (tagMatch) {
