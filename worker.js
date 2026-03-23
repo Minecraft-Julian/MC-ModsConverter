@@ -36,6 +36,8 @@ class ModConverter {
         this.fileCount = 0;
         this.skippedClasses = 0;
         this.warnings = [];
+        this.stats = { textures: 0, models: 0, animations: 0, classes: 0, recipes: 0, sounds: 0, items: 0, blocks: 0 };
+        this.startTime = 0;
     }
 
     generateManifest(type, name, description) {
@@ -62,8 +64,11 @@ class ModConverter {
     }
 
     logWarning(path, error) {
-        console.warn(`[ModConverter] Error processing ${path}:`, error);
-        this.warnings.push({ path, error: error.message || String(error) });
+        const msg = error.message || error;
+        this.warnings.push({ path, error: msg });
+        if (this.options.debugMode) {
+            self.postMessage({ type: 'debug', msg: `<span style="color:#EF4444">[ERROR]</span> ${path}: ${msg}` });
+        }
     }
 
     async process() {
@@ -80,6 +85,27 @@ class ModConverter {
             
             this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
+            
+            this.rpFolder.folder("animations");
+            this.rpFolder.folder("textures");
+            this.rpFolder.folder("sounds");
+            this.bpFolder.folder("blocks");
+            this.bpFolder.folder("items");
+            this.bpFolder.folder("recipes");
+            
+            self.postMessage({ type: 'status', title: 'Analyzing Mod...', desc: 'Pre-scanning architecture', isLoading: true, percent: 0 });
+            
+            for (const f of this.fileNames) {
+                if (f.endsWith('.png')) this.stats.textures++;
+                else if (f.endsWith('.class')) this.stats.classes++;
+                else if (f.includes('models/') && f.endsWith('.json')) this.stats.models++;
+                else if (f.includes('animations/') && f.endsWith('.json')) this.stats.animations++;
+            }
+            
+            let totalAnalyzable = this.stats.textures + this.stats.models + this.stats.animations + this.stats.classes;
+            let compatScore = totalAnalyzable > 0 ? Math.round(((totalAnalyzable - this.stats.classes) / totalAnalyzable) * 100) : 100;
+            self.postMessage({ type: 'prescan', stats: this.stats, score: compatScore });
+            this.startTime = Date.now();
             
             self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true, percent: 0 });
             this.bpFolder.file("manifest.json", this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition"));
@@ -124,12 +150,16 @@ class ModConverter {
                 this.warnings.push({ path: 'Java Classes (.class)', error: `Skipped ${this.skippedClasses} raw logic files. Complex mechanisms cannot natively cross-compile; manual Bedrock scripting required.` });
             }
 
+            this.stats.blocks = this.blocks.size;
+            this.stats.items = this.items.size;
+
             self.postMessage({ 
                 type: 'success', 
                 blob: content, 
                 fileName: `${this.modNameBase}.mcaddon`, 
                 count: this.fileCount,
-                warnings: this.warnings
+                warnings: this.warnings,
+                stats: this.stats
             });
             
         } catch (error) {
@@ -137,18 +167,29 @@ class ModConverter {
         }
     }
     
-    incrementCounter() {
+    incrementCounter(fileName = "") {
         this.fileCount++;
         const percent = (this.fileCount / this.totalFiles) * 100;
+        
+        let elapsed = (Date.now() - this.startTime) / 1000;
+        let speed = this.fileCount / elapsed;
+        let remain = Math.max(0, (this.totalFiles - this.fileCount) / speed);
+        let timeStr = remain > 60 ? `${Math.floor(remain/60)}m ${Math.round(remain % 60)}s remaining` : `${Math.round(remain)}s remaining`;
+        
         if (this.fileCount % 10 === 0 || this.fileCount === this.totalFiles) {
-            self.postMessage({ type: 'status', title: 'Converting Assets...', desc: `Migrated ${this.fileCount} / ${this.totalFiles} files`, isLoading: true, percent });
+            self.postMessage({ type: 'progress', current: this.fileCount, total: this.totalFiles, percent, timeStr, file: fileName });
+        }
+        
+        if (this.options.debugMode && fileName) {
+            self.postMessage({ type: 'debug', msg: `<span style="color:#10B981">[LOADED]</span> ${fileName}` });
         }
     }
 
     async categorizeAndProcessFile(relativePath, zipEntry) {
         if (relativePath.endsWith('.class')) {
             this.skippedClasses++;
-            this.incrementCounter();
+            if (this.options.debugMode) self.postMessage({ type: 'debug', msg: `<span style="color:#F59E0B">[SKIPPED]</span> ${relativePath} (Java Class)` });
+            this.incrementCounter(relativePath);
             return;
         }
 
@@ -243,7 +284,7 @@ class ModConverter {
                 const soundPath = soundMatch[2];
                 const fileContent = await zipEntry.async('arraybuffer');
                 this.rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
-                this.incrementCounter();
+                this.incrementCounter(relativePath);
             } catch(e) {
                     this.logWarning(relativePath, e);
             }
@@ -308,7 +349,7 @@ class ModConverter {
                 if (langLines.length > 0) {
                     const textContent = langLines.join('\n');
                     this.rpFolder.file(`texts/${langCode}.lang`, textContent);
-                    this.incrementCounter();
+                    this.incrementCounter(relativePath);
                 }
             } catch(e) {
                 this.logWarning(relativePath, e);
@@ -329,9 +370,15 @@ class ModConverter {
                     "format_version": "1.12.0"
                 };
                 
-                const formatId = (id) => id.includes(':') ? id : `minecraft:${id}`;
-
+                function formatId(id) {
+    if (!id || typeof id !== 'string') return "minecraft:air";
+    if (!id.includes(':')) return `minecraft:${id}`;
+    return id.toLowerCase();
+}
                 if (parsed.type === 'minecraft:crafting_shaped') {
+                    // Record recipe component
+                    this.stats.recipes++;
+                    
                     bedrockRecipe["minecraft:recipe_shaped"] = {
                         "description": { "identifier": `${namespace}:${recipeId}` },
                         "tags": ["crafting_table"],
@@ -401,7 +448,7 @@ class ModConverter {
                         bedrockRecipe["minecraft:recipe_shapeless"].result = typeof parsed.result === 'string' ? {"item": formatId(parsed.result)} : {"item": formatId(parsed.result.item || "minecraft:air"), "count": parsed.result.count || 1};
                     }
                     this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+                    this.incrementCounter(relativePath);
                 }
             } catch(e) {
                 this.logWarning(relativePath, e);
@@ -547,7 +594,7 @@ class ModConverter {
                     this.rpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                     this.bpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                 }
-                this.incrementCounter();
+                this.incrementCounter(relativePath);
             } catch(e) {
                 this.logWarning(relativePath, e);
             }
@@ -619,6 +666,8 @@ class ModConverter {
                     properties: finalProps,
                     hasLogic: Object.keys(finalProps).length > 0
                 };
+                
+                this.incrementCounter(relativePath);
             } catch(e) {
                 this.logWarning(relativePath, e);
             }
