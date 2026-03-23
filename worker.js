@@ -553,7 +553,7 @@ class ModConverter {
                     bpBiome["minecraft:biome"].components["minecraft:climate"] = climate;
                 }
 
-                this.bpFolder.file(`biomes/${biomeId}.json`, JSON.stringify(bpBiome, null, 4));
+                this.rpFolder.file(`biomes/${biomeId}.client_biomes.json`, JSON.stringify(bpBiome, null, 4));
 
                 let effects = parsed.effects || {};
                 const clientBiomeObj = {};
