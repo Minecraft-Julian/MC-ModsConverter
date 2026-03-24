@@ -85,34 +85,43 @@ class ModConverter {
         // Initialize manifests
         this.bpModuleUUID = generateUUID();
         this.rpModuleUUID = generateUUID();
-        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors", this.bpModuleUUID, this.rpModuleUUID);
-        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources", this.rpModuleUUID, this.bpModuleUUID);
+        this.manifestVersion = [1, new Date().getMonth() + 1, new Date().getDate()];
+        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors", this.bpModuleUUID, this.rpModuleUUID, this.manifestVersion);
+        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources", this.rpModuleUUID, this.bpModuleUUID, this.manifestVersion);
         this.languages = new Set();
     }
 
-    generateManifest(type, name, description, selfUUID, dependencyUUID) {
+    generateManifest(type, name, description, selfUUID, dependencyUUID, version) {
         return {
             "format_version": 2,
             "header": {
                 "name": name,
                 "description": description,
                 "uuid": generateUUID(),
-                "version": [1, 0, 0],
-                "min_engine_version": [1, 19, 0]
+                "version": version,
+                "min_engine_version": [1, 20, 0]
             },
             "modules": [
                 {
                     "type": type === 'resources' ? 'resources' : 'data',
                     "uuid": selfUUID,
-                    "version": [1, 0, 0]
+                    "version": version
                 }
             ],
             "dependencies": [
                 {
                     "uuid": dependencyUUID,
-                    "version": [1, 0, 0]
+                    "version": version
                 }
-            ]
+            ],
+            "metadata": {
+                "authors": ["MC-ModsConverter"],
+                "url": "https://minecraft-julian.github.io/MC-ModsConverter/",
+                "generated_with": {
+                    "tool": "MC-ModsConverter",
+                    "version": "1.0.0"
+                }
+            }
         };
     }
 
