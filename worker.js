@@ -476,77 +476,109 @@ class ModConverter {
                     return id.includes(':') ? id : `minecraft:${id}`;
                 };
 
-                if (parsed.type === 'minecraft:crafting_shaped') {
-                    bedrockRecipe["minecraft:recipe_shaped"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": ["crafting_table"],
-                        "pattern": parsed.pattern || ["###", "###", "###"],
-                        "key": {},
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
-                    };
+                const isValidIngredient = (v) => {
+                    if (!v) return false;
+                    if (typeof v === 'string') return true;
+                    if (v.tag) return false; // Bedrock doesn't support Java-style tags in recipes
+                    return !!v.item;
+                };
 
+                const getIngredientId = (v) => {
+                    if (typeof v === 'string') return formatId(v);
+                    return formatId(v.item);
+                };
+
+                if (parsed.type === 'minecraft:crafting_shaped') {
+                    let ingredientsValid = true;
+                    let keys = {};
                     for (const [k, v] of Object.entries(parsed.key || {})) {
-                        bedrockRecipe["minecraft:recipe_shaped"].key[k] = { "item": formatId(v?.item || v?.tag || "minecraft:air") };
+                        if (!isValidIngredient(v)) {
+                            ingredientsValid = false;
+                            break;
+                        }
+                        keys[k] = { "item": getIngredientId(v) };
                     }
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+
+                    if (ingredientsValid && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_shaped"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": ["crafting_table"],
+                            "pattern": parsed.pattern || ["###", "###", "###"],
+                            "key": keys,
+                            "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
+                    }
 
                 } else if (parsed.type === 'minecraft:crafting_shapeless') {
-                    bedrockRecipe["minecraft:recipe_shapeless"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": ["crafting_table"],
-                        "ingredients": (parsed.ingredients || []).map(i => ({ "item": formatId(i?.item || i?.tag || "minecraft:air") })),
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
-                    };
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+                    let ingredients = (parsed.ingredients || []).filter(i => isValidIngredient(i)).map(i => ({ "item": getIngredientId(i) }));
+                    
+                    if (ingredients.length > 0 && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_shapeless"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": ["crafting_table"],
+                            "ingredients": ingredients,
+                            "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
+                    }
 
                 } else if (parsed.type === 'minecraft:smelting' || parsed.type === 'minecraft:blasting' || parsed.type === 'minecraft:campfire_cooking') {
-                    bedrockRecipe["minecraft:recipe_furnace"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": [parsed.type === 'minecraft:smelting' ? "furnace" : (parsed.type === 'minecraft:blasting' ? "blast_furnace" : "campfire")],
-                        "input": formatId(parsed.ingredient?.item || parsed.ingredient?.tag),
-                        "output": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
-                    };
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+                    if (isValidIngredient(parsed.ingredient) && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_furnace"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": [parsed.type === 'minecraft:smelting' ? "furnace" : (parsed.type === 'minecraft:blasting' ? "blast_furnace" : "campfire")],
+                            "input": getIngredientId(parsed.ingredient),
+                            "output": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
+                    }
                 } else if (parsed.type === 'minecraft:stonecutting') {
-                    bedrockRecipe["minecraft:recipe_shapeless"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": ["stonecutter"],
-                        "ingredients": [{ "item": formatId(parsed.ingredient?.item || parsed.ingredient?.tag) }],
-                        "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
-                    };
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+                    if (isValidIngredient(parsed.ingredient) && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_shapeless"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": ["stonecutter"],
+                            "ingredients": [{ "item": getIngredientId(parsed.ingredient) }],
+                            "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result?.item), "count": parsed.result?.count || 1 }
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
+                    }
                 } else if (parsed.type === 'minecraft:smithing') {
-                    bedrockRecipe["minecraft:recipe_smithing_transform"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": ["smithing_table"],
-                        "template": typeof parsed.template === 'object' ? formatId(parsed.template?.item || parsed.template?.tag) : formatId(parsed.template),
-                        "base": formatId(parsed.base?.item || parsed.base?.tag),
-                        "addition": formatId(parsed.addition?.item || parsed.addition?.tag),
-                        "result": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
-                    };
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
+                    if (isValidIngredient(parsed.template) && isValidIngredient(parsed.base) && isValidIngredient(parsed.addition) && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_smithing_transform"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": ["smithing_table"],
+                            "template": getIngredientId(parsed.template),
+                            "base": getIngredientId(parsed.base),
+                            "addition": getIngredientId(parsed.addition),
+                            "result": formatId(typeof parsed.result === 'string' ? parsed.result : parsed.result?.item)
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
+                    }
                 } else {
-                    bedrockRecipe["minecraft:recipe_shapeless"] = {
-                        "description": { "identifier": `${namespace}:${recipeId}` },
-                        "tags": [parsed.type ? parsed.type.replace(':', '_') : "custom_machine"],
-                        "ingredients": [],
-                        "result": { "item": formatId("minecraft:air") }
-                    };
+                    // Fallback for other types
+                    let ingredients = [];
                     if (parsed.ingredients) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = parsed.ingredients.map(i => ({ "item": formatId(i.item || i.tag || "minecraft:air") }));
+                        ingredients = parsed.ingredients.filter(i => isValidIngredient(i)).map(i => ({ "item": getIngredientId(i) }));
                     } else if (parsed.ingredient) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].ingredients = [{ "item": formatId(parsed.ingredient.item || parsed.ingredient.tag || "minecraft:air") }];
+                        if (isValidIngredient(parsed.ingredient)) ingredients = [{ "item": getIngredientId(parsed.ingredient) }];
                     }
-                    if (parsed.result) {
-                        bedrockRecipe["minecraft:recipe_shapeless"].result = typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item || "minecraft:air"), "count": parsed.result.count || 1 };
+
+                    if (ingredients.length > 0 && parsed.result) {
+                        bedrockRecipe["minecraft:recipe_shapeless"] = {
+                            "description": { "identifier": `${namespace}:${recipeId}` },
+                            "tags": [parsed.type ? parsed.type.replace(':', '_') : "custom_machine"],
+                            "ingredients": ingredients,
+                            "result": typeof parsed.result === 'string' ? { "item": formatId(parsed.result) } : { "item": formatId(parsed.result.item || "minecraft:air"), "count": parsed.result.count || 1 }
+                        };
+                        this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
+                        this.incrementCounter();
                     }
-                    this.bpFolder.file(`recipes/${recipeId}.json`, JSON.stringify(bedrockRecipe, null, 4));
-                    this.incrementCounter();
                 }
             } catch (e) {
                 this.logWarning(relativePath, e);
