@@ -8,7 +8,7 @@ function parseJSON(str) {
             return m;
         });
         return JSON.parse(cleaned);
-    } catch(e) {
+    } catch (e) {
         return JSON.parse(str);
     }
 }
@@ -226,7 +226,7 @@ class ModConverter {
         if (!modelId) return null;
         let [namespace, path] = modelId.includes(':') ? modelId.split(':') : ['minecraft', modelId];
         let fullPath = `assets/${namespace}/models/${path}.json`;
-        
+
         const zipEntry = this.loadedZip.file(fullPath);
         if (!zipEntry) return null;
 
@@ -278,15 +278,15 @@ class ModConverter {
             try {
                 const fileContent = await zipEntry.async('string');
                 let scriptName = relativePath.split('/').pop();
-                
+
                 let finalName = scriptName;
                 let counter = 1;
-                while(this.scriptsList.includes(finalName)) {
+                while (this.scriptsList.includes(finalName)) {
                     finalName = scriptName.replace('.js', `_${counter}.js`);
                     counter++;
                 }
                 this.scriptsList.push(finalName);
-                
+
                 this.bpFolder.file(`scripts/${finalName}`, fileContent);
                 this.incrementCounter();
             } catch (e) {
@@ -523,7 +523,7 @@ class ModConverter {
 
                 } else if (parsed.type === 'minecraft:crafting_shapeless') {
                     let ingredients = (parsed.ingredients || []).filter(i => isValidIngredient(i)).map(i => ({ "item": getIngredientId(i) }));
-                    
+
                     if (ingredients.length > 0 && parsed.result) {
                         bedrockRecipe["minecraft:recipe_shapeless"] = {
                             "description": { "identifier": `${namespace}:${recipeId}` },
@@ -676,12 +676,12 @@ class ModConverter {
 
                 let effects = parsed.effects || {};
                 const clientBiomeObj = {};
-                
+
                 if (effects.water_color !== undefined) {
                     clientBiomeObj.water_surface_color = hexColor(effects.water_color);
                 }
                 clientBiomeObj.fog_identifier = "minecraft:fog_default"; // fallback
-                
+
                 if (effects.water_fog_color !== undefined) {
                     clientBiomeObj.water_surface_transparency = 0.65;
                 }
@@ -689,7 +689,7 @@ class ModConverter {
                 if (Object.keys(clientBiomeObj).length > 0) {
                     this.biomesClientData.biomes[biomeId] = clientBiomeObj;
                 }
-                
+
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -738,14 +738,14 @@ class ModConverter {
                 const namespace = blockModelMatch[1];
                 const modelName = blockModelMatch[2];
                 const modelId = `${namespace}:block/${modelName}`;
-                
+
                 let parsed = await this.loadModel(modelId);
                 if (!parsed) return;
 
                 if (parsed.elements) {
                     const cubes = parsed.elements.map(el => {
                         let size = [el.to[0] - el.from[0], el.to[1] - el.from[1], el.to[2] - el.from[2]];
-                        
+
                         // Resolve UV from faces
                         let uv = [0, 0];
                         if (el.faces) {
@@ -754,7 +754,7 @@ class ModConverter {
                         }
 
                         let cube = { "origin": el.from, "size": size, "uv": uv };
-                        
+
                         if (el.rotation) {
                             cube.pivot = el.rotation.origin || [8, 8, 8];
                             let rot = [0, 0, 0];
@@ -780,7 +780,7 @@ class ModConverter {
                     };
                     this.rpFolder.file(`models/blocks/${geoId}.geo.json`, JSON.stringify(geo, null, 4));
                     this.geometries.add(geoId);
-                    
+
                     // Register textures if found in model
                     if (parsed.textures) {
                         for (let [texKey, texPath] of Object.entries(parsed.textures)) {
@@ -804,13 +804,27 @@ class ModConverter {
         const animMatch = relativePath.match(/^(?:assets|data)\/([^/]+)\/(animations|animation_controllers)\/(.*)\.json$/);
         if (animMatch) {
             try {
+                const namespace = animMatch[1];
                 const folderName = animMatch[2];
                 const fileName = animMatch[3];
                 const fileContent = await zipEntry.async('string');
 
-                // Inspect for GeckoLib complexities and ensure Bedrock JSON formatting
                 const parsed = parseJSON(fileContent);
-                if (parsed.format_version || parsed.geckolib_format_version) {
+
+                if (folderName === 'animations' && parsed.animations) {
+                    const out = {
+                        "format_version": "1.8.0",
+                        "animations": {}
+                    };
+
+                    for (const [name, anim] of Object.entries(parsed.animations)) {
+                        out.animations[`animation.${namespace}.${name}`] = {
+                            "loop": true,
+                            "bones": anim.bones || {}
+                        };
+                    }
+                    this.rpFolder.file(`animations/${fileName}.json`, JSON.stringify(out, null, 4));
+                } else if (parsed.format_version || parsed.geckolib_format_version) {
                     if (parsed.geckolib_format_version) {
                         parsed.format_version = parsed.geckolib_format_version;
                         delete parsed.geckolib_format_version;
@@ -1053,9 +1067,9 @@ class ModConverter {
                         let parts = soundName.split(':');
                         let namespace = parts.length > 1 ? parts[0] : 'minecraft';
                         let path = parts.length > 1 ? parts[1] : soundName;
-                        
+
                         let bedrockPath = `sounds/${namespace}/${path}`;
-                        
+
                         if (fileExists(bedrockPath)) {
                             if (typeof s === 'object') {
                                 validSounds.push({ ...s, name: bedrockPath.replace(/\.(ogg|wav)$/, '') });
@@ -1119,5 +1133,4 @@ class ModConverter {
         }
     }
 }
-
 
