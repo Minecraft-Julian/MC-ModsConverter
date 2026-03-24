@@ -221,6 +221,42 @@ class ModConverter {
         this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
     }
 
+    async loadModel(modelId) {
+        if (!modelId) return null;
+        let [namespace, path] = modelId.includes(':') ? modelId.split(':') : ['minecraft', modelId];
+        let fullPath = `assets/${namespace}/models/${path}.json`;
+        
+        const zipEntry = this.loadedZip.file(fullPath);
+        if (!zipEntry) return null;
+
+        let content = await zipEntry.async('string');
+        let parsed = parseJSON(content);
+
+        if (parsed.parent) {
+            let parentModel = await this.loadModel(parsed.parent);
+            if (parentModel) {
+                // Inheritance merge
+                if (!parsed.elements && parentModel.elements) {
+                    parsed.elements = JSON.parse(JSON.stringify(parentModel.elements));
+                }
+                parsed.textures = { ...parentModel.textures, ...parsed.textures };
+            }
+        }
+        return parsed;
+    }
+
+    resolveTextureMapping(textureRef, textures) {
+        if (!textureRef) return null;
+        if (textureRef.startsWith('#')) {
+            let key = textureRef.substring(1);
+            if (textures && textures[key]) {
+                return this.resolveTextureMapping(textures[key], textures);
+            }
+            return null;
+        }
+        return textureRef;
+    }
+
     incrementCounter() {
         this.fileCount++;
         const percent = (this.fileCount / this.totalFiles) * 100;
@@ -657,12 +693,26 @@ class ModConverter {
         const blockModelMatch = relativePath.match(/^assets\/([^/]+)\/models\/block\/(.*)\.json$/);
         if (blockModelMatch && this.options.convertModels !== false) {
             try {
-                const modelId = blockModelMatch[2];
-                const fileContent = await zipEntry.async('string');
-                const parsed = parseJSON(fileContent);
+                const namespace = blockModelMatch[1];
+                const modelName = blockModelMatch[2];
+                const modelId = `${namespace}:block/${modelName}`;
+                
+                let parsed = await this.loadModel(modelId);
+                if (!parsed) return;
+
                 if (parsed.elements) {
                     const cubes = parsed.elements.map(el => {
-                        let cube = { "origin": el.from, "size": [el.to[0] - el.from[0], el.to[1] - el.from[1], el.to[2] - el.from[2]], "uv": [0, 0] };
+                        let size = [el.to[0] - el.from[0], el.to[1] - el.from[1], el.to[2] - el.from[2]];
+                        
+                        // Resolve UV from faces
+                        let uv = [0, 0];
+                        if (el.faces) {
+                            let face = el.faces.up || el.faces.north || el.faces.all || Object.values(el.faces)[0];
+                            if (face && face.uv) uv = [face.uv[0], face.uv[1]];
+                        }
+
+                        let cube = { "origin": el.from, "size": size, "uv": uv };
+                        
                         if (el.rotation) {
                             cube.pivot = el.rotation.origin || [8, 8, 8];
                             let rot = [0, 0, 0];
@@ -673,19 +723,33 @@ class ModConverter {
                         }
                         return cube;
                     });
+
+                    const geoId = modelName.replace(/\//g, '.');
                     const geo = {
                         "format_version": "1.12.0",
                         "minecraft:geometry": [{
                             "description": {
-                                "identifier": `geometry.${modelId}`,
+                                "identifier": `geometry.${geoId}`,
                                 "texture_width": 16, "texture_height": 16,
                                 "visible_bounds_width": 2, "visible_bounds_height": 2
                             },
                             "bones": [{ "name": "bone", "pivot": [8, 8, 8], "cubes": cubes }]
                         }]
                     };
-                    this.rpFolder.file(`models/blocks/${modelId}.geo.json`, JSON.stringify(geo, null, 4));
-                    this.geometries.add(modelId);
+                    this.rpFolder.file(`models/blocks/${geoId}.geo.json`, JSON.stringify(geo, null, 4));
+                    this.geometries.add(geoId);
+                    
+                    // Register textures if found in model
+                    if (parsed.textures) {
+                        for (let [texKey, texPath] of Object.entries(parsed.textures)) {
+                            let resolvedPath = this.resolveTextureMapping(texPath, parsed.textures);
+                            if (resolvedPath && !resolvedPath.startsWith('#')) {
+                                let texName = resolvedPath.split('/').pop();
+                                this.blockTexturesRegistry[texName] = `textures/blocks/${texName}`;
+                            }
+                        }
+                    }
+
                     this.incrementCounter();
                 }
             } catch (e) {
@@ -993,9 +1057,4 @@ class ModConverter {
     }
 }
 
-self.onmessage = function (e) {
-    if (e.data.type === 'start') {
-        const converter = new ModConverter(e.data.file);
-        converter.process();
-    }
-};
+
