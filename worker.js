@@ -72,6 +72,7 @@ class ModConverter {
         this.blockTexturesRegistry = {};
         this.itemTexturesRegistry = {};
         this.flipbookTextures = [];
+        this.soundsRegistry = [];
         this.javaSoundsJson = null;
         this.blockProperties = {};
         this.scriptsList = [];
@@ -383,8 +384,17 @@ class ModConverter {
             try {
                 const namespace = soundMatch[1];
                 const soundPath = soundMatch[2];
+                const name = soundPath.replace(/\.(ogg|wav)$/, '');
                 const fileContent = await zipEntry.async('arraybuffer');
-                this.rpFolder.file(`sounds/${namespace}/${soundPath}`, fileContent);
+
+                const bedrockPath = `sounds/${namespace}/${soundPath}`;
+                this.rpFolder.file(bedrockPath, fileContent);
+
+                this.soundsRegistry.push({
+                    id: `${namespace}.${name.replace(/\//g, '.')}`,
+                    path: bedrockPath.replace(/\.(ogg|wav)$/, '')
+                });
+
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -1023,68 +1033,89 @@ class ModConverter {
 
     async generateSoundDefinitions() {
         try {
-            if (this.javaSoundsJson) {
-                const bedrockSoundsData = {
-                    "format_version": "1.14.0",
-                    "sound_definitions": {}
-                };
+            const bedrockSoundsData = {
+                "format_version": "1.14.0",
+                "sound_definitions": {}
+            };
 
+            const fileExists = (path) => {
+                const cleanPath = path.replace(/\.(ogg|wav)$/, '');
+                return this.soundsRegistry.some(s => s.path === cleanPath);
+            };
+
+            if (this.javaSoundsJson) {
                 for (const [eventName, eventData] of Object.entries(this.javaSoundsJson)) {
                     if (!eventData.sounds) continue;
 
-                    const bedrockSoundsList = eventData.sounds.map(s => {
+                    const validSounds = [];
+                    for (const s of eventData.sounds) {
                         let soundName = typeof s === 'string' ? s : s.name;
                         let parts = soundName.split(':');
-
                         let namespace = parts.length > 1 ? parts[0] : 'minecraft';
                         let path = parts.length > 1 ? parts[1] : soundName;
-                        let bedrockName = `sounds/${namespace}/${path}`;
-
-                        if (typeof s === 'object') {
-                            return { ...s, name: bedrockName };
+                        
+                        let bedrockPath = `sounds/${namespace}/${path}`;
+                        
+                        if (fileExists(bedrockPath)) {
+                            if (typeof s === 'object') {
+                                validSounds.push({ ...s, name: bedrockPath.replace(/\.(ogg|wav)$/, '') });
+                            } else {
+                                validSounds.push(bedrockPath.replace(/\.(ogg|wav)$/, ''));
+                            }
                         }
-                        return bedrockName;
-                    });
-                    bedrockSoundsData.sound_definitions[eventName] = {
-                        "category": eventData.category || "neutral",
-                        "sounds": bedrockSoundsList
+                    }
+
+                    if (validSounds.length > 0) {
+                        bedrockSoundsData.sound_definitions[eventName] = {
+                            "category": eventData.category || "neutral",
+                            "sounds": validSounds
+                        };
+                    }
+                }
+            }
+
+            // Register all actually existing sounds from the registry if they aren't already defined
+            for (const s of this.soundsRegistry) {
+                if (!bedrockSoundsData.sound_definitions[s.id]) {
+                    bedrockSoundsData.sound_definitions[s.id] = {
+                        "category": "neutral",
+                        "sounds": [s.path]
                     };
                 }
+            }
 
+            if (Object.keys(bedrockSoundsData.sound_definitions).length > 0) {
                 this.rpFolder.file("sounds/sound_definitions.json", JSON.stringify(bedrockSoundsData, null, 4));
             }
 
             if (this.blocks.size > 0) {
                 const rpSoundsJson = {
-                    "block_sounds": {},
-                    "entity_sounds": { "entities": {} },
-                    "individual_event_sounds": { "events": {} }
+                    "block_sounds": {}
                 };
 
                 for (const fullId of this.blocks) {
-                    const isWood = fullId.includes("wood") || fullId.includes("log") || fullId.includes("plank") || fullId.includes("door") || fullId.includes("fence");
-                    const isMetal = fullId.includes("iron") || fullId.includes("gold") || fullId.includes("copper") || fullId.includes("brass") || fullId.includes("steel");
-                    const isGlass = fullId.includes("glass");
-
+                    const idLower = fullId.toLowerCase();
                     let soundType = "stone";
-                    if (isWood) soundType = "wood";
-                    else if (isMetal) soundType = "metal";
-                    else if (isGlass) soundType = "glass";
+                    if (idLower.includes("wood") || idLower.includes("log") || idLower.includes("plank") || idLower.includes("fence") || idLower.includes("door")) soundType = "wood";
+                    else if (idLower.includes("iron") || idLower.includes("gold") || idLower.includes("copper") || idLower.includes("metal") || idLower.includes("steel")) soundType = "metal";
+                    else if (idLower.includes("glass")) soundType = "glass";
+                    else if (idLower.includes("grass") || idLower.includes("leaf") || idLower.includes("leaves") || idLower.includes("foliage") || idLower.includes("plant")) soundType = "grass";
+                    else if (idLower.includes("dirt") || idLower.includes("sand") || idLower.includes("gravel") || idLower.includes("clay") || idLower.includes("mud")) soundType = "gravel";
 
                     rpSoundsJson.block_sounds[fullId] = {
                         "events": {
-                            "place": { "sound": `use.${soundType}`, "volume": 1.0, "pitch": 1.0 },
-                            "break": { "sound": `dig.${soundType}`, "volume": 1.0, "pitch": 1.0 },
-                            "hit": { "sound": `dig.${soundType}`, "volume": 0.5, "pitch": 1.0 },
-                            "step": { "sound": `step.${soundType}`, "volume": 0.5, "pitch": 1.0 },
-                            "fall": { "sound": `step.${soundType}`, "volume": 0.8, "pitch": 1.0 }
+                            "place": { "sound": `use.${soundType}` },
+                            "break": { "sound": `dig.${soundType}` },
+                            "hit": { "sound": `dig.${soundType}` },
+                            "step": { "sound": `step.${soundType}` },
+                            "fall": { "sound": `step.${soundType}` }
                         }
                     };
                 }
                 this.rpFolder.file("sounds.json", JSON.stringify(rpSoundsJson, null, 4));
             }
         } catch (e) {
-            this.logWarning("generateSoundDefinitions() loop", e);
+            this.logWarning("generateSoundDefinitions()", e);
         }
     }
 }
