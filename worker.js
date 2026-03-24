@@ -20,6 +20,35 @@ function generateUUID() {
     });
 }
 
+class Validator {
+    constructor() {
+        this.issues = [];
+    }
+
+    addIssue(path, message, severity = 'WARNING') {
+        this.issues.push({ path, error: message, severity });
+    }
+
+    validateBlock(fullId, blockData) {
+        if (!fullId.includes(':')) {
+            this.addIssue(fullId, "Block identifier missing namespace.", "WARNING");
+        }
+        if (!blockData["minecraft:block"]?.components?.["minecraft:material_instances"]) {
+            this.addIssue(fullId, "Block missing material instances (textures).", "ERROR");
+        }
+    }
+
+    validateItem(fullId, itemData) {
+        if (!fullId.includes(':')) {
+            this.addIssue(fullId, "Item identifier missing namespace.", "WARNING");
+        }
+    }
+
+    getResults() {
+        return this.issues;
+    }
+}
+
 self.onmessage = function (e) {
     if (e.data.type === 'start') {
         const converter = new ModConverter(e.data.file, e.data.options);
@@ -51,6 +80,11 @@ class ModConverter {
         this.fileCount = 0;
         this.skippedClasses = 0;
         this.warnings = [];
+
+        // Initialize manifests
+        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors");
+        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources");
+        this.languages = new Set();
     }
 
     generateManifest(type, name, description) {
@@ -90,69 +124,38 @@ class ModConverter {
             this.loadedZip = await zip.loadAsync(this.file);
             this.addonZip = new JSZip();
 
-            this.fileNames = Object.keys(this.loadedZip.files).filter(f => !this.loadedZip.files[f].dir);
-            this.totalFiles = this.fileNames.length;
-            this.languages = new Set();
-
             this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
 
-            self.postMessage({ type: 'status', title: 'Generating Assets...', desc: 'Creating Bedrock manifests', isLoading: true, percent: 0 });
-            this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "1:1 Conversion Attempt from Java Edition");
-            this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "1:1 Conversion Attempt from Java Edition");
-            this.rpFolder.file("manifest.json", JSON.stringify(this.rpManifest, null, 4));
+            // Phase 1: SCAN
+            self.postMessage({ type: 'status', title: 'Scanning...', desc: 'Analyzing Java Mod structure', isLoading: true, percent: 5 });
+            const files = this.scan();
+            this.totalFiles = files.length;
+            this.validator = new Validator();
 
-            self.postMessage({ type: 'status', title: 'Extracting Assets...', desc: 'Scanning Java Mod Structure', isLoading: true, percent: 0 });
-
-            // Phase 1: Categorize and parse all files sequentially
-            for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
-                if (zipEntry.dir) continue;
+            // Phase 2: PARSE & TRANSFORM (Current hybrid loop)
+            // We iterate through scanned files and process them
+            self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
+            for (const file of files) {
                 try {
-                    await this.categorizeAndProcessFile(relativePath, zipEntry);
+                    await this.categorizeAndProcessFile(file.path, file.entry);
                 } catch (e) {
-                    this.logWarning(relativePath, e);
+                    this.logWarning(file.path, e);
                     this.incrementCounter();
                 }
             }
 
-            // Phase 2: Generate cross-dependent Bedrock registries
-            self.postMessage({ type: 'status', title: 'Building Registries...', desc: 'Generating Textures, Blocks & Sound Definitions', isLoading: true });
+            // Phase 3: VALIDATE & GENERATE REGISTRIES
+            self.postMessage({ type: 'status', title: 'Building Registries...', desc: 'Generating Textures, Blocks & Sound Definitions', isLoading: true, percent: 85 });
             await this.generateBlocks();
             await this.generateTexturesRegistry();
             await this.generateFlipbooks();
             await this.generateSoundDefinitions();
 
-            if (this.languages.size > 0) {
-                this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
-            }
+            // Additional logic for manifests, languages, biomes
+            this.finalizeAddon();
 
-            if (Object.keys(this.biomesClientData.biomes).length > 0) {
-                this.rpFolder.file("biomes_client.json", JSON.stringify(this.biomesClientData, null, 4));
-            }
-
-            if (this.scriptsList.length > 0) {
-                this.bpManifest.modules.push({
-                    "type": "script",
-                    "language": "javascript",
-                    "uuid": generateUUID(),
-                    "entry": "scripts/main.js",
-                    "version": [1, 0, 0]
-                });
-                this.bpManifest.dependencies = [
-                    {
-                        "module_name": "@minecraft/server",
-                        "version": "1.0.0"
-                    }
-                ];
-                let mainJs = "";
-                for (let scr of this.scriptsList) {
-                    mainJs += `import "./${scr}";\n`;
-                }
-                this.bpFolder.file("scripts/main.js", mainJs);
-            }
-            this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
-
-            self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true, percent: 0 });
+            self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: 'Compressing file to .mcaddon format', isLoading: true, percent: 95 });
 
             const content = await this.addonZip.generateAsync({
                 type: "blob",
@@ -163,9 +166,7 @@ class ModConverter {
                 self.postMessage({ type: 'status', title: 'Packaging Addon...', desc: `Compressing ${metadata.percent.toFixed(1)}%`, isLoading: true, percent: metadata.percent });
             });
 
-            if (this.skippedClasses > 0) {
-                // Silently skip to avoid alarming users with expected compilation limits
-            }
+            this.warnings.push(...this.validator.getResults());
 
             self.postMessage({
                 type: 'success',
@@ -178,6 +179,46 @@ class ModConverter {
         } catch (error) {
             self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.', warnings: this.warnings });
         }
+    }
+
+    scan() {
+        const files = [];
+        for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
+            if (zipEntry.dir) continue;
+            files.push({ path: relativePath, entry: zipEntry });
+        }
+        return files;
+    }
+
+    finalizeAddon() {
+        if (this.languages.size > 0) {
+            this.rpFolder.file("texts/languages.json", JSON.stringify(Array.from(this.languages), null, 4));
+        }
+
+        if (Object.keys(this.biomesClientData.biomes).length > 0) {
+            this.rpFolder.file("biomes_client.json", JSON.stringify(this.biomesClientData, null, 4));
+        }
+
+        if (this.scriptsList.length > 0) {
+            this.bpManifest.modules.push({
+                "type": "script",
+                "language": "javascript",
+                "uuid": generateUUID(),
+                "entry": "scripts/main.js",
+                "version": [1, 0, 0]
+            });
+            this.bpManifest.dependencies = [
+                { "module_name": "@minecraft/server", "version": "1.0.0" }
+            ];
+            let mainJs = "";
+            for (let scr of this.scriptsList) {
+                mainJs += `import "./${scr}";\n`;
+            }
+            this.bpFolder.file("scripts/main.js", mainJs);
+        }
+
+        this.rpFolder.file("manifest.json", JSON.stringify(this.rpManifest, null, 4));
+        this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
     }
 
     incrementCounter() {
@@ -704,6 +745,7 @@ class ModConverter {
                         }
                     }
                 };
+                this.validator.validateItem(`${namespace}:${itemId}`, bedrockItem);
                 this.bpFolder.file(`items/${itemId}.json`, JSON.stringify(bedrockItem, null, 4));
                 this.incrementCounter();
             } catch (e) {
@@ -837,6 +879,7 @@ class ModConverter {
                     if (!bedrockBlock["minecraft:block"].events["on_interact_event"]) bedrockBlock["minecraft:block"].events["on_interact_event"] = {};
                 }
 
+                this.validator.validateBlock(fullId, bedrockBlock);
                 this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
             }
         } catch (e) {
