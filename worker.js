@@ -200,7 +200,8 @@ class ModConverter {
             this.rpFolder.file("biomes_client.json", JSON.stringify(this.biomesClientData, null, 4));
         }
 
-        if (this.scriptsList.length > 0) {
+        // MINI-LOGIC ENGINE (Bedrock Script API)
+        if (this.scriptsList.length > 0 || this.blocks.size > 0) {
             this.bpManifest.modules.push({
                 "type": "script",
                 "language": "javascript",
@@ -208,10 +209,32 @@ class ModConverter {
                 "entry": "scripts/main.js",
                 "version": [1, 0, 0]
             });
-            this.bpManifest.dependencies = [
-                { "module_name": "@minecraft/server", "version": "1.0.0" }
-            ];
-            let mainJs = "";
+            if (!this.bpManifest.dependencies) this.bpManifest.dependencies = [];
+            this.bpManifest.dependencies.push({
+                "module_name": "@minecraft/server",
+                "version": "1.1.0"
+            });
+
+            let mainJs = `import { world, system } from "@minecraft/server";\n\n`;
+            mainJs += `// --- MCBE-KI LOGIC ENGINE ---\n`;
+            mainJs += `console.warn("[MCBE-KI] Logic Engine Initialized");\n\n`;
+            
+            mainJs += `// Custom Block Interactions & Placement\n`;
+            mainJs += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+            mainJs += `    const { block } = ev;\n`;
+            mainJs += `    if (block.typeId.includes(":")) {\n`;
+            mainJs += `        // Simulating block initialization\n`;
+            mainJs += `        // console.log("Placed custom block: " + block.typeId);\n`;
+            mainJs += `    }\n`;
+            mainJs += `});\n\n`;
+
+            mainJs += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+            mainJs += `    const { block, player } = ev;\n`;
+            mainJs += `    if (block.typeId.includes(":")) {\n`;
+            mainJs += `         // Custom interaction simulation\n`;
+            mainJs += `    }\n`;
+            mainJs += `});\n\n`;
+
             for (let scr of this.scriptsList) {
                 mainJs += `import "./${scr}";\n`;
             }
@@ -997,6 +1020,39 @@ class ModConverter {
                     };
                     if (!bedrockBlock["minecraft:block"].events) bedrockBlock["minecraft:block"].events = {};
                     if (!bedrockBlock["minecraft:block"].events["on_interact_event"]) bedrockBlock["minecraft:block"].events["on_interact_event"] = {};
+                }
+
+                // MINI-LOGIC ENGINE: Pattern Detection
+                const idLower = blockId.toLowerCase();
+                
+                // Light Emission
+                if (idLower.includes("lamp") || idLower.includes("glow") || idLower.includes("light") || idLower.includes("lantern") || idLower.includes("torch") || idLower.includes("candle")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:light_emission"] = (idLower.includes("torch") || idLower.includes("lantern")) ? 14 : 15;
+                }
+
+                // Containers
+                if (idLower.includes("chest") || idLower.includes("barrel") || idLower.includes("shulker") || idLower.includes("storage") || idLower.includes("cabinet")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:inventory"] = { "container_type": "container", "inventory_size": 27 };
+                    bedrockBlock["minecraft:block"].components["minecraft:container"] = { "container_type": "container", "inventory_size": 27, "restrict_to_owner": false };
+                }
+
+                // Interactions (Simple simulation)
+                if (idLower.includes("button")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:button"] = { "on_click": { "event": "on_interact_event" } };
+                }
+                if (idLower.includes("lever")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:lever"] = { "on_click": { "event": "on_interact_event" } };
+                }
+                if (idLower.includes("pressure_plate")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:pressure_plate"] = { "on_step_on": { "event": "on_interact_event" }, "on_step_off": { "event": "on_interact_event" } };
+                }
+
+                // Crafting
+                if (idLower.includes("crafting_table") || idLower.includes("workbench")) {
+                    bedrockBlock["minecraft:block"].components["minecraft:crafting_table"] = { "table_name": "Crafting Table", "crafting_tags": ["crafting_table"] };
+                }
+                if (idLower.includes("furnace") || idLower.includes("smelter") || idLower.includes("oven")) {
+                    bedrockBlock["minecraft:block"].components["tag:is_furnace"] = {};
                 }
 
                 this.validator.validateBlock(fullId, bedrockBlock);
