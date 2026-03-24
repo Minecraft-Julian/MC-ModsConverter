@@ -83,28 +83,33 @@ class ModConverter {
         this.warnings = [];
 
         // Initialize manifests
-        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors");
-        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources");
+        this.bpModuleUUID = generateUUID();
+        this.rpModuleUUID = generateUUID();
+        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors", this.bpModuleUUID, this.rpModuleUUID);
+        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources", this.rpModuleUUID, this.bpModuleUUID);
         this.languages = new Set();
     }
 
-    generateManifest(type, name, description) {
-        const headerUUID = generateUUID();
-        const moduleUUID = generateUUID();
-
+    generateManifest(type, name, description, selfUUID, dependencyUUID) {
         return {
             "format_version": 2,
             "header": {
                 "name": name,
                 "description": description,
-                "uuid": headerUUID,
+                "uuid": generateUUID(),
                 "version": [1, 0, 0],
                 "min_engine_version": [1, 19, 0]
             },
             "modules": [
                 {
                     "type": type === 'resources' ? 'resources' : 'data',
-                    "uuid": moduleUUID,
+                    "uuid": selfUUID,
+                    "version": [1, 0, 0]
+                }
+            ],
+            "dependencies": [
+                {
+                    "uuid": dependencyUUID,
                     "version": [1, 0, 0]
                 }
             ]
