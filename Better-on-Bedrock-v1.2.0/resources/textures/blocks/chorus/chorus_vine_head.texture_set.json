@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "chorus_vine_head",
-		"metalness_emissive_roughness": "chorus_vine_head_mer",
-		"heightmap": "chorus_vine_head_heightmap"
-	}
-}

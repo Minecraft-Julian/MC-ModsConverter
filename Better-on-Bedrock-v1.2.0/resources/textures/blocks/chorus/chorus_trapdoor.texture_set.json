@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "chorus_trapdoor",
-		"metalness_emissive_roughness": "chorus_trapdoor_mer",
-		"heightmap": "chorus_trapdoor_heightmap"
-	}
-}

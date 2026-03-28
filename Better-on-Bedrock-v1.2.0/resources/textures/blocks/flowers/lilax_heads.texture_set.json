@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "lilax_heads",
-        "metalness_emissive_roughness": "lilax_heads_mer",
-        "heightmap": "lilax_heads_heightmap"
-    }
-}

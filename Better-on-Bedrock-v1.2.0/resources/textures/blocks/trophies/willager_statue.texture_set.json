@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "willager_statue",
-        "metalness_emissive_roughness": "willager_statue_mer",
-        "heightmap": "willager_statue_heightmap"
-    }
-}

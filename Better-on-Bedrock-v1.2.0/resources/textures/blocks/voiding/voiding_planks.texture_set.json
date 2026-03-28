@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "voiding_planks",
-        "metalness_emissive_roughness": "voiding_planks_mer",
-        "heightmap": "voiding_planks_heightmap"
-    }
-}

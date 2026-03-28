@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "small_lily",
-        "metalness_emissive_roughness": "small_lily_mer",
-        "heightmap": "small_lily_heightmap"
-    }
-}

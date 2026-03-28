@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "chorus_planks",
-        "metalness_emissive_roughness": "chorus_planks_mer",
-        "heightmap": "chorus_planks_heightmap"
-    }
-}

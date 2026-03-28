@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "lich_plushie",
-        "metalness_emissive_roughness": "lich_plushie_mer",
-        "heightmap": "lich_plushie_heightmap"
-    }
-}

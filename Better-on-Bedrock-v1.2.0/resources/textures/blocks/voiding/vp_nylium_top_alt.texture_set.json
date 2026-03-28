@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "vp_nylium_top_alt",
-        "metalness_emissive_roughness": "vp_nylium_top_alt_mer",
-        "heightmap": "vp_nylium_top_alt_heightmap"
-    }
-}

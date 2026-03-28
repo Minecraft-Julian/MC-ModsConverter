@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "withered_samurai_trophy",
-        "metalness_emissive_roughness": "withered_samurai_trophy_mer",
-        "heightmap": "withered_samurai_trophy_heightmap"
-    }
-}

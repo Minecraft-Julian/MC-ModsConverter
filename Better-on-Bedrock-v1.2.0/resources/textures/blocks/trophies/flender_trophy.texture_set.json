@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "flender_trophy",
-        "metalness_emissive_roughness": "flender_trophy_mer",
-        "heightmap": "flender_trophy_heightmap"
-    }
-}

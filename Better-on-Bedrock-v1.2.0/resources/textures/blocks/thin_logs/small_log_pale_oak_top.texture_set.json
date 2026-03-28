@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "small_log_pale_oak_top",
-		"metalness_emissive_roughness": "small_log_pale_oak_top_mer",
-		"heightmap": "small_log_pale_oak_top_heightmap"
-	}
-}

@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "shrub_nylium_top",
-		"metalness_emissive_roughness": "shrub_nylium_top_mer",
-		"heightmap": "shrub_nylium_top_heightmap"
-	}
-}

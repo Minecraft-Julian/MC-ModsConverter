@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "chiseled_purpur_bricks",
-		"metalness_emissive_roughness": "chiseled_purpur_bricks_mer",
-		"heightmap": "chiseled_purpur_bricks_heightmap"
-	}
-}

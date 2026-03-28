@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "onion_stage_0",
-        "metalness_emissive_roughness": "onion_stage_0_mer",
-        "heightmap": "onion_stage_0_heightmap"
-    }
-}

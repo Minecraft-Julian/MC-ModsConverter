@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "desert_grass",
-        "metalness_emissive_roughness": "desert_grass_mer",
-        "heightmap": "desert_grass_heightmap"
-    }
-}

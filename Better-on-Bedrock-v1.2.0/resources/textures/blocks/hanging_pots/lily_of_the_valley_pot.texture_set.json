@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "lily_of_the_valley_pot",
-        "metalness_emissive_roughness": "lily_of_the_valley_pot_mer",
-        "heightmap": "lily_of_the_valley_pot_heightmap"
-    }
-}
