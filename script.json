@@ -1,0 +1,193 @@
+{
+  "meta": {
+    "version": "3.0",
+    "mode": "all-in-one",
+    "strategy": "full-emulation + fallback + hybrid + advanced scripting",
+    "description": "Maximal aggressive conversion. Includes all possible Java mod systems, emulated where Bedrock cannot natively handle them."
+  },
+
+  "events": {
+    "PlayerInteractEvent": {"bedrock":"world.afterEvents.itemUse","convertible":true},
+    "RightClickBlock": {"bedrock":"world.afterEvents.itemUseOn","convertible":true},
+    "LeftClickBlock": {"bedrock":null,"convertible":false,"note":"Bedrock has limited support, emulate via script"},
+    "EntityJoinWorldEvent": {"bedrock":"world.afterEvents.entitySpawn","convertible":true},
+    "LivingDeathEvent": {"bedrock":"world.afterEvents.entityDie","convertible":true},
+    "BlockBreakEvent": {"bedrock":"world.afterEvents.blockBreak","convertible":true},
+    "BlockPlaceEvent": {"bedrock":"world.afterEvents.blockPlace","convertible":true},
+    "AttackEntityEvent": {"bedrock":"world.afterEvents.entityHit","convertible":true},
+    "PlayerTickEvent": {"bedrock":"system.runInterval","convertible":true,"note":"Simulated tick"},
+    "WorldTickEvent": {"bedrock":"system.runInterval","convertible":true},
+    "CustomEvent": {"bedrock":"script-based","convertible":"emulated"}
+  },
+
+  "blocks": {
+    "Block": {"bedrock":"block.json","convertible":true},
+    "BlockEntity": {"bedrock":"dynamic_properties + script","convertible":"partial"},
+    "onBlockActivated": {"bedrock":"itemUseOn","convertible":true},
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "RedstoneLogic": {"bedrock":"script","convertible":"emulated","limits":"no native redstone logic"}
+  },
+
+  "items": {
+    "Item": {"bedrock":"item.json","convertible":true},
+    "onItemRightClick": {"bedrock":"world.afterEvents.itemUse","convertible":true},
+    "inventoryTick": {"bedrock":"system.runInterval","convertible":true},
+    "NBT": {"bedrock":"dynamic_properties","convertible":"partial","lossy":true},
+    "CustomAbilities": {"bedrock":"script","convertible":"emulated"}
+  },
+
+  "entities": {
+    "Entity": {"bedrock":"entity.json","convertible":true},
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "AI_Goals": {"bedrock":"behavior_json + script","convertible":"partial","lossy":true},
+    "CustomPathfinding": {"bedrock":"script-based","convertible":"emulated"},
+    "Attributes": {"bedrock":"entity_json","convertible":true}
+  },
+
+  "world": {
+    "CustomDimension": {"bedrock":"dimension.json + script","convertible":"emulated"},
+    "ChunkGenerator": {"bedrock":null,"convertible":false,"note":"Cannot replicate"},
+    "Biome": {"bedrock":"biome.json","convertible":true},
+    "Structures": {"bedrock":"mcstructure","convertible":true},
+    "DynamicWorld": {"bedrock":"script","convertible":true}
+  },
+
+  "scheduler": {
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "delayed_task": {"bedrock":"system.runTimeout","convertible":true}
+  },
+
+  "data": {
+    "NBT": {"bedrock":"dynamic_properties","convertible":true,"lossy":true},
+    "Capabilities": {"bedrock":"script_storage","convertible":"partial"},
+    "WorldSavedData": {"bedrock":"scoreboard/properties","convertible":true}
+  },
+
+  "gui": {
+    "CustomGUI": {"bedrock":"ui_json + script","convertible":"partial_emulated"},
+    "Containers": {"bedrock":"limited + script","convertible":"partial"}
+  },
+
+  "sound_particle": {
+    "playSound": {"bedrock":"world.playSound","convertible":true},
+    "particles": {"bedrock":"particle.json + script","convertible":true}
+  },
+
+  "animation": {
+    "CustomAnimationSystem": {"bedrock":"animation_controller + script","convertible":true},
+    "KeyframeMapping": {"bedrock":"animation_controller","convertible":true},
+    "StateTriggers": {"bedrock":"script","convertible":true}
+  },
+
+  "rendering": {
+    "CustomRenderEngine": {
+      "convertible":"emulated",
+      "strategy": {
+        "layer_1":"entity_models",
+        "layer_2":"geometry.json",
+        "layer_3":"animations",
+        "layer_4":"particles",
+        "layer_5":"ui_overlay"
+      },
+      "techniques":[
+        "attach invisible entity as renderer",
+        "use geometry bones for moving parts",
+        "animate via animation controller",
+        "simulate shaders with particles & tint",
+        "overlay UI for screen effects"
+      ],
+      "limits":["no GPU-level shaders","limited lighting","cannot change render pipeline"]
+    }
+  },
+
+  "physics": {
+    "CustomPhysics": {
+      "convertible":"emulated",
+      "strategy":[
+        "track velocity manually",
+        "apply impulses via script",
+        "simulate gravity",
+        "collision via raycasting in script"
+      ],
+      "tick_system":"system.runInterval"
+    }
+  },
+
+  "machines": {
+    "ComplexMachines": {
+      "convertible":"emulated",
+      "strategy":[
+        "store state in dynamic_properties",
+        "logic via script",
+        "visual via entity + animation",
+        "interaction via events"
+      ]
+    }
+  },
+
+  "energy_system": {
+    "ForgeEnergy": {
+      "convertible":"emulated",
+      "strategy":[
+        "store energy as scoreboard values",
+        "transfer energy via script",
+        "simulate network manually"
+      ]
+    }
+  },
+
+  "dimensions": {
+    "CustomDimensionCode": {
+      "convertible":"emulated",
+      "strategy":[
+        "dimension.json",
+        "structure spawning",
+        "scripted events",
+        "cannot emulate chunk generator fully"
+      ]
+    }
+  },
+
+  "ai": {
+    "AdvancedAI": {
+      "convertible":"hybrid",
+      "strategy":[
+        "base behavior via behavior_json",
+        "complex decisions via script",
+        "state control via tags"
+      ]
+    }
+  },
+
+  "recipes": {
+    "RecipeSerializer": {"bedrock":"recipe.json","convertible":true},
+    "Smelting": {"bedrock":"furnace_recipe.json","convertible":true}
+  },
+
+  "unsupported": [
+    "native GPU shaders",
+    "custom physics engine",
+    "deep rendering pipelines",
+    "full custom chunk generator",
+    "multi-threaded server logic",
+    "complex engine modifications"
+  ],
+
+  "converter_engine": {
+    "pipeline":[
+      "decompile_java",
+      "analyze_ast",
+      "detect_patterns",
+      "map_to_bedrock",
+      "apply_emulation",
+      "generate_js_json",
+      "validate_output"
+    ],
+    "patterns":{
+      "event_handler":{"detect":"@SubscribeEvent","convert_to":"world.afterEvents"},
+      "tick_method":{"detect":"tick()","convert_to":"system.runInterval"},
+      "entity_spawn":{"detect":"spawnEntity","convert_to":"dimension.spawnEntity"},
+      "custom_render":{"detect":"CustomRenderEngine","convert_to":"emulated layer pipeline"}
+    }
+  }
+}
