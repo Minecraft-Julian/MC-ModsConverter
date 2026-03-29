@@ -15,7 +15,7 @@ function parseJSON(str) {
 
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
@@ -522,8 +522,8 @@ class BedrockToJavaConverter {
             mapping.bedrock.lastIndex = 0;
         }
 
-        // Convert let/const/var to Java-style type declarations (simplified)
-        converted = converted.replace(/\b(?:let|const|var)\s+(\w+)\s*=\s*/g, 'var $1 = ');
+        // Convert let/const/var to Java-style (manual type annotation may be required)
+        converted = converted.replace(/\b(?:let|const|var)\s+(\w+)\s*=\s*/g, 'var $1 = '); // Java var requires type inference from initializer
 
         return converted;
     }
@@ -589,7 +589,7 @@ class BedrockToJavaConverter {
             'org.slf4j.LoggerFactory'
         ];
 
-        let code = '';
+        let code = `package com.converted.${this.modId};\n\n`;
         for (const imp of imports) {
             code += `import ${imp};\n`;
         }
@@ -637,7 +637,7 @@ class BedrockToJavaConverter {
             }
         }
 
-        let code = '';
+        let code = `package com.converted.${this.modId};\n\n`;
         for (const imp of Array.from(allImports).sort()) {
             code += `import ${imp};\n`;
         }
@@ -671,7 +671,7 @@ class BedrockToJavaConverter {
             'net.minecraft.util.Identifier'
         ];
 
-        let code = '';
+        let code = `package com.converted.${this.modId};\n\n`;
         for (const imp of imports) {
             code += `import ${imp};\n`;
         }
@@ -729,7 +729,7 @@ class BedrockToJavaConverter {
             'net.minecraft.util.Identifier'
         ];
 
-        let code = '';
+        let code = `package com.converted.${this.modId};\n\n`;
         for (const imp of imports) {
             code += `import ${imp};\n`;
         }
@@ -974,6 +974,8 @@ jar {
 
     generateGradleProperties() {
         const props = `# Fabric Properties
+# NOTE: Update these versions to match your target Minecraft version.
+# See https://fabricmc.net/develop/ for the latest version mappings.
 minecraft_version=1.20.4
 yarn_mappings=1.20.4+build.3
 loader_version=0.15.6

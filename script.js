@@ -15,13 +15,14 @@ let conversionDirection = 'java-to-bedrock';
 // Direction toggle buttons
 const btnJavaToBedrock = document.getElementById('btnJavaToBedrock');
 const btnBedrockToJava = document.getElementById('btnBedrockToJava');
+const dropzoneTitle = document.querySelector('.dropzone h3');
 
 btnJavaToBedrock.addEventListener('click', () => {
     conversionDirection = 'java-to-bedrock';
     btnJavaToBedrock.classList.add('active');
     btnBedrockToJava.classList.remove('active');
     fileInput.accept = '.jar, .zip';
-    document.querySelector('.dropzone h3').textContent = 'Drag & Drop your .jar file here';
+    dropzoneTitle.textContent = 'Drag & Drop your .jar file here';
     downloadBtnText.textContent = 'Download .mcaddon';
 });
 
@@ -30,7 +31,7 @@ btnBedrockToJava.addEventListener('click', () => {
     btnBedrockToJava.classList.add('active');
     btnJavaToBedrock.classList.remove('active');
     fileInput.accept = '.mcaddon, .mcpack, .zip';
-    document.querySelector('.dropzone h3').textContent = 'Drag & Drop your .mcaddon / .mcpack file here';
+    dropzoneTitle.textContent = 'Drag & Drop your .mcaddon / .mcpack file here';
     downloadBtnText.textContent = 'Download Java Mod (.zip)';
 });
 
