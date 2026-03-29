@@ -7,6 +7,32 @@ const successIcon = document.getElementById('successIcon');
 const statusTitle = document.getElementById('statusTitle');
 const statusDesc = document.getElementById('statusDesc');
 const downloadBtn = document.getElementById('downloadBtn');
+const downloadBtnText = document.getElementById('downloadBtnText');
+
+// Conversion direction state
+let conversionDirection = 'java-to-bedrock';
+
+// Direction toggle buttons
+const btnJavaToBedrock = document.getElementById('btnJavaToBedrock');
+const btnBedrockToJava = document.getElementById('btnBedrockToJava');
+
+btnJavaToBedrock.addEventListener('click', () => {
+    conversionDirection = 'java-to-bedrock';
+    btnJavaToBedrock.classList.add('active');
+    btnBedrockToJava.classList.remove('active');
+    fileInput.accept = '.jar, .zip';
+    document.querySelector('.dropzone h3').textContent = 'Drag & Drop your .jar file here';
+    downloadBtnText.textContent = 'Download .mcaddon';
+});
+
+btnBedrockToJava.addEventListener('click', () => {
+    conversionDirection = 'bedrock-to-java';
+    btnBedrockToJava.classList.add('active');
+    btnJavaToBedrock.classList.remove('active');
+    fileInput.accept = '.mcaddon, .mcpack, .zip';
+    document.querySelector('.dropzone h3').textContent = 'Drag & Drop your .mcaddon / .mcpack file here';
+    downloadBtnText.textContent = 'Download Java Mod (.zip)';
+});
 
 // Setup Drag & Drop Listeners
 dropzone.addEventListener('click', () => fileInput.click());
@@ -40,10 +66,18 @@ function handleDrop(e) {
 function handleFiles(files) {
     if (files.length === 0) return;
     const file = files[0];
+    const fileName = file.name.toLowerCase();
 
-    if (!file.name.endsWith('.jar') && !file.name.endsWith('.zip')) {
-        updateStatus('Error', 'Please upload a valid .jar file.', false);
-        return;
+    if (conversionDirection === 'java-to-bedrock') {
+        if (!fileName.endsWith('.jar') && !fileName.endsWith('.zip')) {
+            updateStatus('Error', 'Please upload a valid .jar or .zip file for Java → Bedrock conversion.', false);
+            return;
+        }
+    } else {
+        if (!fileName.endsWith('.mcaddon') && !fileName.endsWith('.mcpack') && !fileName.endsWith('.zip')) {
+            updateStatus('Error', 'Please upload a valid .mcaddon, .mcpack, or .zip file for Bedrock → Java conversion.', false);
+            return;
+        }
     }
 
     if (file.size > 100 * 1024 * 1024) { // over 100mb
@@ -59,7 +93,8 @@ function handleFiles(files) {
     const errorsContainer = document.getElementById('errorsContainer');
     if (errorsContainer) errorsContainer.classList.add('hidden');
 
-    const worker = new Worker('worker.js');
+    const workerFile = conversionDirection === 'java-to-bedrock' ? 'worker.js' : 'worker-b2j.js';
+    const worker = new Worker(workerFile);
 
     worker.onmessage = function (e) {
         const data = e.data;

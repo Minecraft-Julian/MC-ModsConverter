@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java to Bedrock Mod Converter</title>
+    <title>MC Mods Converter</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- JSZip CDN -->
@@ -31,11 +31,19 @@
                     <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
             </div>
-            <h1>Jar to Bedrock Addon</h1>
-            <p>Convert Java Minecraft Mods (.jar) to Bedrock Addons (.mcaddon) instantly.</p>
+            <h1>MC Mods Converter</h1>
+            <p>Convert between Java Mods (.jar) and Bedrock Addons (.mcaddon).</p>
         </header>
 
         <main>
+            <div class="direction-toggle" id="directionToggle">
+                <button class="direction-btn active" id="btnJavaToBedrock" data-direction="java-to-bedrock">
+                    <span class="direction-label">☕ Java → 🪨 Bedrock</span>
+                </button>
+                <button class="direction-btn" id="btnBedrockToJava" data-direction="bedrock-to-java">
+                    <span class="direction-label">🪨 Bedrock → ☕ Java</span>
+                </button>
+            </div>
             <div class="dropzone" id="dropzone">
                 <input type="file" id="fileInput" accept=".jar, .zip" hidden>
                 <div class="dropzone-content">
@@ -98,7 +106,7 @@
             </div>
 
             <a id="downloadBtn" class="download-btn hidden" download="converted.mcaddon">
-                <span>Download .mcaddon</span>
+                <span id="downloadBtnText">Download .mcaddon</span>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
