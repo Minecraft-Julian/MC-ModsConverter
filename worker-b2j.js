@@ -378,6 +378,9 @@ class BedrockToJavaConverter {
         const javaBlocks = [];
         let remainingCode = jsCode;
 
+        // Escape a string for safe use in a RegExp
+        const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
         // Remove import statements (Bedrock-style)
         remainingCode = remainingCode.replace(/import\s*\{[^}]*\}\s*from\s*["'][^"']*["'];?\s*/g, '');
         remainingCode = remainingCode.replace(/import\s+\*\s+as\s+\w+\s+from\s+["'][^"']*["'];?\s*/g, '');
@@ -385,7 +388,7 @@ class BedrockToJavaConverter {
         // Process event subscriptions
         for (const [bedrockEvent, mapping] of Object.entries(EVENT_MAPPINGS)) {
             const eventPattern = new RegExp(
-                bedrockEvent.replace(/\./g, '\\.') + '\\.subscribe\\s*\\(\\s*(?:\\(([^)]*)\\)|([a-zA-Z_$][a-zA-Z0-9_$]*))\\s*=>\\s*\\{',
+                escapeRegExp(bedrockEvent) + '\\.subscribe\\s*\\(\\s*(?:\\(([^)]*)\\)|([a-zA-Z_$][a-zA-Z0-9_$]*))\\s*=>\\s*\\{',
                 'g'
             );
 
@@ -418,7 +421,7 @@ class BedrockToJavaConverter {
         // Process tick intervals
         for (const [bedrockTick, mapping] of Object.entries(TICK_MAPPINGS)) {
             const tickPattern = new RegExp(
-                bedrockTick.replace(/\./g, '\\.') + '\\s*\\(\\s*\\(\\)\\s*=>\\s*\\{',
+                escapeRegExp(bedrockTick) + '\\s*\\(\\s*\\(\\)\\s*=>\\s*\\{',
                 'g'
             );
 
