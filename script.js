@@ -102,7 +102,7 @@ function handleFiles(files) {
         worker.terminate();
     };
 
-    worker.postMessage({ type: 'start', file: file });
+    worker.postMessage({ type: 'start', file: file, options: { convertModels: true } });
 }
 
 function displayWarnings(warnings) {
