@@ -32,18 +32,10 @@
                 </svg>
             </div>
             <h1>MC Mods Converter</h1>
-            <p>Convert between Java Mods (.jar) and Bedrock Addons (.mcaddon).</p>
+            <p>Convert Java Mods (.jar) into Bedrock Addons (.mcaddon).</p>
         </header>
 
         <main>
-            <div class="direction-toggle" id="directionToggle">
-                <button class="direction-btn active" id="btnJavaToBedrock" data-direction="java-to-bedrock">
-                    <span class="direction-label">☕ Java → 🪨 Bedrock</span>
-                </button>
-                <button class="direction-btn" id="btnBedrockToJava" data-direction="bedrock-to-java">
-                    <span class="direction-label">🪨 Bedrock → ☕ Java</span>
-                </button>
-            </div>
             <div class="dropzone" id="dropzone">
                 <input type="file" id="fileInput" accept=".jar, .zip" hidden>
                 <div class="dropzone-content">
@@ -60,16 +52,6 @@
                     <p style="font-size: 0.75rem; color: #F59E0B; margin-top: 0.5rem;">Large mods (>100MB) may take
                         significant time/RAM.</p>
                 </div>
-            </div>
-
-            <div class="options-panel"
-                style="margin-top: 1rem; background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                <label
-                    style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; color: var(--text-main); font-size: 0.9rem;">
-                    <input type="checkbox" id="convertModels" checked
-                        style="accent-color: var(--primary); transform: scale(1.2);">
-                    <span>Convert Block Models to Geometry (Experimental)</span>
-                </label>
             </div>
 
             <div class="status-panel hidden" id="statusPanel">
