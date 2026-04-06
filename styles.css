@@ -134,6 +134,7 @@ header p {
 }
 
 .dropzone {
+    display: block;
     border: 2px dashed var(--border-color);
     border-radius: 16px;
     padding: 3rem 2rem;
@@ -168,6 +169,23 @@ header p {
 .dropzone p {
     color: var(--text-muted);
     font-size: 0.875rem;
+}
+
+.dropzone:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+}
+
+.file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .hidden {

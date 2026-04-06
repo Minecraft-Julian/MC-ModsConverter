@@ -17,6 +17,13 @@ downloadBtnText.textContent = 'Download .mcaddon';
 // Setup Drag & Drop Listeners
 dropzone.addEventListener('click', () => fileInput.click());
 
+dropzone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+    }
+});
+
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropzone.addEventListener(eventName, preventDefaults, false);
 });
@@ -35,7 +42,10 @@ function preventDefaults(e) {
 });
 
 dropzone.addEventListener('drop', handleDrop, false);
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+    e.target.value = '';
+}, false);
 
 function handleDrop(e) {
     const dt = e.dataTransfer;
