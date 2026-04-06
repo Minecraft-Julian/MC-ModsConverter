@@ -205,7 +205,7 @@ class ModConverter {
 
             // Log structure summary with texture sub-type details
             const modInfo = this.modMeta.id
-                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'inferred'} loader)`
+                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'inferred from structure'})`
                 : `Mod: ${this.modNameBase} (no mod descriptor found)`;
             const nsFiltered = Array.from(this.namespaces).filter(ns => ns !== 'minecraft');
             const nsInfo = nsFiltered.length > 0
