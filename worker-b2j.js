@@ -124,6 +124,14 @@ class BedrockToJavaConverter {
         this.modId = this.modNameBase.toLowerCase().replace(/[^a-z0-9_]/g, '_').substring(0, 32);
         this.modClassName = this.toPascalCase(this.modNameBase);
 
+        // Mod Identification (populated during identifyMod phase)
+        this.modMeta = {
+            name: null,
+            description: null,
+            authors: [],
+            version: null
+        };
+
         this.fileCount = 0;
         this.totalFiles = 0;
         this.warnings = [];
@@ -152,6 +160,39 @@ class BedrockToJavaConverter {
         this.warnings.push({ path, error: error.message || String(error) });
     }
 
+    /**
+     * Identify Bedrock addon by reading manifest.json files.
+     */
+    async identifyMod() {
+        for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
+            if (zipEntry.dir) continue;
+            if (relativePath.endsWith('manifest.json')) {
+                try {
+                    const content = await zipEntry.async('string');
+                    const parsed = parseJSON(content);
+                    if (parsed.header) {
+                        this.modMeta.name = this.modMeta.name || parsed.header.name || null;
+                        this.modMeta.description = this.modMeta.description || parsed.header.description || null;
+                        if (parsed.header.version) {
+                            this.modMeta.version = Array.isArray(parsed.header.version)
+                                ? parsed.header.version.join('.')
+                                : String(parsed.header.version);
+                        }
+                        if (parsed.metadata && Array.isArray(parsed.metadata.authors)) {
+                            this.modMeta.authors = [...new Set([...this.modMeta.authors, ...parsed.metadata.authors])];
+                        }
+                    }
+                } catch (e) {
+                    this.logWarning(relativePath, e);
+                }
+            }
+        }
+        // Update display name and class name if we found metadata
+        if (this.modMeta.name) {
+            this.modClassName = this.toPascalCase(this.modMeta.name);
+        }
+    }
+
     async process() {
         self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
 
@@ -159,6 +200,15 @@ class BedrockToJavaConverter {
             const zip = new JSZip();
             this.loadedZip = await zip.loadAsync(this.file);
             this.outputZip = new JSZip();
+
+            // Phase 0: MOD IDENTIFICATION
+            self.postMessage({ type: 'status', title: 'Identifying Addon...', desc: 'Reading Bedrock manifest metadata', isLoading: true, percent: 2 });
+            await this.identifyMod();
+
+            const modInfo = this.modMeta.name
+                ? `Addon: ${this.modMeta.name}`
+                : `Addon: ${this.modNameBase} (no manifest found)`;
+            self.postMessage({ type: 'status', title: 'Addon Identified', desc: modInfo, isLoading: true, percent: 4 });
 
             // Phase 1: SCAN
             self.postMessage({ type: 'status', title: 'Scanning...', desc: 'Analyzing Bedrock Addon structure', isLoading: true, percent: 5 });
@@ -904,10 +954,12 @@ class BedrockToJavaConverter {
         const fabricMod = {
             "schemaVersion": 1,
             "id": this.modId,
-            "version": "1.0.0",
-            "name": this.modNameBase,
-            "description": `Converted from Bedrock addon by MC-ModsConverter`,
-            "authors": ["MC-ModsConverter"],
+            "version": this.modMeta.version || "1.0.0",
+            "name": this.modMeta.name || this.modNameBase,
+            "description": this.modMeta.description || `Converted from Bedrock addon by MC-ModsConverter`,
+            "authors": this.modMeta.authors.length > 0
+                ? [...this.modMeta.authors, "MC-ModsConverter (converter)"]
+                : ["MC-ModsConverter"],
             "contact": {
                 "homepage": "https://minecraft-julian.github.io/MC-ModsConverter/"
             },
