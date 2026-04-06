@@ -89,7 +89,26 @@ function handleFiles(files) {
                 progressContainer.classList.add('hidden');
             }
         } else if (data.type === 'success') {
-            updateStatus('Addon Ready!', `Converted ${data.count} assets successfully!`, false);
+            // Build conversion summary with stats
+            let summary = `Converted ${data.count} assets successfully!`;
+            if (data.conversionStats) {
+                const s = data.conversionStats;
+                const parts = [];
+                if (s.texturesConverted > 0) parts.push(`${s.texturesConverted} textures`);
+                if (s.modelsConverted > 0) parts.push(`${s.modelsConverted} models`);
+                if (s.blocksGenerated > 0) parts.push(`${s.blocksGenerated} blocks`);
+                if (s.itemsGenerated > 0) parts.push(`${s.itemsGenerated} items`);
+                if (s.recipesConverted > 0) parts.push(`${s.recipesConverted} recipes`);
+                if (s.soundsConverted > 0) parts.push(`${s.soundsConverted} sounds`);
+                if (s.animationsConverted > 0) parts.push(`${s.animationsConverted} animations`);
+                if (parts.length > 0) {
+                    summary += ` (${parts.join(', ')})`;
+                }
+            }
+            if (data.modMeta && data.modMeta.id) {
+                summary = `${data.modMeta.name || data.modMeta.id}: ${summary}`;
+            }
+            updateStatus('Addon Ready!', summary, false);
             document.getElementById('progressContainer').classList.add('hidden');
 
             const url = URL.createObjectURL(data.blob);

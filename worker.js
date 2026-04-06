@@ -90,9 +90,24 @@ class ModConverter {
         this.scriptsList = [];
         this.biomesClientData = { "biomes": {} };
 
+        // Model-to-texture mapping: tracks which models reference which textures
+        this.modelTextureMap = {}; // modelId -> { textures: { key: resolvedPath } }
+
+        // Conversion statistics
+        this.conversionStats = {
+            texturesConverted: 0,
+            modelsConverted: 0,
+            recipesConverted: 0,
+            blocksGenerated: 0,
+            itemsGenerated: 0,
+            soundsConverted: 0,
+            animationsConverted: 0,
+            skippedFiles: 0
+        };
+
         // Structure analysis
         this.structureSummary = {
-            assets: {},      // namespace -> { textures: [], models: [], blockstates: [], sounds: [], lang: [] }
+            assets: {},      // namespace -> { textures: { block: [], item: [], entity: [], gui: [], particle: [], other: [] }, models: [], blockstates: [], sounds: [], lang: [] }
             data: {},        // namespace -> { recipes: [], loot_tables: [], tags: [], advancements: [], worldgen: [] }
             totalAssets: 0,
             totalData: 0,
@@ -188,14 +203,26 @@ class ModConverter {
             this.validator = new Validator();
             this.analyzeStructure(files);
 
-            // Log structure summary
+            // Log structure summary with texture sub-type details
             const modInfo = this.modMeta.id
-                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'unknown'} loader)`
+                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'inferred'} loader)`
                 : `Mod: ${this.modNameBase} (no mod descriptor found)`;
-            const nsInfo = this.namespaces.size > 0
-                ? `Namespaces: ${Array.from(this.namespaces).join(', ')}`
-                : 'No namespaces detected';
-            self.postMessage({ type: 'status', title: 'Structure Analyzed', desc: `${modInfo} | ${nsInfo}`, isLoading: true, percent: 8 });
+            const nsFiltered = Array.from(this.namespaces).filter(ns => ns !== 'minecraft');
+            const nsInfo = nsFiltered.length > 0
+                ? `Namespaces: ${nsFiltered.join(', ')}`
+                : 'No custom namespaces detected';
+
+            // Count texture sub-types for status
+            let texCounts = { block: 0, item: 0, entity: 0, other: 0 };
+            for (const ns of Object.keys(this.structureSummary.assets)) {
+                const tex = this.structureSummary.assets[ns].textures;
+                texCounts.block += tex.block.length;
+                texCounts.item += tex.item.length;
+                texCounts.entity += tex.entity.length;
+                texCounts.other += tex.gui.length + tex.environment.length + tex.painting.length + tex.particle.length + tex.other.length;
+            }
+            const texInfo = `Textures: ${texCounts.block} block, ${texCounts.item} item, ${texCounts.entity} entity, ${texCounts.other} other`;
+            self.postMessage({ type: 'status', title: 'Structure Analyzed', desc: `${modInfo} | ${nsInfo} | ${texInfo}`, isLoading: true, percent: 8 });
 
             // Phase 2: PARSE & TRANSFORM
             self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
@@ -238,7 +265,9 @@ class ModConverter {
                 count: this.fileCount,
                 warnings: this.warnings,
                 modMeta: this.modMeta,
-                structureSummary: this.structureSummary
+                structureSummary: this.structureSummary,
+                conversionStats: this.conversionStats,
+                namespaces: Array.from(this.namespaces)
             });
 
         } catch (error) {
@@ -355,10 +384,53 @@ class ModConverter {
             }
         }
 
-        // No mod descriptor found - warn user
+        // No mod descriptor found - try inferring from assets/ directory structure
+        const inferredNamespaces = new Set();
+        for (const [relativePath] of Object.entries(this.loadedZip.files)) {
+            const nsMatch = relativePath.match(/^assets\/([^/]+)\//);
+            if (nsMatch) {
+                const ns = nsMatch[1];
+                // Filter out minecraft and common library namespaces
+                if (ns !== 'minecraft' && ns !== 'forge' && ns !== 'neoforge' &&
+                    ns !== 'fabric' && ns !== 'quilt' && ns !== 'c' && ns !== 'realms') {
+                    inferredNamespaces.add(ns);
+                }
+            }
+        }
+
+        if (inferredNamespaces.size > 0) {
+            // Pick the namespace with most files as the primary mod ID
+            let bestNs = null;
+            let bestCount = 0;
+            for (const ns of inferredNamespaces) {
+                const prefix = `assets/${ns}/`;
+                let count = 0;
+                for (const [relativePath] of Object.entries(this.loadedZip.files)) {
+                    if (relativePath.startsWith(prefix)) count++;
+                }
+                if (count > bestCount) {
+                    bestCount = count;
+                    bestNs = ns;
+                }
+            }
+            if (bestNs) {
+                this.modMeta.id = bestNs;
+                this.modMeta.name = bestNs.replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                this.namespaces.add(bestNs);
+                // Also add other discovered namespaces
+                for (const ns of inferredNamespaces) {
+                    this.namespaces.add(ns);
+                }
+            }
+        }
+
         this.warnings.push({
             path: 'mod identification',
-            error: 'No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, or mcmod.info). Mod name and namespace will be inferred from file structure.'
+            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, or mcmod.info). ${
+                this.modMeta.id
+                    ? `Inferred mod ID "${this.modMeta.id}" from assets/ folder structure.`
+                    : 'Mod name and namespace will be inferred from file structure.'
+            }`
         });
     }
 
@@ -384,13 +456,45 @@ class ModConverter {
                 this.namespaces.add(ns);
 
                 if (!this.structureSummary.assets[ns]) {
-                    this.structureSummary.assets[ns] = { textures: [], models: [], blockstates: [], sounds: [], lang: [], particles: [], animations: [], other: [] };
+                    this.structureSummary.assets[ns] = {
+                        textures: { block: [], item: [], entity: [], gui: [], environment: [], painting: [], particle: [], other: [] },
+                        models: { block: [], item: [] },
+                        blockstates: [],
+                        sounds: [],
+                        lang: [],
+                        particles: [],
+                        animations: [],
+                        other: []
+                    };
                 }
 
                 if (subPath.startsWith('textures/')) {
-                    this.structureSummary.assets[ns].textures.push(subPath);
+                    // Classify texture sub-type from path
+                    const texSubPath = subPath.substring('textures/'.length);
+                    if (texSubPath.startsWith('block/') || texSubPath.startsWith('blocks/')) {
+                        this.structureSummary.assets[ns].textures.block.push(subPath);
+                    } else if (texSubPath.startsWith('item/') || texSubPath.startsWith('items/')) {
+                        this.structureSummary.assets[ns].textures.item.push(subPath);
+                    } else if (texSubPath.startsWith('entity/') || texSubPath.startsWith('entities/')) {
+                        this.structureSummary.assets[ns].textures.entity.push(subPath);
+                    } else if (texSubPath.startsWith('gui/')) {
+                        this.structureSummary.assets[ns].textures.gui.push(subPath);
+                    } else if (texSubPath.startsWith('environment/') || texSubPath.startsWith('misc/')) {
+                        this.structureSummary.assets[ns].textures.environment.push(subPath);
+                    } else if (texSubPath.startsWith('painting/')) {
+                        this.structureSummary.assets[ns].textures.painting.push(subPath);
+                    } else if (texSubPath.startsWith('particle/')) {
+                        this.structureSummary.assets[ns].textures.particle.push(subPath);
+                    } else {
+                        this.structureSummary.assets[ns].textures.other.push(subPath);
+                    }
                 } else if (subPath.startsWith('models/')) {
-                    this.structureSummary.assets[ns].models.push(subPath);
+                    // Classify model sub-type
+                    if (subPath.startsWith('models/block/')) {
+                        this.structureSummary.assets[ns].models.block.push(subPath);
+                    } else if (subPath.startsWith('models/item/')) {
+                        this.structureSummary.assets[ns].models.item.push(subPath);
+                    }
                 } else if (subPath.startsWith('blockstates/')) {
                     this.structureSummary.assets[ns].blockstates.push(subPath);
                 } else if (subPath.startsWith('sounds/') || subPath === 'sounds.json') {
@@ -631,23 +735,26 @@ class ModConverter {
                 const parsedPath = texturePath.split('/');
                 const type = parsedPath[0]; // "block", "item", "entity", "gui", "environment", "painting", etc.
                 const name = parsedPath[parsedPath.length - 1].split('.')[0];
+                // Use namespace-prefixed key to avoid collisions between mods
+                const nsPrefix = (namespace !== 'minecraft' && this.namespaces.size > 1) ? `${namespace}_` : '';
+                const registryKey = `${nsPrefix}${name}`;
 
                 const fileContent = await zipEntry.async('arraybuffer');
 
-                if (type === 'block') {
-                    this.rpFolder.file(`textures/blocks/${name}.png`, fileContent);
-                    this.blockTexturesRegistry[name] = `textures/blocks/${name}`;
-                } else if (type === 'item') {
-                    this.rpFolder.file(`textures/items/${name}.png`, fileContent);
-                    this.itemTexturesRegistry[name] = `textures/items/${name}`;
-                } else if (type === 'entity') {
+                if (type === 'block' || type === 'blocks') {
+                    this.rpFolder.file(`textures/blocks/${registryKey}.png`, fileContent);
+                    this.blockTexturesRegistry[registryKey] = `textures/blocks/${registryKey}`;
+                } else if (type === 'item' || type === 'items') {
+                    this.rpFolder.file(`textures/items/${registryKey}.png`, fileContent);
+                    this.itemTexturesRegistry[registryKey] = `textures/items/${registryKey}`;
+                } else if (type === 'entity' || type === 'entities') {
                     // Entity textures: preserve sub-path structure for entity skins
                     const entitySubPath = parsedPath.slice(1).join('/');
                     this.rpFolder.file(`textures/entity/${entitySubPath}`, fileContent);
                 } else if (type === 'gui') {
                     // GUI textures: copy to RP for potential UI usage
                     this.rpFolder.file(`textures/gui/${parsedPath.slice(1).join('/')}`, fileContent);
-                } else if (type === 'environment') {
+                } else if (type === 'environment' || type === 'misc') {
                     this.rpFolder.file(`textures/environment/${parsedPath.slice(1).join('/')}`, fileContent);
                 } else if (type === 'painting') {
                     this.rpFolder.file(`textures/painting/${parsedPath.slice(1).join('/')}`, fileContent);
@@ -658,6 +765,7 @@ class ModConverter {
                     this.rpFolder.file(`textures/${texturePath}`, fileContent);
                 }
 
+                this.conversionStats.texturesConverted++;
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -717,6 +825,7 @@ class ModConverter {
                     path: bedrockPath.replace(/\.(ogg|wav)$/, '')
                 });
 
+                this.conversionStats.soundsConverted++;
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -811,12 +920,19 @@ class ModConverter {
                 const isValidIngredient = (v) => {
                     if (!v) return false;
                     if (typeof v === 'string') return true;
+                    // Handle array ingredients (Java 1.19+ format: key can be an array of items)
+                    if (Array.isArray(v)) return v.length > 0 && v.some(i => isValidIngredient(i));
                     if (v.tag) return false; // Bedrock doesn't support Java-style tags in recipes
                     return !!v.item;
                 };
 
                 const getIngredientId = (v) => {
                     if (typeof v === 'string') return formatId(v);
+                    // If array, use the first valid item
+                    if (Array.isArray(v)) {
+                        const first = v.find(i => i && (typeof i === 'string' || i.item));
+                        return first ? getIngredientId(first) : "minecraft:air";
+                    }
                     return formatId(v.item);
                 };
 
@@ -912,6 +1028,7 @@ class ModConverter {
                         this.incrementCounter();
                     }
                 }
+                this.conversionStats.recipesConverted++;
             } catch (e) {
                 this.logWarning(relativePath, e);
             }
@@ -1120,17 +1237,24 @@ class ModConverter {
                     this.rpFolder.file(`models/blocks/${geoId}.geo.json`, JSON.stringify(geo, null, 4));
                     this.geometries.add(geoId);
 
-                    // Register textures if found in model
+                    // Register textures if found in model, using namespace-aware keys
                     if (parsed.textures) {
+                        const resolvedTextures = {};
                         for (let [texKey, texPath] of Object.entries(parsed.textures)) {
                             let resolvedPath = this.resolveTextureMapping(texPath, parsed.textures);
                             if (resolvedPath && !resolvedPath.startsWith('#')) {
                                 let texName = resolvedPath.split('/').pop();
-                                this.blockTexturesRegistry[texName] = `textures/blocks/${texName}`;
+                                const nsPrefix = (namespace !== 'minecraft' && this.namespaces.size > 1) ? `${namespace}_` : '';
+                                const registryKey = `${nsPrefix}${texName}`;
+                                this.blockTexturesRegistry[registryKey] = `textures/blocks/${registryKey}`;
+                                resolvedTextures[texKey] = registryKey;
                             }
                         }
+                        // Store model-to-texture mapping for later use in block generation
+                        this.modelTextureMap[modelId] = resolvedTextures;
                     }
 
+                    this.conversionStats.modelsConverted++;
                     this.incrementCounter();
                 }
             } catch (e) {
@@ -1175,6 +1299,7 @@ class ModConverter {
                     this.rpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                     this.bpFolder.file(`${folderName}/${fileName}.json`, fileContent);
                 }
+                this.conversionStats.animationsConverted++;
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -1190,13 +1315,37 @@ class ModConverter {
                 const itemId = itemModelMatch[2];
                 this.items.add(`${namespace}:${itemId}`);
 
+                // Load and resolve the item model JSON (with parent chain)
+                const modelId = `${namespace}:item/${itemId}`;
+                let parsed = await this.loadModel(modelId);
+
+                // Resolve texture reference for the item icon
+                const nsPrefix = (namespace !== 'minecraft' && this.namespaces.size > 1) ? `${namespace}_` : '';
+                let iconTexture = `${nsPrefix}${itemId}`;
+                if (parsed && parsed.textures) {
+                    // Java item models use "layer0" as the primary texture
+                    let texRef = parsed.textures.layer0 || parsed.textures['0'] || Object.values(parsed.textures)[0];
+                    if (texRef) {
+                        let resolved = this.resolveTextureMapping(texRef, parsed.textures);
+                        if (resolved && !resolved.startsWith('#')) {
+                            let texName = resolved.split('/').pop();
+                            iconTexture = `${nsPrefix}${texName}`;
+                            // Ensure this texture is in the item registry
+                            if (!this.itemTexturesRegistry[iconTexture]) {
+                                this.itemTexturesRegistry[iconTexture] = `textures/items/${iconTexture}`;
+                            }
+                        }
+                    }
+                }
+
                 // Determine item category from item name heuristics
                 const categoryRules = [
                     { category: "equipment", keywords: ["sword", "axe", "bow", "crossbow", "pickaxe", "shovel", "hoe", "helmet", "chestplate", "leggings", "boots", "shield", "trident"] },
-                    { category: "construction", keywords: ["brick", "ingot", "nugget", "dust", "gem", "slab", "stair", "wall", "fence", "gate"] }
+                    { category: "construction", keywords: ["brick", "ingot", "nugget", "dust", "gem", "slab", "stair", "wall", "fence", "gate"] },
+                    { category: "nature", keywords: ["seed", "sapling", "flower", "crop", "berry", "fruit", "mushroom", "dye", "potion"] }
                 ];
 
-                let category = "nature";
+                let category = "items"; // default Bedrock category
                 const idLower = itemId.toLowerCase();
                 for (const rule of categoryRules) {
                     if (rule.keywords.some(kw => idLower.includes(kw))) {
@@ -1214,7 +1363,7 @@ class ModConverter {
                         },
                         "components": {
                             "minecraft:icon": {
-                                "texture": itemId
+                                "texture": iconTexture
                             }
                         }
                     }
@@ -1230,6 +1379,7 @@ class ModConverter {
 
                 this.validator.validateItem(`${namespace}:${itemId}`, bedrockItem);
                 this.bpFolder.file(`items/${itemId}.json`, JSON.stringify(bedrockItem, null, 4));
+                this.conversionStats.itemsGenerated++;
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -1246,18 +1396,52 @@ class ModConverter {
                 this.blocks.add(`${namespace}:${blockId}`);
 
                 const fileContent = await zipEntry.async('string');
-                const parsed = JSON.parse(fileContent);
+                const parsed = parseJSON(fileContent);
 
                 let properties = {};
+                let modelReferences = new Set();
+
+                // Extract models from blockstate variants
                 if (parsed.variants) {
-                    for (const key of Object.keys(parsed.variants)) {
-                        if (key === "") continue;
-                        const props = key.split(',');
-                        for (const p of props) {
-                            const [k, v] = p.split('=');
-                            if (k && v) {
+                    for (const [key, value] of Object.entries(parsed.variants)) {
+                        // Collect variant properties
+                        if (key !== "") {
+                            const props = key.split(',');
+                            for (const p of props) {
+                                const [k, v] = p.split('=');
+                                if (k && v) {
+                                    if (!properties[k]) properties[k] = new Set();
+                                    properties[k].add(v);
+                                }
+                            }
+                        }
+                        // Extract model references from variants
+                        const variants = Array.isArray(value) ? value : [value];
+                        for (const variant of variants) {
+                            if (variant && variant.model) {
+                                modelReferences.add(variant.model);
+                            }
+                        }
+                    }
+                }
+
+                // Extract models from multipart blockstates
+                if (parsed.multipart) {
+                    for (const part of parsed.multipart) {
+                        if (part.apply) {
+                            const applies = Array.isArray(part.apply) ? part.apply : [part.apply];
+                            for (const apply of applies) {
+                                if (apply.model) {
+                                    modelReferences.add(apply.model);
+                                }
+                            }
+                        }
+                        // Extract properties from multipart conditions
+                        if (part.when) {
+                            for (const [k, v] of Object.entries(part.when)) {
+                                if (k === 'OR' || k === 'AND') continue;
                                 if (!properties[k]) properties[k] = new Set();
-                                properties[k].add(v);
+                                String(v).split('|').forEach(val => properties[k].add(val));
                             }
                         }
                     }
@@ -1270,7 +1454,8 @@ class ModConverter {
 
                 this.blockProperties[`${namespace}:${blockId}`] = {
                     properties: finalProps,
-                    hasLogic: Object.keys(finalProps).length > 0
+                    hasLogic: Object.keys(finalProps).length > 0,
+                    models: Array.from(modelReferences)
                 };
             } catch (e) {
                 this.logWarning(relativePath, e);
@@ -1304,9 +1489,33 @@ class ModConverter {
                 else if (isGlass) { destroyTime = 0.3; explosionRes = 0.3; }
                 else if (isLeaves) { destroyTime = 0.2; explosionRes = 0.2; }
 
-                const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": blockId, "render_method": "alpha_test" } }, "minecraft:destroy_time": destroyTime, "minecraft:explosion_resistance": explosionRes } } };
+                // Determine texture key: use model-texture mapping if available, fallback to namespace-prefixed blockId
+                const nsPrefix = (namespace !== 'minecraft' && this.namespaces.size > 1) ? `${namespace}_` : '';
+                let textureKey = `${nsPrefix}${blockId}`;
 
+                // Try to resolve texture from blockstate model references
                 const bProps = this.blockProperties[fullId];
+                if (bProps && bProps.models && bProps.models.length > 0) {
+                    for (const modelRef of bProps.models) {
+                        const texMap = this.modelTextureMap[modelRef];
+                        if (texMap) {
+                            // Use the first resolved texture found (prefer 'all', 'texture', 'particle')
+                            const preferred = texMap['all'] || texMap['texture'] || texMap['particle'] || Object.values(texMap)[0];
+                            if (preferred) {
+                                textureKey = preferred;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Ensure the texture key is in the block registry
+                if (!this.blockTexturesRegistry[textureKey]) {
+                    this.blockTexturesRegistry[textureKey] = `textures/blocks/${textureKey}`;
+                }
+
+                const bedrockBlock = { "format_version": "1.16.100", "minecraft:block": { "description": { "identifier": fullId, "is_experimental": false, "register_to_creative_menu": true }, "components": { "minecraft:material_instances": { "*": { "texture": textureKey, "render_method": "alpha_test" } }, "minecraft:destroy_time": destroyTime, "minecraft:explosion_resistance": explosionRes } } };
+
                 if (bProps && bProps.hasLogic) {
                     bedrockBlock["minecraft:block"].description.properties = {};
                     bedrockBlock["minecraft:block"].permutations = [];
@@ -1397,6 +1606,7 @@ class ModConverter {
 
                 this.validator.validateBlock(fullId, bedrockBlock);
                 this.bpFolder.file(`blocks/${blockId}.json`, JSON.stringify(bedrockBlock, null, 4));
+                this.conversionStats.blocksGenerated++;
             }
         } catch (e) {
             this.logWarning("generateBlocks() loop", e);
