@@ -42,10 +42,10 @@ function preventDefaults(e) {
 });
 
 dropzone.addEventListener('drop', handleDrop, false);
-fileInput.addEventListener('click', () => {
-    fileInput.value = '';
+fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+    e.target.value = '';
 }, false);
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
 
 function handleDrop(e) {
     const dt = e.dataTransfer;
