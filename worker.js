@@ -286,8 +286,10 @@ class ModConverter {
                 this.modMeta.name = (parsed.metadata && parsed.metadata.name) || loader.id || null;
                 this.modMeta.version = loader.version || null;
                 this.modMeta.description = (parsed.metadata && parsed.metadata.description) || null;
-                if (parsed.metadata && Array.isArray(parsed.metadata.contributors)) {
+                if (parsed.metadata && parsed.metadata.contributors && typeof parsed.metadata.contributors === 'object' && !Array.isArray(parsed.metadata.contributors)) {
                     this.modMeta.authors = Object.keys(parsed.metadata.contributors);
+                } else if (parsed.metadata && Array.isArray(parsed.metadata.contributors)) {
+                    this.modMeta.authors = parsed.metadata.contributors.map(a => typeof a === 'string' ? a : (a.name || String(a)));
                 }
                 if (this.modMeta.id) {
                     this.namespaces.add(this.modMeta.id);
@@ -541,6 +543,27 @@ class ModConverter {
             return null;
         }
         return textureRef;
+    }
+
+    /**
+     * Helper to parse a tag JSON file and populate the given tag registry.
+     */
+    async parseTagFile(relativePath, zipEntry, namespace, tagId, registry) {
+        try {
+            const fileContent = await zipEntry.async('string');
+            const parsed = parseJSON(fileContent);
+            if (parsed.values) {
+                for (const v of parsed.values) {
+                    const id = typeof v === 'string' ? v : (v.id || '');
+                    const cleanId = id.replace('minecraft:', '').replace(namespace + ':', '');
+                    if (!registry[cleanId]) registry[cleanId] = [];
+                    registry[cleanId].push(tagId);
+                }
+                this.incrementCounter();
+            }
+        } catch (e) {
+            this.logWarning(relativePath, e);
+        }
     }
 
     incrementCounter() {
@@ -999,66 +1022,21 @@ class ModConverter {
         // BLOCK TAGS
         const blockTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/blocks\/(.*)\.json$/);
         if (blockTagMatch) {
-            try {
-                const tagId = blockTagMatch[2];
-                const fileContent = await zipEntry.async('string');
-                const parsed = parseJSON(fileContent);
-                if (parsed.values) {
-                    for (const v of parsed.values) {
-                        const id = typeof v === 'string' ? v : (v.id || '');
-                        const blockId = id.replace('minecraft:', '').replace(blockTagMatch[1] + ':', '');
-                        if (!this.blockTags[blockId]) this.blockTags[blockId] = [];
-                        this.blockTags[blockId].push(tagId);
-                    }
-                    this.incrementCounter();
-                }
-            } catch (e) {
-                this.logWarning(relativePath, e);
-            }
+            await this.parseTagFile(relativePath, zipEntry, blockTagMatch[1], blockTagMatch[2], this.blockTags);
             return;
         }
 
         // ITEM TAGS
         const itemTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/items\/(.*)\.json$/);
         if (itemTagMatch) {
-            try {
-                const tagId = itemTagMatch[2];
-                const fileContent = await zipEntry.async('string');
-                const parsed = parseJSON(fileContent);
-                if (parsed.values) {
-                    for (const v of parsed.values) {
-                        const id = typeof v === 'string' ? v : (v.id || '');
-                        const itemId = id.replace('minecraft:', '').replace(itemTagMatch[1] + ':', '');
-                        if (!this.itemTags[itemId]) this.itemTags[itemId] = [];
-                        this.itemTags[itemId].push(tagId);
-                    }
-                    this.incrementCounter();
-                }
-            } catch (e) {
-                this.logWarning(relativePath, e);
-            }
+            await this.parseTagFile(relativePath, zipEntry, itemTagMatch[1], itemTagMatch[2], this.itemTags);
             return;
         }
 
         // ENTITY TYPE TAGS
         const entityTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/entity_types\/(.*)\.json$/);
         if (entityTagMatch) {
-            try {
-                const tagId = entityTagMatch[2];
-                const fileContent = await zipEntry.async('string');
-                const parsed = parseJSON(fileContent);
-                if (parsed.values) {
-                    for (const v of parsed.values) {
-                        const id = typeof v === 'string' ? v : (v.id || '');
-                        const entityId = id.replace('minecraft:', '').replace(entityTagMatch[1] + ':', '');
-                        if (!this.entityTypeTags[entityId]) this.entityTypeTags[entityId] = [];
-                        this.entityTypeTags[entityId].push(tagId);
-                    }
-                    this.incrementCounter();
-                }
-            } catch (e) {
-                this.logWarning(relativePath, e);
-            }
+            await this.parseTagFile(relativePath, zipEntry, entityTagMatch[1], entityTagMatch[2], this.entityTypeTags);
             return;
         }
 
@@ -1212,19 +1190,19 @@ class ModConverter {
                 const itemId = itemModelMatch[2];
                 this.items.add(`${namespace}:${itemId}`);
 
-                // Determine item category from item tags and name heuristics
+                // Determine item category from item name heuristics
+                const categoryRules = [
+                    { category: "equipment", keywords: ["sword", "axe", "bow", "crossbow", "pickaxe", "shovel", "hoe", "helmet", "chestplate", "leggings", "boots", "shield", "trident"] },
+                    { category: "construction", keywords: ["brick", "ingot", "nugget", "dust", "gem", "slab", "stair", "wall", "fence", "gate"] }
+                ];
+
                 let category = "nature";
                 const idLower = itemId.toLowerCase();
-                if (idLower.includes("sword") || idLower.includes("axe") || idLower.includes("bow") || idLower.includes("crossbow")) {
-                    category = "equipment";
-                } else if (idLower.includes("pickaxe") || idLower.includes("shovel") || idLower.includes("hoe")) {
-                    category = "equipment";
-                } else if (idLower.includes("helmet") || idLower.includes("chestplate") || idLower.includes("leggings") || idLower.includes("boots")) {
-                    category = "equipment";
-                } else if (idLower.includes("food") || idLower.includes("apple") || idLower.includes("bread") || idLower.includes("stew") || idLower.includes("meat") || idLower.includes("cooked")) {
-                    category = "nature";
-                } else if (idLower.includes("brick") || idLower.includes("ingot") || idLower.includes("nugget") || idLower.includes("dust") || idLower.includes("gem")) {
-                    category = "construction";
+                for (const rule of categoryRules) {
+                    if (rule.keywords.some(kw => idLower.includes(kw))) {
+                        category = rule.category;
+                        break;
+                    }
                 }
 
                 const bedrockItem = {

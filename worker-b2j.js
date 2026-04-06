@@ -958,7 +958,7 @@ class BedrockToJavaConverter {
             "name": this.modMeta.name || this.modNameBase,
             "description": this.modMeta.description || `Converted from Bedrock addon by MC-ModsConverter`,
             "authors": this.modMeta.authors.length > 0
-                ? [...this.modMeta.authors, "MC-ModsConverter (converter)"]
+                ? [...this.modMeta.authors, "MC-ModsConverter"]
                 : ["MC-ModsConverter"],
             "contact": {
                 "homepage": "https://minecraft-julian.github.io/MC-ModsConverter/"
