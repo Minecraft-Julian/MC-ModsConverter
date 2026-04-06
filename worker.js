@@ -62,12 +62,24 @@ class ModConverter {
         this.options = options;
         this.modNameBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
 
+        // Mod Identification (populated during identifyMod phase)
+        this.modMeta = {
+            id: null,
+            name: null,
+            version: null,
+            description: null,
+            authors: [],
+            loader: null // 'fabric', 'forge', 'quilt', or null
+        };
+
         // Registries
         this.namespaces = new Set();
         this.blocks = new Set();
         this.items = new Set();
         this.geometries = new Set();
         this.blockTags = {};
+        this.itemTags = {};
+        this.entityTypeTags = {};
 
         this.blockTexturesRegistry = {};
         this.itemTexturesRegistry = {};
@@ -78,16 +90,26 @@ class ModConverter {
         this.scriptsList = [];
         this.biomesClientData = { "biomes": {} };
 
+        // Structure analysis
+        this.structureSummary = {
+            assets: {},      // namespace -> { textures: [], models: [], blockstates: [], sounds: [], lang: [] }
+            data: {},        // namespace -> { recipes: [], loot_tables: [], tags: [], advancements: [], worldgen: [] }
+            totalAssets: 0,
+            totalData: 0,
+            classFiles: 0,
+            unknownFiles: []
+        };
+
         this.fileCount = 0;
         this.skippedClasses = 0;
         this.warnings = [];
 
-        // Initialize manifests
+        // Manifests initialized after mod identification
         this.bpModuleUUID = generateUUID();
         this.rpModuleUUID = generateUUID();
         this.manifestVersion = [1, new Date().getMonth() + 1, new Date().getDate()];
-        this.bpManifest = this.generateManifest('data', `${this.modNameBase} Behaviors`, "Converted Java Mod Behaviors", this.bpModuleUUID, this.rpModuleUUID, this.manifestVersion);
-        this.rpManifest = this.generateManifest('resources', `${this.modNameBase} Resources`, "Converted Java Mod Resources", this.rpModuleUUID, this.bpModuleUUID, this.manifestVersion);
+        this.bpManifest = null;
+        this.rpManifest = null;
         this.languages = new Set();
     }
 
@@ -139,17 +161,43 @@ class ModConverter {
             this.loadedZip = await zip.loadAsync(this.file);
             this.addonZip = new JSZip();
 
+            // Phase 0: MOD IDENTIFICATION
+            self.postMessage({ type: 'status', title: 'Identifying Mod...', desc: 'Reading mod metadata', isLoading: true, percent: 2 });
+            await this.identifyMod();
+
+            // Use mod metadata for naming
+            const displayName = this.modMeta.name || this.modNameBase;
+            const description = this.modMeta.description || "Converted Java Mod";
+            const authors = this.modMeta.authors.length > 0
+                ? this.modMeta.authors
+                : ["MC-ModsConverter"];
+
+            // Initialize manifests with real mod metadata
+            this.bpManifest = this.generateManifest('data', `${displayName} Behaviors`, `${description} - Behaviors`, this.bpModuleUUID, this.rpModuleUUID, this.manifestVersion);
+            this.rpManifest = this.generateManifest('resources', `${displayName} Resources`, `${description} - Resources`, this.rpModuleUUID, this.bpModuleUUID, this.manifestVersion);
+            this.bpManifest.metadata.authors = authors;
+            this.rpManifest.metadata.authors = authors;
+
             this.bpFolder = this.addonZip.folder(`${this.modNameBase}_BP`);
             this.rpFolder = this.addonZip.folder(`${this.modNameBase}_RP`);
 
-            // Phase 1: SCAN
-            self.postMessage({ type: 'status', title: 'Scanning...', desc: 'Analyzing Java Mod structure', isLoading: true, percent: 5 });
+            // Phase 1: SCAN & STRUCTURE ANALYSIS
+            self.postMessage({ type: 'status', title: 'Scanning...', desc: 'Analyzing Minecraft mod structure', isLoading: true, percent: 5 });
             const files = this.scan();
             this.totalFiles = files.length;
             this.validator = new Validator();
+            this.analyzeStructure(files);
 
-            // Phase 2: PARSE & TRANSFORM (Current hybrid loop)
-            // We iterate through scanned files and process them
+            // Log structure summary
+            const modInfo = this.modMeta.id
+                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'unknown'} loader)`
+                : `Mod: ${this.modNameBase} (no mod descriptor found)`;
+            const nsInfo = this.namespaces.size > 0
+                ? `Namespaces: ${Array.from(this.namespaces).join(', ')}`
+                : 'No namespaces detected';
+            self.postMessage({ type: 'status', title: 'Structure Analyzed', desc: `${modInfo} | ${nsInfo}`, isLoading: true, percent: 8 });
+
+            // Phase 2: PARSE & TRANSFORM
             self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
             for (const file of files) {
                 try {
@@ -188,11 +236,213 @@ class ModConverter {
                 blob: content,
                 fileName: `${this.modNameBase}.mcaddon`,
                 count: this.fileCount,
-                warnings: this.warnings
+                warnings: this.warnings,
+                modMeta: this.modMeta,
+                structureSummary: this.structureSummary
             });
 
         } catch (error) {
             self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.', warnings: this.warnings });
+        }
+    }
+
+    /**
+     * Phase 0: Mod Identification
+     * Reads fabric.mod.json, META-INF/mods.toml, or mcmod.info to identify the mod.
+     */
+    async identifyMod() {
+        // Try Fabric: fabric.mod.json
+        const fabricModJson = this.loadedZip.file('fabric.mod.json');
+        if (fabricModJson) {
+            try {
+                const content = await fabricModJson.async('string');
+                const parsed = parseJSON(content);
+                this.modMeta.loader = 'fabric';
+                this.modMeta.id = parsed.id || null;
+                this.modMeta.name = parsed.name || parsed.id || null;
+                this.modMeta.version = parsed.version || null;
+                this.modMeta.description = parsed.description || null;
+                if (Array.isArray(parsed.authors)) {
+                    this.modMeta.authors = parsed.authors.map(a => typeof a === 'string' ? a : (a.name || String(a)));
+                }
+                if (this.modMeta.id) {
+                    this.namespaces.add(this.modMeta.id);
+                }
+                return;
+            } catch (e) {
+                this.logWarning('fabric.mod.json', e);
+            }
+        }
+
+        // Try Quilt: quilt.mod.json
+        const quiltModJson = this.loadedZip.file('quilt.mod.json');
+        if (quiltModJson) {
+            try {
+                const content = await quiltModJson.async('string');
+                const parsed = parseJSON(content);
+                this.modMeta.loader = 'quilt';
+                const loader = parsed.quilt_loader || {};
+                this.modMeta.id = loader.id || null;
+                this.modMeta.name = (parsed.metadata && parsed.metadata.name) || loader.id || null;
+                this.modMeta.version = loader.version || null;
+                this.modMeta.description = (parsed.metadata && parsed.metadata.description) || null;
+                if (parsed.metadata && parsed.metadata.contributors && typeof parsed.metadata.contributors === 'object' && !Array.isArray(parsed.metadata.contributors)) {
+                    this.modMeta.authors = Object.keys(parsed.metadata.contributors);
+                } else if (parsed.metadata && Array.isArray(parsed.metadata.contributors)) {
+                    this.modMeta.authors = parsed.metadata.contributors.map(a => typeof a === 'string' ? a : (a.name || String(a)));
+                }
+                if (this.modMeta.id) {
+                    this.namespaces.add(this.modMeta.id);
+                }
+                return;
+            } catch (e) {
+                this.logWarning('quilt.mod.json', e);
+            }
+        }
+
+        // Try Forge: META-INF/mods.toml
+        const modsToml = this.loadedZip.file('META-INF/mods.toml');
+        if (modsToml) {
+            try {
+                const content = await modsToml.async('string');
+                this.modMeta.loader = 'forge';
+                // Simple TOML parsing for key fields
+                const modIdMatch = content.match(/modId\s*=\s*"([^"]+)"/);
+                const nameMatch = content.match(/displayName\s*=\s*"([^"]+)"/);
+                const versionMatch = content.match(/version\s*=\s*"([^"]+)"/);
+                const descMatch = content.match(/description\s*=\s*'''([\s\S]*?)'''/);
+                const authorsMatch = content.match(/authors\s*=\s*"([^"]+)"/);
+
+                this.modMeta.id = modIdMatch ? modIdMatch[1] : null;
+                this.modMeta.name = nameMatch ? nameMatch[1] : (modIdMatch ? modIdMatch[1] : null);
+                this.modMeta.version = versionMatch ? versionMatch[1] : null;
+                this.modMeta.description = descMatch ? descMatch[1].trim() : null;
+                if (authorsMatch) {
+                    this.modMeta.authors = authorsMatch[1].split(',').map(a => a.trim());
+                }
+                if (this.modMeta.id) {
+                    this.namespaces.add(this.modMeta.id);
+                }
+                return;
+            } catch (e) {
+                this.logWarning('META-INF/mods.toml', e);
+            }
+        }
+
+        // Try Legacy Forge: mcmod.info
+        const mcmodInfo = this.loadedZip.file('mcmod.info');
+        if (mcmodInfo) {
+            try {
+                const content = await mcmodInfo.async('string');
+                const parsed = parseJSON(content);
+                const info = Array.isArray(parsed) ? parsed[0] : parsed;
+                this.modMeta.loader = 'forge';
+                this.modMeta.id = info.modid || null;
+                this.modMeta.name = info.name || info.modid || null;
+                this.modMeta.version = info.version || null;
+                this.modMeta.description = info.description || null;
+                if (Array.isArray(info.authorList)) {
+                    this.modMeta.authors = info.authorList;
+                } else if (Array.isArray(info.authors)) {
+                    this.modMeta.authors = info.authors;
+                }
+                if (this.modMeta.id) {
+                    this.namespaces.add(this.modMeta.id);
+                }
+                return;
+            } catch (e) {
+                this.logWarning('mcmod.info', e);
+            }
+        }
+
+        // No mod descriptor found - warn user
+        this.warnings.push({
+            path: 'mod identification',
+            error: 'No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, or mcmod.info). Mod name and namespace will be inferred from file structure.'
+        });
+    }
+
+    /**
+     * Minecraft-aware structure analysis.
+     * Categorizes all files by their Minecraft role before processing.
+     */
+    analyzeStructure(files) {
+        for (const file of files) {
+            const path = file.path;
+
+            // Track .class files
+            if (path.endsWith('.class')) {
+                this.structureSummary.classFiles++;
+                continue;
+            }
+
+            // assets/<namespace>/...
+            const assetsMatch = path.match(/^assets\/([^/]+)\/(.+)$/);
+            if (assetsMatch) {
+                const ns = assetsMatch[1];
+                const subPath = assetsMatch[2];
+                this.namespaces.add(ns);
+
+                if (!this.structureSummary.assets[ns]) {
+                    this.structureSummary.assets[ns] = { textures: [], models: [], blockstates: [], sounds: [], lang: [], particles: [], animations: [], other: [] };
+                }
+
+                if (subPath.startsWith('textures/')) {
+                    this.structureSummary.assets[ns].textures.push(subPath);
+                } else if (subPath.startsWith('models/')) {
+                    this.structureSummary.assets[ns].models.push(subPath);
+                } else if (subPath.startsWith('blockstates/')) {
+                    this.structureSummary.assets[ns].blockstates.push(subPath);
+                } else if (subPath.startsWith('sounds/') || subPath === 'sounds.json') {
+                    this.structureSummary.assets[ns].sounds.push(subPath);
+                } else if (subPath.startsWith('lang/')) {
+                    this.structureSummary.assets[ns].lang.push(subPath);
+                } else if (subPath.startsWith('particles/')) {
+                    this.structureSummary.assets[ns].particles.push(subPath);
+                } else if (subPath.startsWith('animations/') || subPath.startsWith('animation_controllers/')) {
+                    this.structureSummary.assets[ns].animations.push(subPath);
+                } else {
+                    this.structureSummary.assets[ns].other.push(subPath);
+                }
+                this.structureSummary.totalAssets++;
+                continue;
+            }
+
+            // data/<namespace>/...
+            const dataMatch = path.match(/^data\/([^/]+)\/(.+)$/);
+            if (dataMatch) {
+                const ns = dataMatch[1];
+                const subPath = dataMatch[2];
+                this.namespaces.add(ns);
+
+                if (!this.structureSummary.data[ns]) {
+                    this.structureSummary.data[ns] = { recipes: [], loot_tables: [], tags: [], advancements: [], worldgen: [], other: [] };
+                }
+
+                if (subPath.startsWith('recipes/') || subPath.startsWith('recipe/')) {
+                    this.structureSummary.data[ns].recipes.push(subPath);
+                } else if (subPath.startsWith('loot_tables/') || subPath.startsWith('loot_table/')) {
+                    this.structureSummary.data[ns].loot_tables.push(subPath);
+                } else if (subPath.startsWith('tags/')) {
+                    this.structureSummary.data[ns].tags.push(subPath);
+                } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
+                    this.structureSummary.data[ns].advancements.push(subPath);
+                } else if (subPath.startsWith('worldgen/')) {
+                    this.structureSummary.data[ns].worldgen.push(subPath);
+                } else {
+                    this.structureSummary.data[ns].other.push(subPath);
+                }
+                this.structureSummary.totalData++;
+                continue;
+            }
+
+            // Files outside assets/ and data/ that aren't mod descriptors or pack icons
+            if (!path.endsWith('.class') &&
+                path !== 'fabric.mod.json' && path !== 'quilt.mod.json' &&
+                path !== 'META-INF/mods.toml' && path !== 'mcmod.info' &&
+                path !== 'pack.mcmeta' && path.toLowerCase() !== 'pack.png') {
+                this.structureSummary.unknownFiles.push(path);
+            }
         }
     }
 
@@ -295,6 +545,27 @@ class ModConverter {
         return textureRef;
     }
 
+    /**
+     * Helper to parse a tag JSON file and populate the given tag registry.
+     */
+    async parseTagFile(relativePath, zipEntry, namespace, tagId, registry) {
+        try {
+            const fileContent = await zipEntry.async('string');
+            const parsed = parseJSON(fileContent);
+            if (parsed.values) {
+                for (const v of parsed.values) {
+                    const id = typeof v === 'string' ? v : (v.id || '');
+                    const cleanId = id.replace('minecraft:', '').replace(namespace + ':', '');
+                    if (!registry[cleanId]) registry[cleanId] = [];
+                    registry[cleanId].push(tagId);
+                }
+                this.incrementCounter();
+            }
+        } catch (e) {
+            this.logWarning(relativePath, e);
+        }
+    }
+
     incrementCounter() {
         this.fileCount++;
         const percent = (this.fileCount / this.totalFiles) * 100;
@@ -356,9 +627,9 @@ class ModConverter {
         if (textureMatch) {
             try {
                 const namespace = textureMatch[1];
-                const texturePath = textureMatch[2]; // e.g. "block/stone.png"
+                const texturePath = textureMatch[2]; // e.g. "block/stone.png", "entity/custom_mob.png"
                 const parsedPath = texturePath.split('/');
-                const type = parsedPath[0]; // "block", "item", etc.
+                const type = parsedPath[0]; // "block", "item", "entity", "gui", "environment", "painting", etc.
                 const name = parsedPath[parsedPath.length - 1].split('.')[0];
 
                 const fileContent = await zipEntry.async('arraybuffer');
@@ -369,7 +640,21 @@ class ModConverter {
                 } else if (type === 'item') {
                     this.rpFolder.file(`textures/items/${name}.png`, fileContent);
                     this.itemTexturesRegistry[name] = `textures/items/${name}`;
+                } else if (type === 'entity') {
+                    // Entity textures: preserve sub-path structure for entity skins
+                    const entitySubPath = parsedPath.slice(1).join('/');
+                    this.rpFolder.file(`textures/entity/${entitySubPath}`, fileContent);
+                } else if (type === 'gui') {
+                    // GUI textures: copy to RP for potential UI usage
+                    this.rpFolder.file(`textures/gui/${parsedPath.slice(1).join('/')}`, fileContent);
+                } else if (type === 'environment') {
+                    this.rpFolder.file(`textures/environment/${parsedPath.slice(1).join('/')}`, fileContent);
+                } else if (type === 'painting') {
+                    this.rpFolder.file(`textures/painting/${parsedPath.slice(1).join('/')}`, fileContent);
+                } else if (type === 'particle') {
+                    this.rpFolder.file(`textures/particle/${parsedPath.slice(1).join('/')}`, fileContent);
                 } else {
+                    // Other texture types: preserve original path
                     this.rpFolder.file(`textures/${texturePath}`, fileContent);
                 }
 
@@ -734,21 +1019,38 @@ class ModConverter {
             return;
         }
 
-        // TAGS
-        const tagMatch = relativePath.match(/^data\/([^/]+)\/tags\/blocks\/(.*)\.json$/);
-        if (tagMatch) {
+        // BLOCK TAGS
+        const blockTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/blocks\/(.*)\.json$/);
+        if (blockTagMatch) {
+            await this.parseTagFile(relativePath, zipEntry, blockTagMatch[1], blockTagMatch[2], this.blockTags);
+            return;
+        }
+
+        // ITEM TAGS
+        const itemTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/items\/(.*)\.json$/);
+        if (itemTagMatch) {
+            await this.parseTagFile(relativePath, zipEntry, itemTagMatch[1], itemTagMatch[2], this.itemTags);
+            return;
+        }
+
+        // ENTITY TYPE TAGS
+        const entityTagMatch = relativePath.match(/^data\/([^/]+)\/tags\/entity_types\/(.*)\.json$/);
+        if (entityTagMatch) {
+            await this.parseTagFile(relativePath, zipEntry, entityTagMatch[1], entityTagMatch[2], this.entityTypeTags);
+            return;
+        }
+
+        // ADVANCEMENTS (noted but not directly convertible to Bedrock)
+        const advancementMatch = relativePath.match(/^data\/([^/]+)\/(?:advancements|advancement)\/(.*)\.json$/);
+        if (advancementMatch) {
             try {
-                const tagId = tagMatch[2];
-                const fileContent = await zipEntry.async('string');
-                const parsed = parseJSON(fileContent);
-                if (parsed.values) {
-                    for (const v of parsed.values) {
-                        const blockId = v.replace('minecraft:', '').replace(tagMatch[1] + ':', '');
-                        if (!this.blockTags[blockId]) this.blockTags[blockId] = [];
-                        this.blockTags[blockId].push(tagId);
-                    }
-                    this.incrementCounter();
-                }
+                this.incrementCounter();
+                // Advancements don't have a direct Bedrock equivalent
+                // Log them so the user knows they were detected but skipped
+                this.warnings.push({
+                    path: relativePath,
+                    error: 'Advancement detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.'
+                });
             } catch (e) {
                 this.logWarning(relativePath, e);
             }
@@ -888,12 +1190,27 @@ class ModConverter {
                 const itemId = itemModelMatch[2];
                 this.items.add(`${namespace}:${itemId}`);
 
+                // Determine item category from item name heuristics
+                const categoryRules = [
+                    { category: "equipment", keywords: ["sword", "axe", "bow", "crossbow", "pickaxe", "shovel", "hoe", "helmet", "chestplate", "leggings", "boots", "shield", "trident"] },
+                    { category: "construction", keywords: ["brick", "ingot", "nugget", "dust", "gem", "slab", "stair", "wall", "fence", "gate"] }
+                ];
+
+                let category = "nature";
+                const idLower = itemId.toLowerCase();
+                for (const rule of categoryRules) {
+                    if (rule.keywords.some(kw => idLower.includes(kw))) {
+                        category = rule.category;
+                        break;
+                    }
+                }
+
                 const bedrockItem = {
                     "format_version": "1.16.100",
                     "minecraft:item": {
                         "description": {
                             "identifier": `${namespace}:${itemId}`,
-                            "category": "nature"
+                            "category": category
                         },
                         "components": {
                             "minecraft:icon": {
@@ -902,6 +1219,15 @@ class ModConverter {
                         }
                     }
                 };
+
+                // Apply item tags if available
+                if (this.itemTags[itemId]) {
+                    for (const tag of this.itemTags[itemId]) {
+                        const tagKey = `tag:${tag.replace('/', '_')}`;
+                        bedrockItem["minecraft:item"].components[tagKey] = {};
+                    }
+                }
+
                 this.validator.validateItem(`${namespace}:${itemId}`, bedrockItem);
                 this.bpFolder.file(`items/${itemId}.json`, JSON.stringify(bedrockItem, null, 4));
                 this.incrementCounter();
