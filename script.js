@@ -42,12 +42,12 @@ function handleFiles(files) {
     const file = files[0];
 
     if (!file.name.endsWith('.jar') && !file.name.endsWith('.zip')) {
-        updateStatus('Error', 'Please upload a valid .jar file.', false);
+        updateStatus('Error', t('errorInvalidFile'), false);
         return;
     }
 
     if (file.size > 100 * 1024 * 1024) { // over 100mb
-        if (!confirm("This file is heavily sized (>100MB). Extremely large modifications may hang or crash your browser tab during geometry extraction. Do you wish to continue?")) {
+        if (!confirm(t('errorLargeFileConfirm'))) {
             return;
         }
     }
@@ -74,7 +74,7 @@ function handleFiles(files) {
                 progressContainer.classList.add('hidden');
             }
         } else if (data.type === 'success') {
-            updateStatus('Addon Ready!', `Converted ${data.count} assets successfully!`, false);
+            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}), false);
             document.getElementById('progressContainer').classList.add('hidden');
 
             const url = URL.createObjectURL(data.blob);
@@ -85,14 +85,14 @@ function handleFiles(files) {
             displayWarnings(data.warnings);
             worker.terminate();
         } else if (data.type === 'error') {
-            updateStatus('Conversion Failed', data.message || 'An error occurred during conversion.', false);
+            updateStatus(t('conversionFailedTitle'), data.message || t('conversionFailedFatal'), false);
             document.getElementById('progressContainer').classList.add('hidden');
             worker.terminate();
         }
     };
 
     worker.onerror = function (error) {
-        updateStatus('Conversion Failed', 'A fatal worker error occurred.', false);
+        updateStatus(t('conversionFailedTitle'), t('conversionFailedFatal'), false);
         console.error(error);
         worker.terminate();
     };
