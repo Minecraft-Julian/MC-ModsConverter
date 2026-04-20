@@ -116,11 +116,7 @@ class ModConverter {
             ],
             "metadata": {
                 "authors": ["MC-ModsConverter"],
-                "url": "https://minecraft-julian.github.io/MC-ModsConverter/",
-                "generated_with": {
-                    "tool": "MC-ModsConverter",
-                    "version": "1.0.0"
-                }
+                "url": "https://minecraft-julian.github.io/MC-ModsConverter/"
             }
         };
     }
