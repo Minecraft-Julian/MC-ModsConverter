@@ -667,33 +667,69 @@ class ModConverter {
     }
 
     async convertNbtToMcstructure(nbtBuffer) {
+        // Decompress if gzipped
+        let decompressed;
+        try {
+            decompressed = pako.ungzip(nbtBuffer);
+        } catch (e) {
+            decompressed = nbtBuffer; // Assume already decompressed
+        }
+
         // Parse the Java NBT structure
         const nbtData = await new Promise((resolve, reject) => {
-            nbt.parse(nbtBuffer, (error, data) => {
+            nbt.parse(decompressed, (error, data) => {
                 if (error) reject(error);
                 else resolve(data);
             });
         });
 
-        // Basic conversion: assume it's a structure and convert to MCStructure format
-        // This is a simplified conversion; real conversion requires block ID mapping
+        // Simplified conversion to MCStructure
+        // This is a basic port of the javaToBedrock function
         const structure = {
             format_version: 1,
-            size: [nbtData.size ? nbtData.size[0] : 1, nbtData.size ? nbtData.size[1] : 1, nbtData.size ? nbtData.size[2] : 1],
+            size: nbtData.size ? [nbtData.size[0], nbtData.size[1], nbtData.size[2]] : [1, 1, 1],
             structure: {
-                block_indices: [nbtData.blocks ? nbtData.blocks.map(b => b.state || 0) : []],
-                entities: nbtData.entities || [],
+                block_indices: [[], []], // Two layers
+                entities: [],
                 palette: {
                     default: {
-                        block_palette: nbtData.palette ? nbtData.palette.map(p => ({ name: p.name || "minecraft:air", states: p.properties || {} })) : [{ name: "minecraft:air", states: {} }],
+                        block_palette: [],
                         block_position_data: {}
                     }
                 }
             },
-            structure_world_origin: nbtData.size ? [0, 0, 0] : [0, 0, 0]
+            structure_world_origin: [0, 0, 0]
         };
 
-        // Serialize back to NBT and compress
+        if (nbtData.palette && nbtData.blocks) {
+            // Build palette
+            const paletteMap = new Map();
+            nbtData.palette.forEach((block, index) => {
+                const name = block.Name ? block.Name : "minecraft:air";
+                const states = block.Properties || {};
+                structure.structure.palette.default.block_palette.push({
+                    name: name,
+                    states: states,
+                    version: 17825808 // Example version
+                });
+                paletteMap.set(index, structure.structure.palette.default.block_palette.length - 1);
+            });
+
+            // Build block indices
+            const sizeX = structure.size[0];
+            const sizeY = structure.size[1];
+            const sizeZ = structure.size[2];
+            const totalBlocks = sizeX * sizeY * sizeZ;
+
+            for (let i = 0; i < totalBlocks; i++) {
+                const blockIndex = nbtData.blocks[i] ? nbtData.blocks[i].state : 0;
+                const paletteIndex = paletteMap.get(blockIndex) || 0;
+                structure.structure.block_indices[0].push(paletteIndex);
+                structure.structure.block_indices[1].push(-1); // Waterlogged layer
+            }
+        }
+
+        // Serialize back to NBT
         const nbtBufferOut = await new Promise((resolve, reject) => {
             nbt.write(structure, (error, data) => {
                 if (error) reject(error);
