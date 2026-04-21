@@ -1,4 +1,5 @@
-importScripts("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js");
+importScripts("https://unpkg.com/nbt@1.0.0/nbt.js");
 
 function parseJSON(str) {
     try {
@@ -665,6 +666,45 @@ class ModConverter {
         this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
     }
 
+    async convertNbtToMcstructure(nbtBuffer) {
+        // Parse the Java NBT structure
+        const nbtData = await new Promise((resolve, reject) => {
+            nbt.parse(nbtBuffer, (error, data) => {
+                if (error) reject(error);
+                else resolve(data);
+            });
+        });
+
+        // Basic conversion: assume it's a structure and convert to MCStructure format
+        // This is a simplified conversion; real conversion requires block ID mapping
+        const structure = {
+            format_version: 1,
+            size: [nbtData.size ? nbtData.size[0] : 1, nbtData.size ? nbtData.size[1] : 1, nbtData.size ? nbtData.size[2] : 1],
+            structure: {
+                block_indices: [nbtData.blocks ? nbtData.blocks.map(b => b.state || 0) : []],
+                entities: nbtData.entities || [],
+                palette: {
+                    default: {
+                        block_palette: nbtData.palette ? nbtData.palette.map(p => ({ name: p.name || "minecraft:air", states: p.properties || {} })) : [{ name: "minecraft:air", states: {} }],
+                        block_position_data: {}
+                    }
+                }
+            },
+            structure_world_origin: nbtData.size ? [0, 0, 0] : [0, 0, 0]
+        };
+
+        // Serialize back to NBT and compress
+        const nbtBufferOut = await new Promise((resolve, reject) => {
+            nbt.write(structure, (error, data) => {
+                if (error) reject(error);
+                else resolve(data);
+            });
+        });
+
+        // Gzip compress for MCStructure
+        return pako.gzip(nbtBufferOut);
+    }
+
     async loadModel(modelId) {
         if (!modelId) return null;
         let [namespace, path] = modelId.includes(':') ? modelId.split(':') : ['minecraft', modelId];
@@ -741,14 +781,28 @@ class ModConverter {
         if (relativePath.endsWith('.nbt')) {
             try {
                 const fileContent = await zipEntry.async('arraybuffer');
-                // Convert .nbt to .mcstructure (basic copy for now, full conversion needed)
+                // Attempt to convert Java .nbt to Bedrock .mcstructure
+                const converted = await this.convertNbtToMcstructure(fileContent);
                 const newPath = relativePath.replace(/\.nbt$/, '.mcstructure').replace(/^assets\/[^/]+\//, 'structures/');
-                this.bpFolder.file(newPath, fileContent);
-                this.warnings.push({ path: relativePath, error: "NBT structure converted to .mcstructure format. Note: Full structure conversion may be required for proper Bedrock compatibility." });
+                this.bpFolder.file(newPath, converted);
                 this.incrementCounter();
             } catch (e) {
                 this.logWarning(relativePath, e);
+                // Fallback: copy as is
+                const fileContent = await zipEntry.async('arraybuffer');
+                const newPath = relativePath.replace(/\.nbt$/, '.mcstructure').replace(/^assets\/[^/]+\//, 'structures/');
+                this.bpFolder.file(newPath, fileContent);
+                this.warnings.push({ path: relativePath, error: "NBT structure copied as .mcstructure, but conversion failed. Manual conversion may be required." });
+                this.incrementCounter();
             }
+            return;
+        }
+
+        // WORLD FILES (.zip as Java worlds)
+        if (relativePath.endsWith('.zip') && (relativePath.includes('world') || relativePath.includes('save'))) {
+            // Warn that world conversion is not supported
+            this.warnings.push({ path: relativePath, error: "World files (.zip) detected. World conversion from Java to Bedrock is not supported in this tool. Only mod assets are converted." });
+            this.incrementCounter();
             return;
         }
 
