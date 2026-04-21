@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "upward_blossom_stem",
-		"metalness_emissive_roughness": "upward_blossom_stem_mer",
-		"heightmap": "upward_blossom_stem_heightmap"
-	}
-}

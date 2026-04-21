@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "inferior_trophy",
-        "metalness_emissive_roughness": "inferior_trophy_mer",
-        "heightmap": "inferior_trophy_heightmap"
-    }
-}

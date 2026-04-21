@@ -7,9 +7,22 @@ const successIcon = document.getElementById('successIcon');
 const statusTitle = document.getElementById('statusTitle');
 const statusDesc = document.getElementById('statusDesc');
 const downloadBtn = document.getElementById('downloadBtn');
+const downloadBtnText = document.getElementById('downloadBtnText');
+
+const dropzoneTitle = document.querySelector('.dropzone h3');
+
+dropzoneTitle.textContent = 'Drag & Drop your .jar file here';
+downloadBtnText.textContent = 'Download .mcaddon';
 
 // Setup Drag & Drop Listeners
 dropzone.addEventListener('click', () => fileInput.click());
+
+dropzone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+    }
+});
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropzone.addEventListener(eventName, preventDefaults, false);
@@ -29,7 +42,10 @@ function preventDefaults(e) {
 });
 
 dropzone.addEventListener('drop', handleDrop, false);
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files), false);
+fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files);
+    e.target.value = '';
+}, false);
 
 function handleDrop(e) {
     const dt = e.dataTransfer;
@@ -40,7 +56,9 @@ function handleDrop(e) {
 function handleFiles(files) {
     if (files.length === 0) return;
     const file = files[0];
+    const fileName = file.name.toLowerCase();
 
+    HEAD
     if (!file.name.endsWith('.jar') && !file.name.endsWith('.zip')) {
         updateStatus('Error', t('errorInvalidFile'), false);
         return;
@@ -51,8 +69,6 @@ function handleFiles(files) {
             return;
         }
     }
-
-    const convertModels = document.getElementById('convertModels') ? document.getElementById('convertModels').checked : true;
 
     // Hide download button & errors on new upload
     downloadBtn.classList.add('hidden');
@@ -74,6 +90,7 @@ function handleFiles(files) {
                 progressContainer.classList.add('hidden');
             }
         } else if (data.type === 'success') {
+
             updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}), false);
             document.getElementById('progressContainer').classList.add('hidden');
 
@@ -97,7 +114,7 @@ function handleFiles(files) {
         worker.terminate();
     };
 
-    worker.postMessage({ type: 'start', file: file, options: { convertModels } });
+    worker.postMessage({ type: 'start', file: file, options: { convertModels: true } });
 }
 
 function displayWarnings(warnings) {
@@ -136,6 +153,7 @@ function updateStatus(title, desc, isLoading = true) {
         successIcon.classList.remove('hidden');
     }
 }
+
 // Translation System
 const translations = {
     en: {

@@ -1,0 +1,266 @@
+{
+  "meta": {
+    "version": "3.0",
+    "mode": "all-in-one",
+    "strategy": "full-emulation + fallback + hybrid + advanced scripting",
+    "description": "Maximal aggressive conversion. Includes all possible Java mod systems, emulated where Bedrock cannot natively handle them."
+  },
+
+  "events": {
+    "PlayerInteractEvent": {"bedrock":"world.afterEvents.itemUse","convertible":true},
+    "RightClickBlock": {"bedrock":"world.afterEvents.itemUseOn","convertible":true},
+    "LeftClickBlock": {"bedrock":null,"convertible":false,"note":"Bedrock has limited support, emulate via script"},
+    "EntityJoinWorldEvent": {"bedrock":"world.afterEvents.entitySpawn","convertible":true},
+    "LivingDeathEvent": {"bedrock":"world.afterEvents.entityDie","convertible":true},
+    "BlockBreakEvent": {"bedrock":"world.afterEvents.blockBreak","convertible":true},
+    "BlockPlaceEvent": {"bedrock":"world.afterEvents.blockPlace","convertible":true},
+    "AttackEntityEvent": {"bedrock":"world.afterEvents.entityHit","convertible":true},
+    "PlayerTickEvent": {"bedrock":"system.runInterval","convertible":true,"note":"Simulated tick"},
+    "WorldTickEvent": {"bedrock":"system.runInterval","convertible":true},
+    "CustomEvent": {"bedrock":"script-based","convertible":"emulated"}
+  },
+
+  "blocks": {
+    "Block": {"bedrock":"block.json","convertible":true},
+    "BlockEntity": {"bedrock":"dynamic_properties + script","convertible":"partial"},
+    "onBlockActivated": {"bedrock":"itemUseOn","convertible":true},
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "RedstoneLogic": {"bedrock":"script","convertible":"emulated","limits":"no native redstone logic"}
+  },
+
+  "items": {
+    "Item": {"bedrock":"item.json","convertible":true},
+    "onItemRightClick": {"bedrock":"world.afterEvents.itemUse","convertible":true},
+    "inventoryTick": {"bedrock":"system.runInterval","convertible":true},
+    "NBT": {"bedrock":"dynamic_properties","convertible":"partial","lossy":true},
+    "CustomAbilities": {"bedrock":"script","convertible":"emulated"}
+  },
+
+  "entities": {
+    "Entity": {"bedrock":"entity.json","convertible":true},
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "AI_Goals": {"bedrock":"behavior_json + script","convertible":"partial","lossy":true},
+    "CustomPathfinding": {"bedrock":"script-based","convertible":"emulated"},
+    "Attributes": {"bedrock":"entity_json","convertible":true}
+  },
+
+  "world": {
+    "CustomDimension": {"bedrock":"dimension.json + script","convertible":"emulated"},
+    "ChunkGenerator": {"bedrock":null,"convertible":false,"note":"Cannot replicate"},
+    "Biome": {"bedrock":"biome.json","convertible":true},
+    "Structures": {"bedrock":"mcstructure","convertible":true},
+    "DynamicWorld": {"bedrock":"script","convertible":true}
+  },
+
+  "scheduler": {
+    "tick": {"bedrock":"system.runInterval","convertible":true},
+    "delayed_task": {"bedrock":"system.runTimeout","convertible":true}
+  },
+
+  "data": {
+    "NBT": {"bedrock":"dynamic_properties","convertible":true,"lossy":true},
+    "Capabilities": {"bedrock":"script_storage","convertible":"partial"},
+    "WorldSavedData": {"bedrock":"scoreboard/properties","convertible":true}
+  },
+
+  "gui": {
+    "CustomGUI": {"bedrock":"ui_json + script","convertible":"partial_emulated"},
+    "Containers": {"bedrock":"limited + script","convertible":"partial"}
+  },
+
+  "sound_particle": {
+    "playSound": {"bedrock":"world.playSound","convertible":true},
+    "particles": {"bedrock":"particle.json + script","convertible":true}
+  },
+
+  "animation": {
+    "CustomAnimationSystem": {"bedrock":"animation_controller + script","convertible":true},
+    "KeyframeMapping": {"bedrock":"animation_controller","convertible":true},
+    "StateTriggers": {"bedrock":"script","convertible":true}
+  },
+
+  "rendering": {
+    "CustomRenderEngine": {
+      "convertible":"emulated",
+      "strategy": {
+        "layer_1":"entity_models",
+        "layer_2":"geometry.json",
+        "layer_3":"animations",
+        "layer_4":"particles",
+        "layer_5":"ui_overlay"
+      },
+      "techniques":[
+        "attach invisible entity as renderer",
+        "use geometry bones for moving parts",
+        "animate via animation controller",
+        "simulate shaders with particles & tint",
+        "overlay UI for screen effects"
+      ],
+      "limits":["no GPU-level shaders","limited lighting","cannot change render pipeline"]
+    }
+  },
+
+  "physics": {
+    "CustomPhysics": {
+      "convertible":"emulated",
+      "strategy":[
+        "track velocity manually",
+        "apply impulses via script",
+        "simulate gravity",
+        "collision via raycasting in script"
+      ],
+      "tick_system":"system.runInterval"
+    }
+  },
+
+  "machines": {
+    "ComplexMachines": {
+      "convertible":"emulated",
+      "strategy":[
+        "store state in dynamic_properties",
+        "logic via script",
+        "visual via entity + animation",
+        "interaction via events"
+      ]
+    }
+  },
+
+  "energy_system": {
+    "ForgeEnergy": {
+      "convertible":"emulated",
+      "strategy":[
+        "store energy as scoreboard values",
+        "transfer energy via script",
+        "simulate network manually"
+      ]
+    }
+  },
+
+  "dimensions": {
+    "CustomDimensionCode": {
+      "convertible":"emulated",
+      "strategy":[
+        "dimension.json",
+        "structure spawning",
+        "scripted events",
+        "cannot emulate chunk generator fully"
+      ]
+    }
+  },
+
+  "ai": {
+    "AdvancedAI": {
+      "convertible":"hybrid",
+      "strategy":[
+        "base behavior via behavior_json",
+        "complex decisions via script",
+        "state control via tags"
+      ]
+    }
+  },
+
+  "recipes": {
+    "RecipeSerializer": {"bedrock":"recipe.json","convertible":true},
+    "Smelting": {"bedrock":"furnace_recipe.json","convertible":true}
+  },
+
+  "unsupported": [
+    "native GPU shaders",
+    "custom physics engine",
+    "deep rendering pipelines",
+    "full custom chunk generator",
+    "multi-threaded server logic",
+    "complex engine modifications"
+  ],
+
+  "converter_engine": {
+    "pipeline":[
+      "decompile_java",
+      "analyze_ast",
+      "detect_patterns",
+      "map_to_bedrock",
+      "apply_emulation",
+      "generate_js_json",
+      "validate_output"
+    ],
+    "patterns":{
+      "event_handler":{"detect":"@SubscribeEvent","convert_to":"world.afterEvents"},
+      "tick_method":{"detect":"tick()","convert_to":"system.runInterval"},
+      "entity_spawn":{"detect":"spawnEntity","convert_to":"dimension.spawnEntity"},
+      "custom_render":{"detect":"CustomRenderEngine","convert_to":"emulated layer pipeline"}
+    }
+  },
+
+  "reverse_converter_engine": {
+    "description": "Bedrock Script API → Java Mod (Fabric) conversion pipeline",
+    "pipeline":[
+      "scan_bedrock_addon",
+      "parse_scripts",
+      "detect_api_calls",
+      "map_to_java",
+      "generate_java_source",
+      "validate_output"
+    ],
+    "patterns":{
+      "event_subscribe":{"detect":"world.afterEvents.","convert_to":"@SubscribeEvent / Callback.EVENT.register"},
+      "run_interval":{"detect":"system.runInterval","convert_to":"ServerTickEvents.END_SERVER_TICK.register"},
+      "run_timeout":{"detect":"system.runTimeout","convert_to":"scheduled delayed task"},
+      "spawn_entity":{"detect":"dimension.spawnEntity","convert_to":"world.spawnEntity(new Entity())"},
+      "send_message":{"detect":"player.sendMessage","convert_to":"player.sendMessage(Text.of())"},
+      "play_sound":{"detect":"world.playSound","convert_to":"world.playSound(player, pos, SoundEvents)"}
+    }
+  },
+
+  "reverse_events": {
+    "world.afterEvents.itemUse":{"java":"UseItemCallback.EVENT.register((player, world, hand) -> { })","import":"net.fabricmc.fabric.api.event.player.UseItemCallback","note":"Fabric API item use event"},
+    "world.afterEvents.itemUseOn":{"java":"UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> { })","import":"net.fabricmc.fabric.api.event.player.UseBlockCallback","note":"Fabric API block use event"},
+    "world.afterEvents.entitySpawn":{"java":"ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> { })","import":"net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents","note":"Fabric entity load event"},
+    "world.afterEvents.entityDie":{"java":"ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> { })","import":"net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents","note":"Fabric entity death event"},
+    "world.afterEvents.blockBreak":{"java":"PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, entity) -> { })","import":"net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents","note":"Fabric block break event"},
+    "world.afterEvents.blockPlace":{"java":"// Block place callback (custom implementation required)","import":"","note":"No direct Fabric equivalent, use mixin"},
+    "world.afterEvents.entityHit":{"java":"AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> { })","import":"net.fabricmc.fabric.api.event.player.AttackEntityCallback","note":"Fabric entity attack event"},
+    "world.afterEvents.playerInteractWithBlock":{"java":"UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> { })","import":"net.fabricmc.fabric.api.event.player.UseBlockCallback","note":"Fabric block interact event"},
+    "system.runInterval":{"java":"ServerTickEvents.END_SERVER_TICK.register(server -> { })","import":"net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents","note":"Fabric server tick event"},
+    "system.runTimeout":{"java":"// Scheduled task via server tick counter","import":"","note":"Manual tick counter in ServerTickEvents"}
+  },
+
+  "reverse_api": {
+    "player.sendMessage":{"java":"player.sendMessage(Text.of(message))","import":"net.minecraft.text.Text"},
+    "world.playSound":{"java":"world.playSound(null, pos, SoundEvents.SOUND, SoundCategory.BLOCKS, 1.0f, 1.0f)","import":"net.minecraft.sound.SoundEvents"},
+    "dimension.spawnEntity":{"java":"world.spawnEntity(entity)","import":"net.minecraft.entity.Entity"},
+    "player.runCommand":{"java":"player.getServer().getCommandManager().executeWithPrefix(player.getCommandSource(), command)","import":"net.minecraft.server.command.CommandManager"},
+    "world.setBlockPermutation":{"java":"world.setBlockState(pos, state)","import":"net.minecraft.block.BlockState"},
+    "block.setPermutation":{"java":"world.setBlockState(pos, state)","import":"net.minecraft.block.BlockState"},
+    "entity.kill":{"java":"entity.kill()","import":"net.minecraft.entity.Entity"},
+    "entity.teleport":{"java":"entity.teleport(x, y, z)","import":"net.minecraft.entity.Entity"},
+    "entity.addEffect":{"java":"entity.addStatusEffect(new StatusEffectInstance(StatusEffects.EFFECT, duration, amplifier))","import":"net.minecraft.entity.effect.StatusEffectInstance"},
+    "player.getComponent":{"java":"// Access entity data via getter methods","import":""},
+    "world.getDimension":{"java":"server.getWorld(RegistryKey)","import":"net.minecraft.registry.RegistryKey"},
+    "console.warn":{"java":"LOGGER.warn(message)","import":"org.slf4j.Logger"},
+    "JSON.stringify":{"java":"new Gson().toJson(object)","import":"com.google.gson.Gson"},
+    "JSON.parse":{"java":"new Gson().fromJson(jsonString, JsonObject.class)","import":"com.google.gson.Gson"}
+  },
+
+  "reverse_data": {
+    "dynamic_properties":{"java":"NBT (NbtCompound)","import":"net.minecraft.nbt.NbtCompound","note":"Persistent data via NBT"},
+    "scoreboard":{"java":"Scoreboard API","import":"net.minecraft.scoreboard.Scoreboard","note":"World scoreboard access"},
+    "world.scoreboard":{"java":"world.getScoreboard()","import":"net.minecraft.scoreboard.Scoreboard"}
+  },
+
+  "reverse_blocks": {
+    "block.json":{"java":"Block class extending net.minecraft.block.Block","import":"net.minecraft.block.Block"},
+    "custom_component":{"java":"Custom Block with overridden methods","import":"net.minecraft.block.Block"}
+  },
+
+  "reverse_items": {
+    "item.json":{"java":"Item class extending net.minecraft.item.Item","import":"net.minecraft.item.Item"},
+    "custom_component":{"java":"Custom Item with overridden methods","import":"net.minecraft.item.Item"}
+  },
+
+  "reverse_unsupported": [
+    "Bedrock UI JSON (no Java equivalent, use custom GUI frameworks)",
+    "Bedrock animation controllers for entities (partial, use GeckoLib)",
+    "Bedrock Marketplace DRM content",
+    "Bedrock-specific particle format (needs manual porting)"
+  ]
+}

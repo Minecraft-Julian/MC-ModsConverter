@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "allium_pot",
-        "metalness_emissive_roughness": "allium_pot_mer",
-        "heightmap": "allium_pot_heightmap"
-    }
-}

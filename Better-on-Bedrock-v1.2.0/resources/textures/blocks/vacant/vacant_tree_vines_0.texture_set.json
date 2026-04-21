@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "vacant_tree_vines_0",
-		"metalness_emissive_roughness": "vacant_tree_vines_0_mer",
-		"heightmap": "vacant_tree_vines_0_heightmap"
-	}
-}

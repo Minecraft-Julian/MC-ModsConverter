@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "flare",
-		"metalness_emissive_roughness": "flare_mer",
-		"heightmap": "flare_heightmap"
-	}
-}

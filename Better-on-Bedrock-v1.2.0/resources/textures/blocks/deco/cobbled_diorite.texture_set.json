@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "cobbled_diorite",
-		"metalness_emissive_roughness": "cobbled_diorite_mer",
-		"heightmap": "cobbled_diorite_heightmap"
-	}
-}

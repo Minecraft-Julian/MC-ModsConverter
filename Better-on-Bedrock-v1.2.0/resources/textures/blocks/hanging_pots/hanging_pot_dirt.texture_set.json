@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "hanging_pot_dirt",
-        "metalness_emissive_roughness": "hanging_pot_dirt_mer",
-        "heightmap": "hanging_pot_dirt_heightmap"
-    }
-}

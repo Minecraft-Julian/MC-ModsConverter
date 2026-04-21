@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "vacant_vine_spore_leaf",
-		"metalness_emissive_roughness": "vacant_vine_spore_leaf_mer",
-		"heightmap": "vacant_vine_spore_leaf_heightmap"
-	}
-}

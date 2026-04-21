@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "end_spore_stem",
-		"metalness_emissive_roughness": "end_spore_stem_mer",
-		"heightmap": "end_spore_stem_heightmap"
-	}
-}

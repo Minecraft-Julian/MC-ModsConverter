@@ -1,1 +1,0 @@
-execute at @e[type=!player, r=5] run summon better_on_bedrock:flender_fireball ~ ~6 ~

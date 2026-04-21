@@ -1,8 +1,0 @@
-{
-	"format_version": "1.16.100",
-	"minecraft:texture_set": {
-		"color": "glowshroom_furr",
-		"metalness_emissive_roughness": "glowshroom_furr_mer",
-		"heightmap": "glowshroom_furr_heightmap"
-	}
-}

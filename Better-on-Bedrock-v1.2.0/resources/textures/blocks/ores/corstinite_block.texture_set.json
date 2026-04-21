@@ -1,8 +1,0 @@
-{
-    "format_version": "1.16.100",
-    "minecraft:texture_set": {
-        "color": "corstinite_block",
-        "metalness_emissive_roughness": "corstinite_block_mer",
-        "heightmap": "corstinite_block_heightmap"
-    }
-}
