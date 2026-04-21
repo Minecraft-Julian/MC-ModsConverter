@@ -3,6 +3,15 @@
         "/^unzip -l create-1\\.21\\.1-6\\.0\\.9\\.jar \\| head -20$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "unzip": true,
+        "/^node mod_comparison\\.js$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^node -c worker\\.js$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }
