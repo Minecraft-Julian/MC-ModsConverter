@@ -638,6 +638,39 @@ class ModConverter {
                 mainJs += `        }\n`;
                 mainJs += `    }\n`;
                 mainJs += `});\n\n`;
+            } else if (this.blocks.size > 0 || this.items.size > 0) {
+                // Generic logic for other mods with blocks/items
+                mainJs += `// --- GENERIC MOD LOGIC SIMULATION ---\n`;
+                mainJs += `// Simulate custom block behaviors\n`;
+                mainJs += `const customBlocks = new Map();\n\n`;
+                mainJs += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+                mainJs += `    const { block } = ev;\n`;
+                mainJs += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
+                mainJs += `        customBlocks.set(block.location, { type: block.typeId, state: "idle" });\n`;
+                mainJs += `        console.log("Custom block placed: " + block.typeId);\n`;
+                mainJs += `    }\n`;
+                mainJs += `});\n\n`;
+                mainJs += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+                mainJs += `    const { block, player } = ev;\n`;
+                mainJs += `    if (customBlocks.has(block.location)) {\n`;
+                mainJs += `        const blockData = customBlocks.get(block.location);\n`;
+                mainJs += `        if (blockData.type.includes("machine") || blockData.type.includes("furnace")) {\n`;
+                mainJs += `            player.sendMessage("Activating " + blockData.type);\n`;
+                mainJs += `            blockData.state = "active";\n`;
+                mainJs += `            customBlocks.set(block.location, blockData);\n`;
+                mainJs += `        } else if (blockData.type.includes("chest") || blockData.type.includes("container")) {\n`;
+                mainJs += `            player.sendMessage("Opening custom container");\n`;
+                mainJs += `        }\n`;
+                mainJs += `    }\n`;
+                mainJs += `});\n\n`;
+                mainJs += `// Simulate periodic updates\n`;
+                mainJs += `system.runInterval(() => {\n`;
+                mainJs += `    for (const [loc, data] of customBlocks) {\n`;
+                mainJs += `        if (data.state === "active") {\n`;
+                mainJs += `            // Simulate processing\n`;
+                mainJs += `        }\n`;
+                mainJs += `    }\n`;
+                mainJs += `}, 20);\n\n`;
             }
             
             mainJs += `// Custom Block Interactions & Placement\n`;
@@ -683,6 +716,268 @@ class ModConverter {
             });
         });
 
+        // Block mapping from Java to Bedrock
+        const blockMappings = {
+            // Common mappings
+            "minecraft:stone": "minecraft:stone",
+            "minecraft:dirt": "minecraft:dirt",
+            "minecraft:grass_block": "minecraft:grass",
+            "minecraft:grass": "minecraft:grass",
+            "minecraft:cobblestone": "minecraft:cobblestone",
+            "minecraft:planks": "minecraft:planks",
+            "minecraft:oak_planks": "minecraft:planks",
+            "minecraft:sand": "minecraft:sand",
+            "minecraft:gravel": "minecraft:gravel",
+            "minecraft:gold_ore": "minecraft:gold_ore",
+            "minecraft:iron_ore": "minecraft:iron_ore",
+            "minecraft:coal_ore": "minecraft:coal_ore",
+            "minecraft:oak_log": "minecraft:log",
+            "minecraft:spruce_log": "minecraft:log2",
+            "minecraft:birch_log": "minecraft:log2",
+            "minecraft:jungle_log": "minecraft:log2",
+            "minecraft:acacia_log": "minecraft:log2",
+            "minecraft:dark_oak_log": "minecraft:log2",
+            "minecraft:oak_leaves": "minecraft:leaves",
+            "minecraft:spruce_leaves": "minecraft:leaves2",
+            "minecraft:birch_leaves": "minecraft:leaves2",
+            "minecraft:jungle_leaves": "minecraft:leaves2",
+            "minecraft:acacia_leaves": "minecraft:leaves2",
+            "minecraft:dark_oak_leaves": "minecraft:leaves2",
+            "minecraft:glass": "minecraft:glass",
+            "minecraft:lapis_ore": "minecraft:lapis_ore",
+            "minecraft:lapis_block": "minecraft:lapis_block",
+            "minecraft:dispenser": "minecraft:dispenser",
+            "minecraft:sandstone": "minecraft:sandstone",
+            "minecraft:note_block": "minecraft:noteblock",
+            "minecraft:bed": "minecraft:bed",
+            "minecraft:golden_rail": "minecraft:golden_rail",
+            "minecraft:detector_rail": "minecraft:detector_rail",
+            "minecraft:sticky_piston": "minecraft:sticky_piston",
+            "minecraft:web": "minecraft:web",
+            "minecraft:piston": "minecraft:piston",
+            "minecraft:piston_head": "minecraft:pistonarmcollision",
+            "minecraft:wool": "minecraft:wool",
+            "minecraft:piston_extension": "minecraft:pistonarmcollision",
+            "minecraft:yellow_flower": "minecraft:yellow_flower",
+            "minecraft:red_flower": "minecraft:red_flower",
+            "minecraft:brown_mushroom": "minecraft:brown_mushroom",
+            "minecraft:red_mushroom": "minecraft:red_mushroom",
+            "minecraft:gold_block": "minecraft:gold_block",
+            "minecraft:iron_block": "minecraft:iron_block",
+            "minecraft:double_stone_slab": "minecraft:double_stone_slab",
+            "minecraft:stone_slab": "minecraft:stone_slab",
+            "minecraft:brick_block": "minecraft:brick_block",
+            "minecraft:tnt": "minecraft:tnt",
+            "minecraft:bookshelf": "minecraft:bookshelf",
+            "minecraft:mossy_cobblestone": "minecraft:mossy_cobblestone",
+            "minecraft:obsidian": "minecraft:obsidian",
+            "minecraft:torch": "minecraft:torch",
+            "minecraft:fire": "minecraft:fire",
+            "minecraft:mob_spawner": "minecraft:mob_spawner",
+            "minecraft:oak_stairs": "minecraft:oak_stairs",
+            "minecraft:chest": "minecraft:chest",
+            "minecraft:redstone_wire": "minecraft:redstone_wire",
+            "minecraft:diamond_ore": "minecraft:diamond_ore",
+            "minecraft:diamond_block": "minecraft:diamond_block",
+            "minecraft:crafting_table": "minecraft:crafting_table",
+            "minecraft:wheat": "minecraft:wheat",
+            "minecraft:farmland": "minecraft:farmland",
+            "minecraft:furnace": "minecraft:furnace",
+            "minecraft:lit_furnace": "minecraft:lit_furnace",
+            "minecraft:standing_sign": "minecraft:standing_sign",
+            "minecraft:wooden_door": "minecraft:wooden_door",
+            "minecraft:ladder": "minecraft:ladder",
+            "minecraft:rail": "minecraft:rail",
+            "minecraft:cobblestone_stairs": "minecraft:cobblestone_stairs",
+            "minecraft:wall_sign": "minecraft:wall_sign",
+            "minecraft:lever": "minecraft:lever",
+            "minecraft:stone_pressure_plate": "minecraft:stone_pressure_plate",
+            "minecraft:iron_door": "minecraft:iron_door",
+            "minecraft:wooden_pressure_plate": "minecraft:wooden_pressure_plate",
+            "minecraft:redstone_ore": "minecraft:redstone_ore",
+            "minecraft:lit_redstone_ore": "minecraft:lit_redstone_ore",
+            "minecraft:unlit_redstone_torch": "minecraft:unlit_redstone_torch",
+            "minecraft:redstone_torch": "minecraft:redstone_torch",
+            "minecraft:stone_button": "minecraft:stone_button",
+            "minecraft:snow_layer": "minecraft:snow_layer",
+            "minecraft:ice": "minecraft:ice",
+            "minecraft:snow": "minecraft:snow",
+            "minecraft:cactus": "minecraft:cactus",
+            "minecraft:clay": "minecraft:clay",
+            "minecraft:sugar_cane": "minecraft:sugar_cane",
+            "minecraft:jukebox": "minecraft:jukebox",
+            "minecraft:oak_fence": "minecraft:fence",
+            "minecraft:pumpkin": "minecraft:pumpkin",
+            "minecraft:netherrack": "minecraft:netherrack",
+            "minecraft:soul_sand": "minecraft:soul_sand",
+            "minecraft:glowstone": "minecraft:glowstone",
+            "minecraft:portal": "minecraft:portal",
+            "minecraft:jack_o_lantern": "minecraft:lit_pumpkin",
+            "minecraft:cake": "minecraft:cake",
+            "minecraft:unpowered_repeater": "minecraft:unpowered_repeater",
+            "minecraft:powered_repeater": "minecraft:powered_repeater",
+            "minecraft:stained_glass": "minecraft:stained_glass",
+            "minecraft:trapdoor": "minecraft:trapdoor",
+            "minecraft:monster_egg": "minecraft:monster_egg",
+            "minecraft:stonebrick": "minecraft:stonebrick",
+            "minecraft:brown_mushroom_block": "minecraft:brown_mushroom_block",
+            "minecraft:red_mushroom_block": "minecraft:red_mushroom_block",
+            "minecraft:iron_bars": "minecraft:iron_bars",
+            "minecraft:glass_pane": "minecraft:glass_pane",
+            "minecraft:melon_block": "minecraft:melon_block",
+            "minecraft:pumpkin_stem": "minecraft:pumpkin_stem",
+            "minecraft:melon_stem": "minecraft:melon_stem",
+            "minecraft:vine": "minecraft:vine",
+            "minecraft:oak_fence_gate": "minecraft:fence_gate",
+            "minecraft:brick_stairs": "minecraft:brick_stairs",
+            "minecraft:stone_brick_stairs": "minecraft:stone_brick_stairs",
+            "minecraft:mycelium": "minecraft:mycelium",
+            "minecraft:waterlily": "minecraft:waterlily",
+            "minecraft:nether_brick": "minecraft:nether_brick",
+            "minecraft:nether_brick_fence": "minecraft:nether_brick_fence",
+            "minecraft:nether_brick_stairs": "minecraft:nether_brick_stairs",
+            "minecraft:nether_wart": "minecraft:nether_wart",
+            "minecraft:enchanting_table": "minecraft:enchanting_table",
+            "minecraft:brewing_stand": "minecraft:brewing_stand",
+            "minecraft:cauldron": "minecraft:cauldron",
+            "minecraft:end_portal": "minecraft:end_portal",
+            "minecraft:end_portal_frame": "minecraft:end_portal_frame",
+            "minecraft:end_stone": "minecraft:end_stone",
+            "minecraft:dragon_egg": "minecraft:dragon_egg",
+            "minecraft:redstone_lamp": "minecraft:redstone_lamp",
+            "minecraft:lit_redstone_lamp": "minecraft:lit_redstone_lamp",
+            "minecraft:double_wooden_slab": "minecraft:double_wooden_slab",
+            "minecraft:wooden_slab": "minecraft:wooden_slab",
+            "minecraft:cocoa": "minecraft:cocoa",
+            "minecraft:sandstone_stairs": "minecraft:sandstone_stairs",
+            "minecraft:emerald_ore": "minecraft:emerald_ore",
+            "minecraft:ender_chest": "minecraft:ender_chest",
+            "minecraft:tripwire_hook": "minecraft:tripwire_hook",
+            "minecraft:tripwire": "minecraft:tripwire",
+            "minecraft:emerald_block": "minecraft:emerald_block",
+            "minecraft:spruce_stairs": "minecraft:spruce_stairs",
+            "minecraft:birch_stairs": "minecraft:birch_stairs",
+            "minecraft:jungle_stairs": "minecraft:jungle_stairs",
+            "minecraft:command_block": "minecraft:command_block",
+            "minecraft:beacon": "minecraft:beacon",
+            "minecraft:cobblestone_wall": "minecraft:cobblestone_wall",
+            "minecraft:flower_pot": "minecraft:flower_pot",
+            "minecraft:carrots": "minecraft:carrots",
+            "minecraft:potatoes": "minecraft:potatoes",
+            "minecraft:wooden_button": "minecraft:wooden_button",
+            "minecraft:skull": "minecraft:skull",
+            "minecraft:anvil": "minecraft:anvil",
+            "minecraft:trapped_chest": "minecraft:trapped_chest",
+            "minecraft:light_weighted_pressure_plate": "minecraft:light_weighted_pressure_plate",
+            "minecraft:heavy_weighted_pressure_plate": "minecraft:heavy_weighted_pressure_plate",
+            "minecraft:unpowered_comparator": "minecraft:unpowered_comparator",
+            "minecraft:powered_comparator": "minecraft:powered_comparator",
+            "minecraft:daylight_detector": "minecraft:daylight_detector",
+            "minecraft:redstone_block": "minecraft:redstone_block",
+            "minecraft:quartz_ore": "minecraft:quartz_ore",
+            "minecraft:hopper": "minecraft:hopper",
+            "minecraft:quartz_block": "minecraft:quartz_block",
+            "minecraft:quartz_stairs": "minecraft:quartz_stairs",
+            "minecraft:activator_rail": "minecraft:activator_rail",
+            "minecraft:dropper": "minecraft:dropper",
+            "minecraft:stained_hardened_clay": "minecraft:stained_hardened_clay",
+            "minecraft:stained_glass_pane": "minecraft:stained_glass_pane",
+            "minecraft:leaves2": "minecraft:leaves2",
+            "minecraft:log2": "minecraft:log2",
+            "minecraft:acacia_stairs": "minecraft:acacia_stairs",
+            "minecraft:dark_oak_stairs": "minecraft:dark_oak_stairs",
+            "minecraft:slime": "minecraft:slime",
+            "minecraft:barrier": "minecraft:barrier",
+            "minecraft:iron_trapdoor": "minecraft:iron_trapdoor",
+            "minecraft:prismarine": "minecraft:prismarine",
+            "minecraft:sea_lantern": "minecraft:sea_lantern",
+            "minecraft:hay_block": "minecraft:hay_block",
+            "minecraft:carpet": "minecraft:carpet",
+            "minecraft:hardened_clay": "minecraft:hardened_clay",
+            "minecraft:coal_block": "minecraft:coal_block",
+            "minecraft:packed_ice": "minecraft:packed_ice",
+            "minecraft:double_plant": "minecraft:double_plant",
+            "minecraft:standing_banner": "minecraft:standing_banner",
+            "minecraft:wall_banner": "minecraft:wall_banner",
+            "minecraft:daylight_detector_inverted": "minecraft:daylight_detector_inverted",
+            "minecraft:red_sandstone": "minecraft:red_sandstone",
+            "minecraft:red_sandstone_stairs": "minecraft:red_sandstone_stairs",
+            "minecraft:double_stone_slab2": "minecraft:double_stone_slab2",
+            "minecraft:stone_slab2": "minecraft:stone_slab2",
+            "minecraft:spruce_fence_gate": "minecraft:spruce_fence_gate",
+            "minecraft:birch_fence_gate": "minecraft:birch_fence_gate",
+            "minecraft:jungle_fence_gate": "minecraft:jungle_fence_gate",
+            "minecraft:dark_oak_fence_gate": "minecraft:dark_oak_fence_gate",
+            "minecraft:acacia_fence_gate": "minecraft:acacia_fence_gate",
+            "minecraft:spruce_fence": "minecraft:spruce_fence",
+            "minecraft:birch_fence": "minecraft:birch_fence",
+            "minecraft:jungle_fence": "minecraft:jungle_fence",
+            "minecraft:dark_oak_fence": "minecraft:dark_oak_fence",
+            "minecraft:acacia_fence": "minecraft:acacia_fence",
+            "minecraft:spruce_door": "minecraft:spruce_door",
+            "minecraft:birch_door": "minecraft:birch_door",
+            "minecraft:jungle_door": "minecraft:jungle_door",
+            "minecraft:acacia_door": "minecraft:acacia_door",
+            "minecraft:dark_oak_door": "minecraft:dark_oak_door",
+            "minecraft:end_rod": "minecraft:end_rod",
+            "minecraft:chorus_plant": "minecraft:chorus_plant",
+            "minecraft:chorus_flower": "minecraft:chorus_flower",
+            "minecraft:purpur_block": "minecraft:purpur_block",
+            "minecraft:purpur_pillar": "minecraft:purpur_pillar",
+            "minecraft:purpur_stairs": "minecraft:purpur_stairs",
+            "minecraft:purpur_double_slab": "minecraft:purpur_double_slab",
+            "minecraft:purpur_slab": "minecraft:purpur_slab",
+            "minecraft:end_bricks": "minecraft:end_bricks",
+            "minecraft:beetroots": "minecraft:beetroots",
+            "minecraft:grass_path": "minecraft:grass_path",
+            "minecraft:end_gateway": "minecraft:end_gateway",
+            "minecraft:repeating_command_block": "minecraft:repeating_command_block",
+            "minecraft:chain_command_block": "minecraft:chain_command_block",
+            "minecraft:frosted_ice": "minecraft:frosted_ice",
+            "minecraft:magma": "minecraft:magma",
+            "minecraft:nether_wart_block": "minecraft:nether_wart_block",
+            "minecraft:red_nether_brick": "minecraft:red_nether_brick",
+            "minecraft:bone_block": "minecraft:bone_block",
+            "minecraft:structure_void": "minecraft:structure_void",
+            "minecraft:observer": "minecraft:observer",
+            "minecraft:shulker_box": "minecraft:shulker_box",
+            "minecraft:white_shulker_box": "minecraft:white_shulker_box",
+            "minecraft:orange_shulker_box": "minecraft:orange_shulker_box",
+            "minecraft:magenta_shulker_box": "minecraft:magenta_shulker_box",
+            "minecraft:light_blue_shulker_box": "minecraft:light_blue_shulker_box",
+            "minecraft:yellow_shulker_box": "minecraft:yellow_shulker_box",
+            "minecraft:lime_shulker_box": "minecraft:lime_shulker_box",
+            "minecraft:pink_shulker_box": "minecraft:pink_shulker_box",
+            "minecraft:gray_shulker_box": "minecraft:gray_shulker_box",
+            "minecraft:silver_shulker_box": "minecraft:silver_shulker_box",
+            "minecraft:cyan_shulker_box": "minecraft:cyan_shulker_box",
+            "minecraft:purple_shulker_box": "minecraft:purple_shulker_box",
+            "minecraft:blue_shulker_box": "minecraft:blue_shulker_box",
+            "minecraft:brown_shulker_box": "minecraft:brown_shulker_box",
+            "minecraft:green_shulker_box": "minecraft:green_shulker_box",
+            "minecraft:red_shulker_box": "minecraft:red_shulker_box",
+            "minecraft:black_shulker_box": "minecraft:black_shulker_box",
+            "minecraft:white_glazed_terracotta": "minecraft:white_glazed_terracotta",
+            "minecraft:orange_glazed_terracotta": "minecraft:orange_glazed_terracotta",
+            "minecraft:magenta_glazed_terracotta": "minecraft:magenta_glazed_terracotta",
+            "minecraft:light_blue_glazed_terracotta": "minecraft:light_blue_glazed_terracotta",
+            "minecraft:yellow_glazed_terracotta": "minecraft:yellow_glazed_terracotta",
+            "minecraft:lime_glazed_terracotta": "minecraft:lime_glazed_terracotta",
+            "minecraft:pink_glazed_terracotta": "minecraft:pink_glazed_terracotta",
+            "minecraft:gray_glazed_terracotta": "minecraft:gray_glazed_terracotta",
+            "minecraft:silver_glazed_terracotta": "minecraft:silver_glazed_terracotta",
+            "minecraft:cyan_glazed_terracotta": "minecraft:cyan_glazed_terracotta",
+            "minecraft:purple_glazed_terracotta": "minecraft:purple_glazed_terracotta",
+            "minecraft:blue_glazed_terracotta": "minecraft:blue_glazed_terracotta",
+            "minecraft:brown_glazed_terracotta": "minecraft:brown_glazed_terracotta",
+            "minecraft:green_glazed_terracotta": "minecraft:green_glazed_terracotta",
+            "minecraft:red_glazed_terracotta": "minecraft:red_glazed_terracotta",
+            "minecraft:black_glazed_terracotta": "minecraft:black_glazed_terracotta",
+            "minecraft:concrete": "minecraft:concrete",
+            "minecraft:concrete_powder": "minecraft:concrete_powder",
+            "minecraft:structure_block": "minecraft:structure_block"
+        };
+
         // Simplified conversion to MCStructure
         // This is a basic port of the javaToBedrock function
         const structure = {
@@ -705,7 +1000,11 @@ class ModConverter {
             // Build palette
             const paletteMap = new Map();
             nbtData.palette.forEach((block, index) => {
-                const name = block.Name ? block.Name : "minecraft:air";
+                let name = block.Name ? block.Name : "minecraft:air";
+                // Apply block mapping
+                if (blockMappings[name]) {
+                    name = blockMappings[name];
+                }
                 const states = block.Properties || {};
                 structure.structure.palette.default.block_palette.push({
                     name: name,
