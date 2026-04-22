@@ -205,27 +205,6 @@ class ModConverter {
             this.validator = new Validator();
             this.analyzeStructure(files);
 
-            // Log structure summary with texture sub-type details
-            const modInfo = this.modMeta.id
-                ? `Mod: ${this.modMeta.name || this.modMeta.id} (${this.modMeta.loader || 'inferred from structure'})`
-                : `Mod: ${this.modNameBase} (no mod descriptor found)`;
-            const nsFiltered = Array.from(this.namespaces).filter(ns => ns !== 'minecraft');
-            const nsInfo = nsFiltered.length > 0
-                ? `Namespaces: ${nsFiltered.join(', ')}`
-                : 'No custom namespaces detected';
-
-            // Count texture sub-types for status
-            let texCounts = { block: 0, item: 0, entity: 0, other: 0 };
-            for (const ns of Object.keys(this.structureSummary.assets)) {
-                const tex = this.structureSummary.assets[ns].textures;
-                texCounts.block += tex.block.length;
-                texCounts.item += tex.item.length;
-                texCounts.entity += tex.entity.length;
-                texCounts.other += tex.gui.length + tex.environment.length + tex.painting.length + tex.particle.length + tex.other.length;
-            }
-            const texInfo = `Textures: ${texCounts.block} block, ${texCounts.item} item, ${texCounts.entity} entity, ${texCounts.other} other`;
-            self.postMessage({ type: 'status', title: 'Structure Analyzed', desc: `${modInfo} | ${nsInfo} | ${texInfo}`, isLoading: true, percent: 8 });
-
             // Phase 2: PARSE & TRANSFORM
             self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
             for (const file of files) {
@@ -1825,43 +1804,22 @@ class ModConverter {
 
     generateUniversalModLogic() {
         let logic = `// --- UNIVERSAL MOD LOGIC ENGINE ---\n`;
-        logic += `// Automatically generated behavior based on mod analysis\n`;
         logic += `console.log("[Universal Engine] Mod loaded successfully");\n\n`;
 
-        // Analyze mod type and generate appropriate logic
-        const modAnalysis = this.analyzeModType();
-        const modType = modAnalysis.type;
-        const features = modAnalysis.features;
+        // Simple test logic first
+        logic += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
+        logic += `        player.sendMessage(\`§aCustom block placed: \${block.typeId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
 
-        // Calculate compatibility score
-        this.compatibilityScore = this.calculateCompatibilityScore(modAnalysis);
-
-        logic += `console.log("[Universal Engine] Detected mod type: ${modType}, features: ${features.join(', ')}");\n`;
-        logic += `console.log("[Universal Engine] Estimated compatibility: ${this.compatibilityScore}%");\n\n`;
-
-        // Generate logic based on mod type
-        switch (modType) {
-            case 'mechanical':
-                logic += this.generateMechanicalLogic();
-                break;
-            case 'building':
-                logic += this.generateBuildingLogic();
-                break;
-            case 'utility':
-                logic += this.generateUtilityLogic();
-                break;
-            case 'magic':
-                logic += this.generateMagicLogic();
-                break;
-            case 'tech':
-                logic += this.generateTechLogic();
-                break;
-            case 'crafting':
-                logic += this.generateCraftingLogic();
-                break;
-            default:
-                logic += this.generateGenericLogic();
-        }
+        logic += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
+        logic += `        player.sendMessage(\`§eInteracted with: \${block.typeId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
 
         return logic;
     }
