@@ -4,6 +4,7 @@ const fileInput = document.getElementById('fileInput');
 const statusPanel = document.getElementById('statusPanel');
 const spinner = document.getElementById('spinner');
 const successIcon = document.getElementById('successIcon');
+const errorIcon = document.getElementById('errorIcon');
 const statusTitle = document.getElementById('statusTitle');
 const statusDesc = document.getElementById('statusDesc');
 const downloadBtn = document.getElementById('downloadBtn');
@@ -58,7 +59,7 @@ function handleFiles(files) {
     const file = files[0];
 
     if (!file.name.endsWith('.jar') && !file.name.endsWith('.zip')) {
-        updateStatus('Error', t('errorInvalidFile'), false);
+        updateStatus('Error', t('errorInvalidFile'), 'error');
         return;
     }
 
@@ -78,7 +79,7 @@ function handleFiles(files) {
     worker.onmessage = function (e) {
         const data = e.data;
         if (data.type === 'status') {
-            updateStatus(data.title, data.desc, data.isLoading);
+            updateStatus(data.title, data.desc, data.isLoading ? 'loading' : 'success');
             const progressContainer = document.getElementById('progressContainer');
             const progressBarFill = document.getElementById('progressBarFill');
             if (data.percent !== undefined) {
@@ -89,7 +90,7 @@ function handleFiles(files) {
             }
         } else if (data.type === 'success') {
             let accuracyText = data.accuracy !== undefined ? `\nAccuracy: ~${data.accuracy}% Java Match.` : '';
-            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, false);
+            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, 'success');
             document.getElementById('progressContainer').classList.add('hidden');
 
             const url = URL.createObjectURL(data.blob);
@@ -100,14 +101,14 @@ function handleFiles(files) {
             displayWarnings(data.warnings);
             worker.terminate();
         } else if (data.type === 'error') {
-            updateStatus(t('conversionFailedTitle'), data.message || t('conversionFailedFatal'), false);
+            updateStatus(t('conversionFailedTitle'), data.message || t('conversionFailedFatal'), 'error');
             document.getElementById('progressContainer').classList.add('hidden');
             worker.terminate();
         }
     };
 
     worker.onerror = function (error) {
-        updateStatus(t('conversionFailedTitle'), t('conversionFailedFatal'), false);
+        updateStatus(t('conversionFailedTitle'), t('conversionFailedFatal'), 'error');
         console.error(error);
         worker.terminate();
     };
@@ -138,17 +139,21 @@ function generateUUID() {
     });
 }
 
-function updateStatus(title, desc, isLoading = true) {
+function updateStatus(title, desc, statusObj = 'loading') {
     statusPanel.classList.remove('hidden');
     statusTitle.textContent = title;
     statusDesc.textContent = desc;
 
-    if (isLoading) {
+    spinner.classList.add('hidden');
+    successIcon.classList.add('hidden');
+    if (errorIcon) errorIcon.classList.add('hidden');
+
+    if (statusObj === 'loading' || statusObj === true) {
         spinner.classList.remove('hidden');
-        successIcon.classList.add('hidden');
-    } else {
-        spinner.classList.add('hidden');
+    } else if (statusObj === 'success' || statusObj === false) {
         successIcon.classList.remove('hidden');
+    } else if (statusObj === 'error' && errorIcon) {
+        errorIcon.classList.remove('hidden');
     }
 }
 
