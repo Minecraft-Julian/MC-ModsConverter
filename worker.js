@@ -177,6 +177,11 @@ class ModConverter {
             self.postMessage({ type: 'status', title: 'Identifying Mod...', desc: 'Reading mod metadata', isLoading: true, percent: 2 });
             await this.identifyMod();
 
+            // Analyze mod type and compatibility
+            const modAnalysis = this.analyzeModType();
+            this.compatibilityScore = this.calculateCompatibilityScore(modAnalysis);
+            self.postMessage({ type: 'status', title: 'Mod Analyzed', desc: `Type: ${modAnalysis.type}, Compatibility: ${this.compatibilityScore}%`, isLoading: true, percent: 3 });
+
             // Use mod metadata for naming
             const displayName = this.modMeta.name || this.modNameBase;
             const description = this.modMeta.description || "Converted Java Mod";
@@ -1823,20 +1828,40 @@ class ModConverter {
         logic += `// Automatically generated behavior based on mod analysis\n`;
         logic += `console.log("[Universal Engine] Mod loaded successfully");\n\n`;
 
-        // Simple test logic first
-        logic += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
-        logic += `    const { block, player } = ev;\n`;
-        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
-        logic += `        player.sendMessage(\`§aCustom block placed: \${block.typeId}\`);\n`;
-        logic += `    }\n`;
-        logic += `});\n\n`;
+        // Analyze mod type and generate appropriate logic
+        const modAnalysis = this.analyzeModType();
+        const modType = modAnalysis.type;
+        const features = modAnalysis.features;
 
-        logic += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
-        logic += `    const { block, player } = ev;\n`;
-        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
-        logic += `        player.sendMessage(\`§eInteracted with: \${block.typeId}\`);\n`;
-        logic += `    }\n`;
-        logic += `});\n\n`;
+        // Calculate compatibility score
+        this.compatibilityScore = this.calculateCompatibilityScore(modAnalysis);
+
+        logic += `console.log("[Universal Engine] Detected mod type: ${modType}, features: ${features.join(', ')}");\n`;
+        logic += `console.log("[Universal Engine] Estimated compatibility: ${this.compatibilityScore}%");\n\n`;
+
+        // Generate logic based on mod type
+        switch (modType) {
+            case 'mechanical':
+                logic += this.generateMechanicalLogic();
+                break;
+            case 'building':
+                logic += this.generateBuildingLogic();
+                break;
+            case 'utility':
+                logic += this.generateUtilityLogic();
+                break;
+            case 'magic':
+                logic += this.generateMagicLogic();
+                break;
+            case 'tech':
+                logic += this.generateTechLogic();
+                break;
+            case 'crafting':
+                logic += this.generateCraftingLogic();
+                break;
+            default:
+                logic += this.generateGenericLogic();
+        }
 
         return logic;
     }
@@ -1885,6 +1910,37 @@ class ModConverter {
         }
 
         return analysis;
+    }
+
+    calculateCompatibilityScore(analysis) {
+        let score = 50; // Base score for unknown mods
+
+        const typeScores = {
+            'mechanical': 85,
+            'building': 90,
+            'utility': 95,
+            'magic': 70,
+            'tech': 80,
+            'crafting': 75,
+            'generic': 60
+        };
+
+        if (typeScores[analysis.type]) {
+            score = typeScores[analysis.type];
+        }
+
+        // Adjust based on features
+        if (analysis.features.includes('automation')) score += 5;
+        if (analysis.features.includes('processing')) score += 5;
+        if (analysis.features.includes('magic')) score -= 10; // Magic is harder to convert
+        if (analysis.features.includes('energy')) score += 5;
+
+        // Adjust based on asset counts
+        if (this.blocks.size > 50) score -= 10; // Too many blocks might be complex
+        if (this.items.size > 100) score -= 10;
+        if (this.blocks.size < 5 && this.items.size < 10) score += 10; // Simple mods are easier
+
+        return Math.min(100, Math.max(0, score));
     }
 
     generateMechanicalLogic() {
@@ -2165,6 +2221,90 @@ class ModConverter {
         logic += `        }\n`;
         logic += `    }\n`;
         logic += `}, 20);\n\n`;
+
+        return logic;
+    }
+
+    generateBuildingLogic() {
+        return this.generateSchematicLogic();
+    }
+
+    generateUtilityLogic() {
+        return this.generateRecordingLogic();
+    }
+
+    generateTechLogic() {
+        return this.generateAutomationLogic();
+    }
+
+    generateGenericLogic() {
+        return this.generateGenericInteractionLogic();
+    }
+
+    generateMagicLogic() {
+        let logic = `// Magic System Simulation\n`;
+        logic += `const magicComponents = new Map();\n`;
+        logic += `const manaPools = new Map();\n\n`;
+
+        logic += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    const blockId = block.typeId;\n`;
+        logic += `    \n`;
+        logic += `    if (blockId.includes('altar') || blockId.includes('rune') || blockId.includes('mana') || \n`;
+        logic += `        blockId.includes('crystal') || blockId.includes('magic') || blockId.includes('wand')) {\n`;
+        logic += `        \n`;
+        logic += `        magicComponents.set(block.location, {\n`;
+        logic += `            type: blockId,\n`;
+        logic += `            mana: blockId.includes('crystal') ? 1000 : 100,\n`;
+        logic += `            active: false\n`;
+        logic += `        });\n`;
+        logic += `        \n`;
+        logic += `        player.sendMessage(\`§dMagical component placed: \${blockId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
+
+        logic += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (magicComponents.has(block.location)) {\n`;
+        logic += `        const component = magicComponents.get(block.location);\n`;
+        logic += `        component.active = !component.active;\n`;
+        logic += `        magicComponents.set(block.location, component);\n`;
+        logic += `        player.sendMessage(\`§d\${component.type} \${component.active ? 'activated' : 'deactivated'}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
+
+        return logic;
+    }
+
+    generateCraftingLogic() {
+        let logic = `// Crafting System Simulation\n`;
+        logic += `const craftingStations = new Map();\n`;
+        logic += `const toolMaterials = new Map();\n\n`;
+
+        logic += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    const blockId = block.typeId;\n`;
+        logic += `    \n`;
+        logic += `    if (blockId.includes('anvil') || blockId.includes('forge') || blockId.includes('workbench') || \n`;
+        logic += `        blockId.includes('crafting') || blockId.includes('smeltery') || blockId.includes('part_builder')) {\n`;
+        logic += `        \n`;
+        logic += `        craftingStations.set(block.location, {\n`;
+        logic += `            type: blockId,\n`;
+        logic += `            level: blockId.includes('advanced') ? 2 : 1,\n`;
+        logic += `            durability: 100\n`;
+        logic += `        });\n`;
+        logic += `        \n`;
+        logic += `        player.sendMessage(\`§6Crafting station placed: \${blockId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
+
+        logic += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (craftingStations.has(block.location)) {\n`;
+        logic += `        const station = craftingStations.get(block.location);\n`;
+        logic += `        player.sendMessage(\`§6Using \${station.type} (Level \${station.level})\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
 
         return logic;
     }
