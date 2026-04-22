@@ -1,3 +1,4 @@
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js");
 importScripts("https://unpkg.com/nbt@1.0.0/nbt.js");
 

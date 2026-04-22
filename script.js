@@ -108,8 +108,9 @@ function handleFiles(files) {
     };
 
     worker.onerror = function (error) {
-        updateStatus(t('conversionFailedTitle'), t('conversionFailedFatal'), 'error');
-        console.error(error);
+        const errorMsg = error.message ? `${t('conversionFailedFatal')}\n${error.message}` : t('conversionFailedFatal');
+        updateStatus(t('conversionFailedTitle'), errorMsg, 'error');
+        console.error('Worker error:', error);
         worker.terminate();
     };
 
