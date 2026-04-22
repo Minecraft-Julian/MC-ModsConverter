@@ -52,6 +52,7 @@ class Validator {
 
 self.onmessage = function (e) {
     if (e.data.type === 'start') {
+        self.postMessage({ type: 'status', title: 'Starting conversion...', desc: 'Initializing worker', isLoading: true });
         const converter = new ModConverter(e.data.file, e.data.options);
         converter.process();
     }
@@ -166,16 +167,17 @@ class ModConverter {
     }
 
     async process() {
-        self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
-
         try {
+            self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
+
             const zip = new JSZip();
             this.loadedZip = await zip.loadAsync(this.file);
-            this.addonZip = new JSZip();
+            self.postMessage({ type: 'status', title: 'File loaded', desc: 'ZIP extracted successfully', isLoading: true, percent: 1 });
 
             // Phase 0: MOD IDENTIFICATION
             self.postMessage({ type: 'status', title: 'Identifying Mod...', desc: 'Reading mod metadata', isLoading: true, percent: 2 });
             await this.identifyMod();
+            self.postMessage({ type: 'status', title: 'Mod identified', desc: `Found ${this.modMeta.loader || 'unknown'} mod: ${this.modMeta.name || this.modNameBase}`, isLoading: true, percent: 3 });
 
             // Analyze mod type and compatibility
             const modAnalysis = this.analyzeModType();
@@ -201,9 +203,12 @@ class ModConverter {
             // Phase 1: SCAN & STRUCTURE ANALYSIS
             self.postMessage({ type: 'status', title: 'Scanning...', desc: 'Analyzing Minecraft mod structure', isLoading: true, percent: 5 });
             const files = this.scan();
+            self.postMessage({ type: 'status', title: 'Files scanned', desc: `Found ${files.length} files to process`, isLoading: true, percent: 6 });
+
             this.totalFiles = files.length;
             this.validator = new Validator();
             this.analyzeStructure(files);
+            self.postMessage({ type: 'status', title: 'Structure analyzed', desc: `Blocks: ${this.blocks.size}, Items: ${this.items.size}`, isLoading: true, percent: 7 });
 
             // Phase 2: PARSE & TRANSFORM
             self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
@@ -215,6 +220,7 @@ class ModConverter {
                     this.incrementCounter();
                 }
             }
+            self.postMessage({ type: 'status', title: 'Assets converted', desc: 'All files processed', isLoading: true, percent: 80 });
 
             // Phase 3: VALIDATE & GENERATE REGISTRIES
             self.postMessage({ type: 'status', title: 'Building Registries...', desc: 'Generating Textures, Blocks & Sound Definitions', isLoading: true, percent: 85 });
@@ -252,7 +258,8 @@ class ModConverter {
             });
 
         } catch (error) {
-            self.postMessage({ type: 'error', message: error.message || 'An error occurred during conversion.', warnings: this.warnings });
+            console.error('Worker error:', error);
+            self.postMessage({ type: 'error', message: `Fatal error: ${error.message}\nStack: ${error.stack}`, warnings: this.warnings });
         }
     }
 
