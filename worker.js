@@ -167,6 +167,7 @@ class ModConverter {
     }
 
     async process() {
+        console.log('Worker process started');
         try {
             self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
 
@@ -174,15 +175,13 @@ class ModConverter {
             this.loadedZip = await zip.loadAsync(this.file);
             self.postMessage({ type: 'status', title: 'File loaded', desc: 'ZIP extracted successfully', isLoading: true, percent: 1 });
 
+            this.addonZip = new JSZip();
+            console.log('Addon ZIP created');
+
             // Phase 0: MOD IDENTIFICATION
             self.postMessage({ type: 'status', title: 'Identifying Mod...', desc: 'Reading mod metadata', isLoading: true, percent: 2 });
             await this.identifyMod();
             self.postMessage({ type: 'status', title: 'Mod identified', desc: `Found ${this.modMeta.loader || 'unknown'} mod: ${this.modMeta.name || this.modNameBase}`, isLoading: true, percent: 3 });
-
-            // Analyze mod type and compatibility
-            const modAnalysis = this.analyzeModType();
-            this.compatibilityScore = this.calculateCompatibilityScore(modAnalysis);
-            self.postMessage({ type: 'status', title: 'Mod Analyzed', desc: `Type: ${modAnalysis.type}, Compatibility: ${this.compatibilityScore}%`, isLoading: true, percent: 3 });
 
             // Use mod metadata for naming
             const displayName = this.modMeta.name || this.modNameBase;
