@@ -88,7 +88,8 @@ function handleFiles(files) {
                 progressContainer.classList.add('hidden');
             }
         } else if (data.type === 'success') {
-            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}), false);
+            let accuracyText = data.accuracy !== undefined ? `\nAccuracy: ~${data.accuracy}% Java Match.` : '';
+            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, false);
             document.getElementById('progressContainer').classList.add('hidden');
 
             const url = URL.createObjectURL(data.blob);

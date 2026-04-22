@@ -167,21 +167,12 @@ class ModConverter {
     }
 
     async process() {
-        console.log('Worker process started - TEST MODE');
-        self.postMessage({ type: 'status', title: 'Test Mode', desc: 'Worker started successfully', isLoading: true, percent: 10 });
+        self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
 
-        // Create a dummy blob
-        const dummyContent = 'Dummy MCAddon Content';
-        const blob = new Blob([dummyContent], { type: 'application/octet-stream' });
-
-        self.postMessage({
-            type: 'success',
-            blob: blob,
-            fileName: 'test.mcaddon',
-            count: 1,
-            warnings: []
-        });
-    }
+        try {
+            const zip = new JSZip();
+            this.loadedZip = await zip.loadAsync(this.file);
+            this.addonZip = new JSZip();
 
             // Phase 0: MOD IDENTIFICATION
             self.postMessage({ type: 'status', title: 'Identifying Mod...', desc: 'Reading mod metadata', isLoading: true, percent: 2 });
@@ -249,6 +240,15 @@ class ModConverter {
 
             this.warnings.push(...this.validator.getResults());
 
+            // Accuracy estimation system
+            let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
+            let javaCodeWeight = this.structureSummary.classFiles;
+            let baseAccuracy = 100;
+            if (scorableFiles + javaCodeWeight > 0) {
+                baseAccuracy = (scorableFiles / (scorableFiles + javaCodeWeight * 0.4)) * 100;
+            }
+            let accuracy = Math.max(0, Math.min(100, Math.round(baseAccuracy - (this.warnings.length * 0.2))));
+
             self.postMessage({
                 type: 'success',
                 blob: content,
@@ -258,7 +258,8 @@ class ModConverter {
                 modMeta: this.modMeta,
                 structureSummary: this.structureSummary,
                 conversionStats: this.conversionStats,
-                namespaces: Array.from(this.namespaces)
+                namespaces: Array.from(this.namespaces),
+                accuracy: accuracy
             });
 
         } catch (error) {
