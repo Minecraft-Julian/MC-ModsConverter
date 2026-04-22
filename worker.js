@@ -1821,34 +1821,22 @@ class ModConverter {
     generateUniversalModLogic() {
         let logic = `// --- UNIVERSAL MOD LOGIC ENGINE ---\n`;
         logic += `// Automatically generated behavior based on mod analysis\n`;
-        logic += `const modComponents = new Map();\n`;
-        logic += `const modInteractions = new Map();\n`;
-        logic += `const modNetworks = new Map();\n\n`;
+        logic += `console.log("[Universal Engine] Mod loaded successfully");\n\n`;
 
-        // Analyze mod type and generate appropriate logic
-        const modAnalysis = this.analyzeModType();
-        logic += `console.log("[Universal Engine] Detected mod type: ${modAnalysis.type}");\n`;
-        logic += `console.log("[Universal Engine] Features: ${modAnalysis.features.join(', ')}");\n\n`;
+        // Simple test logic first
+        logic += `world.afterEvents.blockPlace.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
+        logic += `        player.sendMessage(\`§aCustom block placed: \${block.typeId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
 
-        // Generate logic based on detected features
-        if (modAnalysis.features.includes('mechanical')) {
-            logic += this.generateMechanicalLogic();
-        }
-        if (modAnalysis.features.includes('schematic')) {
-            logic += this.generateSchematicLogic();
-        }
-        if (modAnalysis.features.includes('recording')) {
-            logic += this.generateRecordingLogic();
-        }
-        if (modAnalysis.features.includes('magic')) {
-            logic += this.generateMagicLogic();
-        }
-        if (modAnalysis.features.includes('automation')) {
-            logic += this.generateAutomationLogic();
-        }
-
-        // Always include generic interaction logic
-        logic += this.generateGenericInteractionLogic();
+        logic += `world.afterEvents.playerInteractWithBlock.subscribe(ev => {\n`;
+        logic += `    const { block, player } = ev;\n`;
+        logic += `    if (block.typeId.includes(":") && !block.typeId.startsWith("minecraft:")) {\n`;
+        logic += `        player.sendMessage(\`§eInteracted with: \${block.typeId}\`);\n`;
+        logic += `    }\n`;
+        logic += `});\n\n`;
 
         return logic;
     }
