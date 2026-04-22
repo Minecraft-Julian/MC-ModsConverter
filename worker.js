@@ -168,34 +168,19 @@ class ModConverter {
 
     async process() {
         console.log('Worker process started - TEST MODE');
-        try {
-            self.postMessage({ type: 'status', title: 'Test Mode', desc: 'Worker started successfully', isLoading: true, percent: 10 });
+        self.postMessage({ type: 'status', title: 'Test Mode', desc: 'Worker started successfully', isLoading: true, percent: 10 });
 
-            // Simulate processing
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            self.postMessage({ type: 'status', title: 'Test Mode', desc: 'Processing...', isLoading: true, percent: 50 });
+        // Create a dummy blob
+        const dummyContent = 'Dummy MCAddon Content';
+        const blob = new Blob([dummyContent], { type: 'application/octet-stream' });
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            self.postMessage({ type: 'status', title: 'Test Mode', desc: 'Almost done...', isLoading: true, percent: 90 });
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Create a dummy blob
-            const dummyContent = 'Dummy MCAddon Content';
-            const blob = new Blob([dummyContent], { type: 'application/octet-stream' });
-
-            self.postMessage({
-                type: 'success',
-                blob: blob,
-                fileName: 'test.mcaddon',
-                count: 1,
-                warnings: []
-            });
-
-        } catch (error) {
-            console.error('Worker error:', error);
-            self.postMessage({ type: 'error', message: `Fatal error: ${error.message}\nStack: ${error.stack}`, warnings: [] });
-        }
+        self.postMessage({
+            type: 'success',
+            blob: blob,
+            fileName: 'test.mcaddon',
+            count: 1,
+            warnings: []
+        });
     }
 
             // Phase 0: MOD IDENTIFICATION
