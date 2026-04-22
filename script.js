@@ -1,5 +1,4 @@
 // Global variables
-let selectedFile = null;
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const statusPanel = document.getElementById('statusPanel');
@@ -69,26 +68,6 @@ function handleFiles(files) {
         }
     }
 
-    // Store the selected file
-    selectedFile = file;
-
-    // Update UI to show file is ready
-    updateStatus('File Ready', `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`, false);
-
-    // Show start conversion button
-    const startBtn = document.getElementById('startConversionBtn');
-    if (startBtn) {
-        startBtn.classList.remove('hidden');
-        startBtn.onclick = startConversion;
-    }
-}
-
-function startConversion() {
-    if (!selectedFile) {
-        updateStatus('Error', 'No file selected', false);
-        return;
-    }
-
     // Hide download button & errors on new conversion
     downloadBtn.classList.add('hidden');
     const errorsContainer = document.getElementById('errorsContainer');
@@ -132,7 +111,7 @@ function startConversion() {
         worker.terminate();
     };
 
-    worker.postMessage({ type: 'start', file: selectedFile, options: { convertModels: true } });
+    worker.postMessage({ type: 'start', file: file, options: { convertModels: true } });
 }
 
 function displayWarnings(warnings) {

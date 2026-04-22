@@ -252,30 +252,6 @@ header p {
     transition: width 0.1s linear;
 }
 
-.start-conversion-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #10B981, #059669);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
-    margin-bottom: 1rem;
-}
-
-.start-conversion-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
-}
-
 .download-btn {
     display: flex;
     align-items: center;
