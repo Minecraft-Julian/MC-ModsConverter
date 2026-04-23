@@ -1,3 +1,5 @@
+importScripts("vendor/pako.min.js");
+importScripts("vendor/nbt.js");
 importScripts("simple-zip.js");
 
 function parseJSON(str) {
@@ -18,6 +20,68 @@ function generateUUID() {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
+}
+
+function unwrapNbtValue(tag) {
+    if (tag == null) return tag;
+
+    if (tag.type && Object.prototype.hasOwnProperty.call(tag, 'value')) {
+        switch (tag.type) {
+            case 'compound':
+                return unwrapNbtValue(tag.value);
+            case 'list':
+                return Array.isArray(tag.value?.value) ? tag.value.value.map(unwrapNbtValue) : [];
+            default:
+                return tag.value;
+        }
+    }
+
+    if (Array.isArray(tag)) {
+        return tag.map(unwrapNbtValue);
+    }
+
+    if (typeof tag === 'object') {
+        const result = {};
+        for (const [key, value] of Object.entries(tag)) {
+            result[key] = unwrapNbtValue(value);
+        }
+        return result;
+    }
+
+    return tag;
+}
+
+function toNbtTag(value, emptyListType = 'compound') {
+    if (Array.isArray(value)) {
+        const listType = value.length > 0
+            ? toNbtTag(value[0], emptyListType).type
+            : emptyListType;
+        return {
+            type: 'list',
+            value: {
+                type: listType,
+                value: value.map(item => toNbtTag(item, listType).value)
+            }
+        };
+    }
+
+    if (value && typeof value === 'object') {
+        const compound = {};
+        for (const [key, child] of Object.entries(value)) {
+            compound[key] = toNbtTag(child);
+        }
+        return { type: 'compound', value: compound };
+    }
+
+    if (typeof value === 'string') {
+        return { type: 'string', value };
+    }
+
+    if (typeof value === 'boolean') {
+        return { type: 'byte', value: value ? 1 : 0 };
+    }
+
+    return { type: 'int', value: Number.isFinite(value) ? Math.trunc(value) : 0 };
 }
 
 class Validator {
@@ -70,7 +134,7 @@ class ModConverter {
             version: null,
             description: null,
             authors: [],
-            loader: null // 'fabric', 'forge', 'quilt', or null
+            loader: null // 'fabric', 'quilt', 'forge', 'neoforge', or null
         };
 
         // Registries
@@ -269,7 +333,7 @@ class ModConverter {
 
     /**
      * Phase 0: Mod Identification
-     * Reads fabric.mod.json, META-INF/mods.toml, or mcmod.info to identify the mod.
+     * Reads fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info to identify the mod.
      */
     async identifyMod() {
         // Try Fabric: fabric.mod.json
@@ -321,12 +385,17 @@ class ModConverter {
             }
         }
 
-        // Try Forge: META-INF/mods.toml
-        const modsToml = this.loadedZip.file('META-INF/mods.toml');
-        if (modsToml) {
+        // Try Forge / NeoForge descriptor TOML
+        for (const descriptor of [
+            { path: 'META-INF/mods.toml', loader: 'forge' },
+            { path: 'META-INF/neoforge.mods.toml', loader: 'neoforge' }
+        ]) {
+            const modsToml = this.loadedZip.file(descriptor.path);
+            if (!modsToml) continue;
+
             try {
                 const content = await modsToml.async('string');
-                this.modMeta.loader = 'forge';
+                this.modMeta.loader = descriptor.loader;
                 // Simple TOML parsing for key fields
                 const modIdMatch = content.match(/modId\s*=\s*"([^"]+)"/);
                 const nameMatch = content.match(/displayName\s*=\s*"([^"]+)"/);
@@ -346,7 +415,7 @@ class ModConverter {
                 }
                 return;
             } catch (e) {
-                this.logWarning('META-INF/mods.toml', e);
+                this.logWarning(descriptor.path, e);
             }
         }
 
@@ -418,7 +487,7 @@ class ModConverter {
 
         this.warnings.push({
             path: 'mod identification',
-            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, or mcmod.info). ${
+            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info). ${
                 this.modMeta.id
                     ? `Inferred mod ID "${this.modMeta.id}" from assets/ folder structure.`
                     : 'Mod name and namespace will be inferred from file structure.'
@@ -535,7 +604,7 @@ class ModConverter {
             // Files outside assets/ and data/ that aren't mod descriptors or pack icons
             if (!path.endsWith('.class') &&
                 path !== 'fabric.mod.json' && path !== 'quilt.mod.json' &&
-                path !== 'META-INF/mods.toml' && path !== 'mcmod.info' &&
+                path !== 'META-INF/mods.toml' && path !== 'META-INF/neoforge.mods.toml' && path !== 'mcmod.info' &&
                 path !== 'pack.mcmeta' && path.toLowerCase() !== 'pack.png') {
                 this.structureSummary.unknownFiles.push(path);
             }
@@ -606,12 +675,13 @@ class ModConverter {
         }
 
         // Parse the Java NBT structure
-        const nbtData = await new Promise((resolve, reject) => {
+        const parsedNbt = await new Promise((resolve, reject) => {
             nbt.parse(decompressed, (error, data) => {
                 if (error) reject(error);
                 else resolve(data);
             });
         });
+        const nbtData = unwrapNbtValue(parsedNbt.value || parsedNbt);
 
         // Block mapping from Java to Bedrock
         const blockMappings = {
@@ -926,12 +996,14 @@ class ModConverter {
         }
 
         // Serialize back to NBT
-        const nbtBufferOut = await new Promise((resolve, reject) => {
-            nbt.write(structure, (error, data) => {
-                if (error) reject(error);
-                else resolve(data);
+        const nbtBufferOut = typeof nbt.writeUncompressed === 'function'
+            ? nbt.writeUncompressed({ name: 'structure', value: toNbtTag(structure).value })
+            : await new Promise((resolve, reject) => {
+                nbt.write(structure, (error, data) => {
+                    if (error) reject(error);
+                    else resolve(data);
+                });
             });
-        });
 
         // Gzip compress for MCStructure
         return pako.gzip(nbtBufferOut);
