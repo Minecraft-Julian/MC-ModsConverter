@@ -225,7 +225,6 @@ class ModConverter {
     }
 
     logWarning(path, error) {
-        if (path.includes('/lang/') && error instanceof SyntaxError) return;
         console.warn(`[ModConverter] Error processing ${path}:`, error);
         this.warnings.push({ path, error: error.message || String(error) });
     }
