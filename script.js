@@ -634,6 +634,7 @@ function getRegionFromLocaleTag(localeTag) {
             return new Intl.Locale(localeTag).region || '';
         }
     } catch (error) {
+        console.debug('Failed to parse locale tag for region detection:', error);
     }
 
     const parts = localeTag.split(/[-_]/);
@@ -708,8 +709,10 @@ function applyTranslations() {
         dropzoneContentP[1].textContent = t('dropzoneWarning');
     }
 
-    if (locationNoticeTitle) locationNoticeTitle.textContent = t('locationNoticeTitle');
-    if (locationNoticeText) locationNoticeText.textContent = t('locationNoticeText');
+    if (locationNoticeTitle && locationNoticeText) {
+        locationNoticeTitle.textContent = t('locationNoticeTitle');
+        locationNoticeText.textContent = t('locationNoticeText');
+    }
     if (achievementBookToggle) {
         const toggleLabel = achievementBookToggle.querySelector('#achievementBookButton');
         if (toggleLabel) toggleLabel.textContent = t('achievementBookButton');
