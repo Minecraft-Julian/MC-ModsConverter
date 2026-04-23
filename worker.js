@@ -1,3 +1,5 @@
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js");
+importScripts("https://unpkg.com/nbt@1.0.0/nbt.js");
 importScripts("simple-zip.js");
 
 function parseJSON(str) {
@@ -70,7 +72,7 @@ class ModConverter {
             version: null,
             description: null,
             authors: [],
-            loader: null // 'fabric', 'forge', 'quilt', or null
+            loader: null // 'fabric', 'forge', 'neoforge', 'quilt', or null
         };
 
         // Registries
@@ -269,7 +271,7 @@ class ModConverter {
 
     /**
      * Phase 0: Mod Identification
-     * Reads fabric.mod.json, META-INF/mods.toml, or mcmod.info to identify the mod.
+     * Reads fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info to identify the mod.
      */
     async identifyMod() {
         // Try Fabric: fabric.mod.json
@@ -321,12 +323,17 @@ class ModConverter {
             }
         }
 
-        // Try Forge: META-INF/mods.toml
-        const modsToml = this.loadedZip.file('META-INF/mods.toml');
-        if (modsToml) {
+        // Try Forge / NeoForge descriptor TOML
+        for (const descriptor of [
+            { path: 'META-INF/mods.toml', loader: 'forge' },
+            { path: 'META-INF/neoforge.mods.toml', loader: 'neoforge' }
+        ]) {
+            const modsToml = this.loadedZip.file(descriptor.path);
+            if (!modsToml) continue;
+
             try {
                 const content = await modsToml.async('string');
-                this.modMeta.loader = 'forge';
+                this.modMeta.loader = descriptor.loader;
                 // Simple TOML parsing for key fields
                 const modIdMatch = content.match(/modId\s*=\s*"([^"]+)"/);
                 const nameMatch = content.match(/displayName\s*=\s*"([^"]+)"/);
@@ -346,7 +353,7 @@ class ModConverter {
                 }
                 return;
             } catch (e) {
-                this.logWarning('META-INF/mods.toml', e);
+                this.logWarning(descriptor.path, e);
             }
         }
 
@@ -418,7 +425,7 @@ class ModConverter {
 
         this.warnings.push({
             path: 'mod identification',
-            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, or mcmod.info). ${
+            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info). ${
                 this.modMeta.id
                     ? `Inferred mod ID "${this.modMeta.id}" from assets/ folder structure.`
                     : 'Mod name and namespace will be inferred from file structure.'
@@ -535,7 +542,7 @@ class ModConverter {
             // Files outside assets/ and data/ that aren't mod descriptors or pack icons
             if (!path.endsWith('.class') &&
                 path !== 'fabric.mod.json' && path !== 'quilt.mod.json' &&
-                path !== 'META-INF/mods.toml' && path !== 'mcmod.info' &&
+                path !== 'META-INF/mods.toml' && path !== 'META-INF/neoforge.mods.toml' && path !== 'mcmod.info' &&
                 path !== 'pack.mcmeta' && path.toLowerCase() !== 'pack.png') {
                 this.structureSummary.unknownFiles.push(path);
             }
