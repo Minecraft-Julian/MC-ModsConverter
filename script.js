@@ -111,6 +111,7 @@ function handleFiles(files) {
         } else if (data.type === 'error') {
             updateStatus(t('conversionFailedTitle'), data.message || t('conversionFailedFatal'), 'error');
             document.getElementById('progressContainer').classList.add('hidden');
+            displayWarnings(data.warnings);
             worker.terminate();
         }
     };
@@ -131,14 +132,77 @@ function displayWarnings(warnings) {
     if (!container || !list) return;
 
     list.innerHTML = '';
-    if (warnings && warnings.length > 0) {
-        warnings.forEach(w => {
-            const li = document.createElement('li');
-            li.textContent = `[${w.path}] ${w.error}`;
-            list.appendChild(li);
-        });
-        container.classList.remove('hidden');
+    if (!warnings || warnings.length === 0) {
+        container.classList.add('hidden');
+        return;
     }
+
+    const groupedWarnings = groupWarningsByError(warnings);
+    groupedWarnings.forEach(group => {
+        if (group.entries.length === 1) {
+            const li = document.createElement('li');
+            li.textContent = group.message;
+            list.appendChild(li);
+            return;
+        }
+
+        const li = document.createElement('li');
+        li.className = 'warning-group-item';
+
+        const details = document.createElement('details');
+        details.className = 'warning-group';
+
+        const summary = document.createElement('summary');
+        summary.className = 'warning-group-summary';
+
+        const message = document.createElement('span');
+        message.className = 'warning-group-message';
+        message.textContent = group.message;
+
+        const count = document.createElement('span');
+        count.className = 'warning-group-count';
+        count.textContent = `${group.entries.length}×`;
+
+        summary.append(message, count);
+
+        const nestedList = document.createElement('ul');
+        nestedList.className = 'warning-group-list';
+
+        group.entries.forEach(entry => {
+            const nestedItem = document.createElement('li');
+            nestedItem.textContent = formatWarningMessage(entry);
+            nestedList.appendChild(nestedItem);
+        });
+
+        details.append(summary, nestedList);
+        li.appendChild(details);
+        list.appendChild(li);
+    });
+
+    container.classList.remove('hidden');
+}
+
+function groupWarningsByError(warnings) {
+    const groups = new Map();
+
+    warnings.forEach(warning => {
+        const message = formatWarningMessage(warning);
+        if (!groups.has(message)) {
+            groups.set(message, {
+                message,
+                entries: []
+            });
+        }
+        groups.get(message).entries.push(warning);
+    });
+
+    return Array.from(groups.values());
+}
+
+function formatWarningMessage(warning) {
+    if (!warning) return 'Unknown warning';
+    if (typeof warning === 'string') return warning;
+    return warning.error || String(warning);
 }
 
 function generateUUID() {
