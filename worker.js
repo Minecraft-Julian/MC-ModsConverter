@@ -338,14 +338,15 @@ class ModConverter {
 
             // Accuracy estimation system
             let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
-            let javaCodeWeight = this.structureSummary.classFiles;
+            const convertedClasses = this.conversionStats.classFilesConverted || 0;
+            const unconvertedClasses = this.structureSummary.classFiles - convertedClasses;
             let baseAccuracy = 100;
-            // Accuracy formula: Java .class files represent the bulk of a mod's logic (~90%).
-            // A weight of 2.5 means each class file counts as 2.5 "unconvertible units" against
-            // the converted asset files, producing a realistic downward pressure on accuracy
-            // for logic-heavy mods (e.g. Create) while keeping asset-only packs near 100%.
-            if (scorableFiles + javaCodeWeight > 0) {
-                baseAccuracy = (scorableFiles / (scorableFiles + javaCodeWeight * 2.5)) * 100;
+            // Accuracy formula: fully-converted class stubs count as partial conversions (weight 1.0),
+            // while unreadable / skipped class files count as heavier unconvertible units (weight 2.5).
+            // Asset-only packs stay near 100 %; logic-heavy mods are penalised proportionally.
+            const classWeight = convertedClasses * 1.0 + unconvertedClasses * 2.5;
+            if (scorableFiles + classWeight > 0) {
+                baseAccuracy = (scorableFiles / (scorableFiles + classWeight)) * 100;
             }
             let accuracy = Math.max(0, Math.min(100, Math.round(baseAccuracy - (this.warnings.length * 0.2))));
 
@@ -1247,10 +1248,163 @@ world.afterEvents.entityDie.subscribe(ev => {
         }
     }
 
+    /**
+     * Parses a Java .class file (bytecode) and returns a JavaScript stub representing
+     * the class structure (class name, superclass, fields, methods) for Bedrock scripting.
+     */
+    parseClassFileToStub(bytes) {
+        const view = new DataView(bytes);
+        let offset = 0;
+
+        const readU1 = () => { const v = view.getUint8(offset); offset += 1; return v; };
+        const readU2 = () => { const v = view.getUint16(offset); offset += 2; return v; };
+        const readU4 = () => { const v = view.getUint32(offset); offset += 4; return v; };
+
+        // Magic
+        const magic = readU4();
+        if (magic !== 0xCAFEBABE) return null;
+
+        readU2(); // minor_version
+        readU2(); // major_version
+
+        const cpCount = readU2();
+        const pool = new Array(cpCount);
+
+        for (let i = 1; i < cpCount; i++) {
+            const tag = readU1();
+            if (tag === 1) { // CONSTANT_Utf8
+                const len = readU2();
+                const slice = new Uint8Array(bytes, offset, len);
+                offset += len;
+                pool[i] = { tag, value: new TextDecoder().decode(slice) };
+            } else if (tag === 3 || tag === 4) { // Integer / Float
+                readU4();
+                pool[i] = { tag };
+            } else if (tag === 5 || tag === 6) { // Long / Double (take 2 slots)
+                readU4(); readU4();
+                pool[i] = { tag };
+                i++; // long/double occupy two constant pool slots
+                pool[i] = null;
+            } else if (tag === 7 || tag === 8 || tag === 16 || tag === 19 || tag === 20) {
+                pool[i] = { tag, index: readU2() };
+            } else if (tag === 9 || tag === 10 || tag === 11 || tag === 12 || tag === 17 || tag === 18) {
+                pool[i] = { tag, index1: readU2(), index2: readU2() };
+            } else if (tag === 15) {
+                readU1(); readU2();
+                pool[i] = { tag };
+            } else {
+                return null; // Unknown tag – bail out
+            }
+        }
+
+        const getString = (idx) => (pool[idx] && pool[idx].tag === 1) ? pool[idx].value : '';
+        const getClassName = (idx) => {
+            const entry = pool[idx];
+            if (!entry || entry.tag !== 7) return '';
+            return getString(entry.index).replace(/\//g, '.');
+        };
+
+        readU2(); // access_flags
+        const thisClassIdx = readU2();
+        const superClassIdx = readU2();
+
+        const thisClass = getClassName(thisClassIdx);
+        const superClass = superClassIdx !== 0 ? getClassName(superClassIdx) : null;
+
+        // Interfaces
+        const ifCount = readU2();
+        for (let i = 0; i < ifCount; i++) readU2();
+
+        // Fields
+        const fieldCount = readU2();
+        const fields = [];
+        for (let i = 0; i < fieldCount; i++) {
+            const flags = readU2();
+            const nameIdx = readU2();
+            readU2(); // descriptor
+            const attrCount = readU2();
+            // Skip attributes
+            for (let a = 0; a < attrCount; a++) {
+                readU2(); // attr name
+                const len = readU4();
+                for (let b = 0; b < len; b++) readU1();
+            }
+            const isStatic = (flags & 0x0008) !== 0;
+            const isPrivate = (flags & 0x0002) !== 0;
+            if (!isPrivate) fields.push({ name: getString(nameIdx), isStatic });
+        }
+
+        // Methods
+        const methodCount = readU2();
+        const methods = [];
+        for (let i = 0; i < methodCount; i++) {
+            const flags = readU2();
+            const nameIdx = readU2();
+            readU2(); // descriptor
+            const attrCount = readU2();
+            for (let a = 0; a < attrCount; a++) {
+                readU2();
+                const len = readU4();
+                for (let b = 0; b < len; b++) readU1();
+            }
+            const name = getString(nameIdx);
+            if (name === '<init>' || name === '<clinit>') continue;
+            const isStatic = (flags & 0x0008) !== 0;
+            const isPrivate = (flags & 0x0002) !== 0;
+            if (!isPrivate) methods.push({ name, isStatic });
+        }
+
+        // Build the simple class name (last segment of fully-qualified name)
+        const simpleClass = thisClass.split('.').pop() || thisClass;
+        const superLast = superClass ? superClass.split('.').pop() : null;
+        const validSuperClass = (superLast && superLast !== 'Object') ? superLast : null;
+
+        // Emit JavaScript stub
+        let js = `// Stub generated from Java class: ${thisClass}\n`;
+        if (superClass && superClass !== 'java.lang.Object') {
+            js += `// Extends: ${superClass}\n`;
+        }
+        js += `// NOTE: This is a scaffold. Implement Bedrock Scripting API logic here.\n\n`;
+        js += `export class ${simpleClass}${validSuperClass ? ` extends ${validSuperClass}` : ''} {\n`;
+
+        for (const f of fields) {
+            js += `    ${f.isStatic ? 'static ' : ''}${f.name} = undefined;\n`;
+        }
+        if (fields.length > 0) js += '\n';
+
+        for (const m of methods) {
+            js += `    ${m.isStatic ? 'static ' : ''}${m.name}(/* ... */) {\n`;
+            js += `        // TODO: Implement converted Java method\n`;
+            js += `    }\n`;
+        }
+        js += `}\n`;
+
+        return { simpleClass, js };
+    }
+
     async categorizeAndProcessFile(relativePath, zipEntry) {
         if (relativePath.endsWith('.class')) {
             this.skippedClasses++;
             this.incrementCounter();
+            try {
+                const bytes = await zipEntry.async('arraybuffer');
+                const result = this.parseClassFileToStub(bytes);
+                if (result) {
+                    const { simpleClass, js } = result;
+                    // Deduplicate: use a Set for O(1) name-collision checks
+                    const scriptsSet = new Set(this.scriptsList);
+                    let outName = `${simpleClass}.js`;
+                    let counter = 1;
+                    while (scriptsSet.has(`converted/${outName}`)) {
+                        outName = `${simpleClass}_${counter++}.js`;
+                    }
+                    this.scriptsList.push(`converted/${outName}`);
+                    this.bpFolder.file(`scripts/converted/${outName}`, js);
+                    this.conversionStats.classFilesConverted = (this.conversionStats.classFilesConverted || 0) + 1;
+                }
+            } catch (e) {
+                // Silently skip unreadable class files
+            }
             return;
         }
 
