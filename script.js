@@ -57,7 +57,15 @@ function handleDrop(e) {
     handleFiles(files);
 }
 
-function handleFiles(files) {
+// Revoke active blob URL when the page is unloaded to prevent memory leaks
+window.addEventListener('beforeunload', () => {
+    if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = null;
+    }
+});
+
+async function handleFiles(files) {
     if (files.length === 0) return;
     const file = files[0];
 
@@ -118,6 +126,19 @@ function handleFiles(files) {
             downloadBtn.href = currentBlobUrl;
             downloadBtn.download = data.fileName;
             downloadBtn.classList.remove('hidden');
+            // Revoke the blob URL shortly after the user clicks download to free RAM
+            downloadBtn.onclick = () => {
+                // Revoke the blob URL after a short delay to give the browser time to
+                // initiate the download before the object URL becomes invalid.
+                // 2 000 ms is sufficient for all major browsers on slow connections.
+                setTimeout(() => {
+                    if (currentBlobUrl) {
+                        URL.revokeObjectURL(currentBlobUrl);
+                        currentBlobUrl = null;
+                        downloadBtn.href = '#';
+                    }
+                }, 2000);
+            };
 
             displayWarnings(data.warnings);
             worker.terminate();
@@ -136,7 +157,19 @@ function handleFiles(files) {
         worker.terminate();
     };
 
-    worker.postMessage({ type: 'start', file: file, options: { convertModels: true } });
+    // Read file as ArrayBuffer and transfer it zero-copy to the worker
+    let arrayBuffer;
+    try {
+        arrayBuffer = await file.arrayBuffer();
+    } catch (err) {
+        updateStatus(t('conversionFailedTitle'), `Failed to read file: ${err.message}`, 'error');
+        worker.terminate();
+        return;
+    }
+    worker.postMessage(
+        { type: 'start', fileName: file.name, arrayBuffer, options: { convertModels: true } },
+        [arrayBuffer]
+    );
 }
 
 function displayWarnings(warnings) {
