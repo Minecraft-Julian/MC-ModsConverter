@@ -1274,9 +1274,9 @@ world.afterEvents.entityDie.subscribe(ev => {
             const tag = readU1();
             if (tag === 1) { // CONSTANT_Utf8
                 const len = readU2();
-                const chars = [];
-                for (let j = 0; j < len; j++) chars.push(String.fromCharCode(readU1()));
-                pool[i] = { tag, value: chars.join('') };
+                const slice = new Uint8Array(bytes, offset, len);
+                offset += len;
+                pool[i] = { tag, value: new TextDecoder().decode(slice) };
             } else if (tag === 3 || tag === 4) { // Integer / Float
                 readU4();
                 pool[i] = { tag };
@@ -1356,10 +1356,8 @@ world.afterEvents.entityDie.subscribe(ev => {
 
         // Build the simple class name (last segment of fully-qualified name)
         const simpleClass = thisClass.split('.').pop() || thisClass;
-        const superSimple = superClass
-            ? superClass.split('.').pop()
-            : null;
-        const validSuperClass = superSimple && superSimple !== 'Object' ? superSimple : null;
+        const superLast = superClass ? superClass.split('.').pop() : null;
+        const validSuperClass = (superLast && superLast !== 'Object') ? superLast : null;
 
         // Emit JavaScript stub
         let js = `// Stub generated from Java class: ${thisClass}\n`;
@@ -1393,10 +1391,11 @@ world.afterEvents.entityDie.subscribe(ev => {
                 const result = this.parseClassFileToStub(bytes);
                 if (result) {
                     const { simpleClass, js } = result;
-                    // Deduplicate: if a class with this name already exists use a counter
+                    // Deduplicate: use a Set for O(1) name-collision checks
+                    const scriptsSet = new Set(this.scriptsList);
                     let outName = `${simpleClass}.js`;
                     let counter = 1;
-                    while (this.scriptsList.includes(`converted/${outName}`)) {
+                    while (scriptsSet.has(`converted/${outName}`)) {
                         outName = `${simpleClass}_${counter++}.js`;
                     }
                     this.scriptsList.push(`converted/${outName}`);
