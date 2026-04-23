@@ -94,11 +94,30 @@ class Validator {
     }
 
     validateBlock(fullId, blockData) {
+        const block = blockData["minecraft:block"];
         if (!fullId.includes(':')) {
             this.addIssue(fullId, "Block identifier missing namespace.", "WARNING");
         }
-        if (!blockData["minecraft:block"]?.components?.["minecraft:material_instances"]) {
+        if (!block?.components?.["minecraft:material_instances"]) {
             this.addIssue(fullId, "Block missing material instances (textures).", "ERROR");
+        }
+        const geometry = block?.components?.["minecraft:geometry"];
+        if (geometry !== undefined && typeof geometry !== 'string') {
+            this.addIssue(fullId, "Block geometry component must be a string identifier.", "WARNING");
+        }
+        if (Array.isArray(block?.permutations) && block.permutations.length > 0) {
+            const declaredProps = new Set(Object.keys(block?.description?.properties || {}));
+            for (const perm of block.permutations) {
+                if (typeof perm.condition !== 'string') {
+                    this.addIssue(fullId, "Permutation is missing a condition string.", "WARNING");
+                    continue;
+                }
+                // Bedrock Molang always uses single-quoted property names in block_property queries
+                const propMatch = perm.condition.match(/query\.block_property\('([^']+)'\)/);
+                if (propMatch && !declaredProps.has(propMatch[1])) {
+                    this.addIssue(fullId, `Permutation references undeclared property: ${propMatch[1]}`, "ERROR");
+                }
+            }
         }
     }
 
@@ -116,7 +135,9 @@ class Validator {
 self.onmessage = function (e) {
     if (e.data.type === 'start') {
         self.postMessage({ type: 'status', title: 'Starting conversion...', desc: 'Initializing worker', isLoading: true });
-        const converter = new ModConverter(e.data.file, e.data.options);
+        const fileSource = e.data.arrayBuffer || e.data.file;
+        const fileName = e.data.fileName || (e.data.file && e.data.file.name) || 'unknown.jar';
+        const converter = new ModConverter(fileSource, fileName, e.data.options);
         converter.process().catch(err => {
             console.error('Unhandled error in process():', err);
             self.postMessage({ type: 'error', message: `Fatal error: ${err.message || err}`, warnings: [] });
@@ -125,10 +146,10 @@ self.onmessage = function (e) {
 };
 
 class ModConverter {
-    constructor(file, options = {}) {
-        this.file = file;
+    constructor(fileSource, fileName, options = {}) {
+        this.fileSource = fileSource;
         this.options = options;
-        this.modNameBase = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
+        this.modNameBase = fileName.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
 
         // Mod Identification (populated during identifyMod phase)
         this.modMeta = {
@@ -160,6 +181,7 @@ class ModConverter {
 
         // Model-to-texture mapping: tracks which models reference which textures
         this.modelTextureMap = {}; // modelId -> { textures: { key: resolvedPath } }
+        this.resolvedModelsCache = new Map(); // cache for resolved model chains
 
         // Conversion statistics
         this.conversionStats = {
@@ -234,11 +256,11 @@ class ModConverter {
     }
 
     async process() {
-        self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.file.name}`, isLoading: true });
+        self.postMessage({ type: 'status', title: 'Processing...', desc: `Reading ${this.modNameBase}`, isLoading: true });
 
         try {
             const zip = new JSZip();
-            this.loadedZip = await zip.loadAsync(this.file);
+            this.loadedZip = await zip.loadAsync(this.fileSource);
             this.addonZip = new JSZip();
 
             // Phase 0: MOD IDENTIFICATION
@@ -274,13 +296,20 @@ class ModConverter {
 
             // Phase 2: PARSE & TRANSFORM
             self.postMessage({ type: 'status', title: 'Converting Assets...', desc: 'Transforming Java files to Bedrock', isLoading: true, percent: 10 });
-            for (const file of files) {
-                try {
-                    await this.categorizeAndProcessFile(file.path, file.entry);
-                } catch (e) {
-                    this.logWarning(file.path, e);
-                    this.incrementCounter();
-                }
+            // Process files in parallel batches. Batch size of 20 allows async ZIP-entry reads
+            // to interleave (reducing wall-clock time for large mods) while keeping memory
+            // pressure bounded – no more than 20 file buffers are in flight at once.
+            const BATCH_SIZE = 20;
+            for (let i = 0; i < files.length; i += BATCH_SIZE) {
+                const batch = files.slice(i, i + BATCH_SIZE);
+                await Promise.all(batch.map(async (file) => {
+                    try {
+                        await this.categorizeAndProcessFile(file.path, file.entry);
+                    } catch (e) {
+                        this.logWarning(file.path, e);
+                        this.incrementCounter();
+                    }
+                }));
             }
             self.postMessage({ type: 'status', title: 'Assets converted', desc: 'All files processed', isLoading: true, percent: 80 });
 
@@ -311,8 +340,12 @@ class ModConverter {
             let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
             let javaCodeWeight = this.structureSummary.classFiles;
             let baseAccuracy = 100;
+            // Accuracy formula: Java .class files represent the bulk of a mod's logic (~90%).
+            // A weight of 2.5 means each class file counts as 2.5 "unconvertible units" against
+            // the converted asset files, producing a realistic downward pressure on accuracy
+            // for logic-heavy mods (e.g. Create) while keeping asset-only packs near 100%.
             if (scorableFiles + javaCodeWeight > 0) {
-                baseAccuracy = (scorableFiles / (scorableFiles + javaCodeWeight * 0.4)) * 100;
+                baseAccuracy = (scorableFiles / (scorableFiles + javaCodeWeight * 2.5)) * 100;
             }
             let accuracy = Math.max(0, Math.min(100, Math.round(baseAccuracy - (this.warnings.length * 0.2))));
 
@@ -489,13 +522,17 @@ class ModConverter {
             }
         }
 
+        // Final fallback: use the filename as mod identifier when nothing else worked
+        if (!this.modMeta.id) {
+            this.modMeta.id = this.modNameBase;
+            this.modMeta.name = this.modMeta.name ||
+                this.modNameBase.replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            this.namespaces.add(this.modMeta.id);
+        }
+
         this.warnings.push({
             path: 'mod identification',
-            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info). ${
-                this.modMeta.id
-                    ? `Inferred mod ID "${this.modMeta.id}" from assets/ folder structure.`
-                    : 'Mod name and namespace will be inferred from file structure.'
-            }`
+            error: `No mod descriptor found (fabric.mod.json, quilt.mod.json, META-INF/mods.toml, META-INF/neoforge.mods.toml, or mcmod.info). Inferred mod ID "${this.modMeta.id}" from ${this.modMeta.id === this.modNameBase ? 'file name' : 'assets/ folder structure'}.`
         });
     }
 
@@ -1140,11 +1177,17 @@ world.afterEvents.entityDie.subscribe(ev => {
 
     async loadModel(modelId) {
         if (!modelId) return null;
+        if (this.resolvedModelsCache.has(modelId)) {
+            return this.resolvedModelsCache.get(modelId);
+        }
         let [namespace, path] = modelId.includes(':') ? modelId.split(':') : ['minecraft', modelId];
         let fullPath = `assets/${namespace}/models/${path}.json`;
 
         const zipEntry = this.loadedZip.file(fullPath);
-        if (!zipEntry) return null;
+        if (!zipEntry) {
+            this.resolvedModelsCache.set(modelId, null);
+            return null;
+        }
 
         let content = await zipEntry.async('string');
         let parsed = parseJSON(content);
@@ -1159,6 +1202,7 @@ world.afterEvents.entityDie.subscribe(ev => {
                 parsed.textures = { ...parentModel.textures, ...parsed.textures };
             }
         }
+        this.resolvedModelsCache.set(modelId, parsed);
         return parsed;
     }
 
