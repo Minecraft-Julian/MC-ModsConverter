@@ -638,7 +638,8 @@ function getRegionFromLocaleTag(localeTag) {
     }
 
     const parts = localeTag.split(/[-_]/);
-    return parts.length > 1 ? parts[1].toUpperCase() : '';
+    const regionCandidate = parts.find((part, index) => index > 0 && /^[A-Za-z]{2}$/.test(part));
+    return regionCandidate ? regionCandidate.toUpperCase() : '';
 }
 
 function detectLanguageFromBrowserHints() {
@@ -702,7 +703,7 @@ function applyTranslations() {
     document.querySelector('header h1').textContent = t('title');
     document.querySelector('header p').textContent = t('subtitle');
     document.querySelector('.dropzone-content h3').textContent = t('dropzoneTitle');
-    
+
     const dropzoneContentP = document.querySelectorAll('.dropzone-content p');
     if(dropzoneContentP.length >= 2) {
         dropzoneContentP[0].textContent = t('dropzoneSubtitle');
