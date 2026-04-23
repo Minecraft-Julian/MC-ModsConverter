@@ -638,7 +638,7 @@ function getRegionFromLocaleTag(localeTag) {
     }
 
     const parts = localeTag.split(/[-_]/);
-    const regionCandidate = parts.find((part, index) => index > 0 && /^[A-Za-z]{2}$/.test(part));
+    const regionCandidate = parts.find((part, index) => index > 0 && /^[A-Z]{2}$/.test(part.toUpperCase()));
     return regionCandidate ? regionCandidate.toUpperCase() : '';
 }
 
@@ -658,7 +658,7 @@ function detectLanguageFromBrowserHints() {
     }
 
     const regionToLanguage = {
-        AT: 'de', BE: 'fr', BR: 'pt', CH: 'de', CN: 'zh', CZ: 'cs', DE: 'de', DK: 'da',
+        AT: 'de', BR: 'pt', CN: 'zh', CZ: 'cs', DE: 'de', DK: 'da',
         ES: 'es', FI: 'fi', FR: 'fr', HU: 'hu', IT: 'it', JP: 'ja', KR: 'ko', MX: 'es',
         NL: 'nl', NO: 'no', PL: 'pl', PT: 'pt', RU: 'ru', SE: 'sv', SK: 'sk', TR: 'tr'
     };
