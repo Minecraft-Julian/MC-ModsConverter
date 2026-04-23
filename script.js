@@ -11,9 +11,6 @@ const downloadBtn = document.getElementById('downloadBtn');
 const downloadBtnText = document.getElementById('downloadBtnText');
 const locationNoticeTitle = document.getElementById('locationNoticeTitle');
 const locationNoticeText = document.getElementById('locationNoticeText');
-const achievementBookToggle = document.getElementById('achievementBookToggle');
-const achievementBookPanel = document.getElementById('achievementBookPanel');
-const achievementList = document.getElementById('achievementList');
 
 const dropzoneTitle = document.querySelector('.dropzone h3');
 
@@ -74,8 +71,6 @@ function handleFiles(files) {
         }
     }
 
-    unlockAchievement('uploader');
-
     // Hide download button & errors on new conversion
     downloadBtn.classList.add('hidden');
     const errorsContainer = document.getElementById('errorsContainer');
@@ -99,8 +94,6 @@ function handleFiles(files) {
             let accuracyText = data.accuracy !== undefined ? `\nAccuracy: ~${data.accuracy}% Java Match.` : '';
             updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, 'success');
             document.getElementById('progressContainer').classList.add('hidden');
-            unlockAchievement('creator');
-
             const url = URL.createObjectURL(data.blob);
             downloadBtn.href = url;
             downloadBtn.download = data.fileName;
@@ -631,27 +624,11 @@ const translations = {
 };
 
 let currentLang = 'en';
-const achievements = [
-    { id: 'welcome', icon: '✨', titleKey: 'achievementWelcomeTitle', descKey: 'achievementWelcomeDesc', unlocked: true },
-    { id: 'bookworm', icon: '📖', titleKey: 'achievementBookwormTitle', descKey: 'achievementBookwormDesc', unlocked: false },
-    { id: 'linguist', icon: '🌍', titleKey: 'achievementLinguistTitle', descKey: 'achievementLinguistDesc', unlocked: false },
-    { id: 'uploader', icon: '📦', titleKey: 'achievementUploaderTitle', descKey: 'achievementUploaderDesc', unlocked: false },
-    { id: 'creator', icon: '🛠️', titleKey: 'achievementCreatorTitle', descKey: 'achievementCreatorDesc', unlocked: false }
-];
 const langSelect = document.getElementById('langSelect');
 if (langSelect) {
     langSelect.addEventListener('change', (e) => {
         currentLang = e.target.value;
-        unlockAchievement('linguist');
         applyTranslations();
-    });
-}
-
-if (achievementBookToggle) {
-    achievementBookToggle.addEventListener('click', () => {
-        const isHidden = achievementBookPanel.classList.toggle('hidden');
-        achievementBookToggle.setAttribute('aria-expanded', String(!isHidden));
-        unlockAchievement('bookworm');
     });
 }
 
@@ -661,35 +638,6 @@ function t(key, replacements = {}) {
         text = text.replace(`{${k}}`, v);
     }
     return text;
-}
-
-function renderAchievements() {
-    if (!achievementList) return;
-
-    achievementList.innerHTML = '';
-    achievements.forEach((achievement) => {
-        const item = document.createElement('li');
-        item.className = `achievement-item${achievement.unlocked ? ' unlocked' : ''}`;
-
-        const stateText = achievement.unlocked ? t('achievementUnlocked') : t('achievementLocked');
-        item.innerHTML = `
-            <span class="achievement-icon" aria-hidden="true">${achievement.icon}</span>
-            <div class="achievement-copy">
-                <h4>${t(achievement.titleKey)}</h4>
-                <p>${t(achievement.descKey)}</p>
-                <span class="achievement-state">${stateText}</span>
-            </div>
-        `;
-
-        achievementList.appendChild(item);
-    });
-}
-
-function unlockAchievement(id) {
-    const achievement = achievements.find((entry) => entry.id === id);
-    if (!achievement || achievement.unlocked) return;
-    achievement.unlocked = true;
-    renderAchievements();
 }
 
 function getRegionFromLocaleTag(localeTag) {
@@ -780,15 +728,7 @@ function applyTranslations() {
         locationNoticeTitle.textContent = t('locationNoticeTitle');
         locationNoticeText.textContent = t('locationNoticeText');
     }
-    if (achievementBookToggle) {
-        const toggleLabel = achievementBookToggle.querySelector('#achievementBookButton');
-        if (toggleLabel) toggleLabel.textContent = t('achievementBookButton');
-    }
-    const achievementBookTitle = document.getElementById('achievementBookTitle');
-    if (achievementBookTitle) achievementBookTitle.textContent = t('achievementBookTitle');
-    const achievementBookSubtitle = document.getElementById('achievementBookSubtitle');
-    if (achievementBookSubtitle) achievementBookSubtitle.textContent = t('achievementBookSubtitle');
-    
+
     // Status panel translations IF specific texts are present
     if (statusTitle.textContent === translations['en']['processing'] || 
         statusTitle.textContent === translations['de']['processing'] ||
@@ -804,11 +744,7 @@ function applyTranslations() {
     if (errorsHeaderH4) errorsHeaderH4.textContent = t('errorsHeader');
 
     if (langSelect) langSelect.value = currentLang;
-    renderAchievements();
 }
 
 currentLang = detectLanguageFromBrowserHints();
-if (currentLang !== 'en') {
-    unlockAchievement('linguist');
-}
 applyTranslations();

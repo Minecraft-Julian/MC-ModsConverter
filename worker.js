@@ -182,7 +182,7 @@ class ModConverter {
 
         this.fileCount = 0;
         this.skippedClasses = 0;
-        this.skippedAdvancements = 0;
+        this.advancementEntries = [];
         this.warnings = [];
 
         // Manifests initialized after mod identification
@@ -302,14 +302,6 @@ class ModConverter {
             });
 
             this.warnings.push(...this.validator.getResults());
-
-            // Add consolidated advancement warning if any were skipped
-            if (this.skippedAdvancements > 0) {
-                this.warnings.push({
-                    path: '[multiple advancement files]',
-                    error: `${this.skippedAdvancements} advancement(s) detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.`
-                });
-            }
 
             // Accuracy estimation system
             let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
@@ -600,8 +592,6 @@ class ModConverter {
                     this.structureSummary.data[ns].tags.push(subPath);
                 } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
                     this.structureSummary.data[ns].advancements.push(subPath);
-                    // Skip totalData increment since advancements cannot be converted to Bedrock
-                    continue;
                 } else if (subPath.startsWith('worldgen/')) {
                     this.structureSummary.data[ns].worldgen.push(subPath);
                 } else {
@@ -640,7 +630,7 @@ class ModConverter {
         }
 
         // MINI-LOGIC ENGINE (Bedrock Script API)
-        if (this.scriptsList.length > 0 || this.blocks.size > 0) {
+        if (this.scriptsList.length > 0 || this.blocks.size > 0 || this.advancementEntries.length > 0) {
             this.bpManifest.modules.push({
                 "type": "script",
                 "language": "javascript",
@@ -654,12 +644,20 @@ class ModConverter {
                 "version": "1.1.0"
             });
 
-            let mainJs = `import { world, system } from "@minecraft/server";\n\n`;
+            let mainJs = `import { world, system, ItemStack } from "@minecraft/server";\n\n`;
             mainJs += `// --- MCBE-KI LOGIC ENGINE ---\n`;
             mainJs += `console.warn("[MCBE-KI] Logic Engine Initialized");\n\n`;
             
             // Universal mod logic generation - analyzes mod content and generates appropriate behavior
             mainJs += this.generateUniversalModLogic();
+
+            if (this.advancementEntries.length > 0) {
+                this.bpFolder.file("achievements/advancements.json", JSON.stringify({
+                    format_version: "1.0.0",
+                    advancements: this.advancementEntries
+                }, null, 4));
+                mainJs += this.generateAdvancementBookLogic();
+            }
 
             for (let scr of this.scriptsList) {
                 mainJs += `import "./${scr}";\n`;
@@ -669,6 +667,38 @@ class ModConverter {
 
         this.rpFolder.file("manifest.json", JSON.stringify(this.rpManifest, null, 4));
         this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
+    }
+
+    extractAdvancementText(value, fallback = '') {
+        if (value == null) return fallback;
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+        if (Array.isArray(value)) {
+            const joined = value.map(part => this.extractAdvancementText(part, '')).filter(Boolean).join('');
+            return joined || fallback;
+        }
+        if (typeof value === 'object') {
+            if (typeof value.text === 'string' && value.text.trim()) return value.text;
+            if (typeof value.translate === 'string' && value.translate.trim()) return value.translate;
+            if (value.extra) {
+                const extraText = this.extractAdvancementText(value.extra, '');
+                if (extraText) return extraText;
+            }
+        }
+        return fallback;
+    }
+
+    humanizePath(path) {
+        return path
+            .split('/')
+            .pop()
+            .replace(/[_-]+/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    generateAdvancementBookLogic() {
+        const serializedAdvancements = JSON.stringify(this.advancementEntries, null, 4);
+        return `\n// --- ADVANCEMENT BOOK SUPPORT ---\nconst convertedAdvancements = ${serializedAdvancements};\n\nfunction buildAchievementLoreLines() {\n    const lines = [];\n    for (const advancement of convertedAdvancements.slice(0, 20)) {\n        const frameIcon = advancement.frame === "challenge" ? "§5◆" : (advancement.frame === "goal" ? "§6◆" : "§a◆");\n        lines.push(\`\${frameIcon} §f\${advancement.title}\`);\n        if (advancement.description) {\n            lines.push(\`§7\${advancement.description}\`);\n        }\n    }\n\n    if (convertedAdvancements.length > 20) {\n        lines.push(\`§8+ \${convertedAdvancements.length - 20} more...\`);\n    }\n\n    return lines;\n}\n\nfunction giveAchievementBook(player, source) {\n    try {\n        const inventory = player.getComponent("minecraft:inventory");\n        const container = inventory?.container;\n        const achievementBook = new ItemStack("minecraft:book", 1);\n        achievementBook.nameTag = "§6Achievement Book";\n\n        if (typeof achievementBook.setLore === "function") {\n            achievementBook.setLore(buildAchievementLoreLines());\n        }\n\n        if (container) {\n            const leftovers = container.addItem(achievementBook);\n            if (leftovers) {\n                player.runCommandAsync("give @s book 1");\n            }\n        } else {\n            player.runCommandAsync("give @s book 1");\n        }\n\n        player.sendMessage(\`§6[Achievement Book] Updated from converted advancements (\${source}).\`);\n    } catch (error) {\n        player.runCommandAsync("give @s book 1");\n    }\n}\n\nworld.afterEvents.playerSpawn.subscribe(ev => {\n    if (!ev.player || !ev.initialSpawn) return;\n    giveAchievementBook(ev.player, "first spawn");\n});\n\nworld.afterEvents.entityDie.subscribe(ev => {\n    const deadEntity = ev.deadEntity;\n    if (!deadEntity || deadEntity.typeId !== "minecraft:player") return;\n    giveAchievementBook(deadEntity, "death");\n});\n\n`;
     }
 
     async convertNbtToMcstructure(nbtBuffer) {
@@ -1592,14 +1622,30 @@ class ModConverter {
             return;
         }
 
-        // ADVANCEMENTS (noted but not directly convertible to Bedrock)
+        // ADVANCEMENTS -> achievement book dataset + Bedrock script support
         const advancementMatch = relativePath.match(/^data\/([^/]+)\/(?:advancements|advancement)\/(.*)\.json$/);
         if (advancementMatch) {
             try {
+                const namespace = advancementMatch[1];
+                const advancementPath = advancementMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = parseJSON(fileContent);
+                const display = parsed?.display || {};
+                const id = `${namespace}:${advancementPath}`;
+                const title = this.extractAdvancementText(display.title, this.humanizePath(advancementPath));
+                const description = this.extractAdvancementText(display.description, '');
+                const frame = typeof display.frame === 'string' ? display.frame : 'task';
+
+                if (!this.advancementEntries.some(entry => entry.id === id)) {
+                    this.advancementEntries.push({
+                        id,
+                        title,
+                        description,
+                        frame
+                    });
+                }
+
                 this.incrementCounter();
-                // Advancements don't have a direct Bedrock equivalent
-                // Count them instead of adding individual warnings
-                this.skippedAdvancements++;
             } catch (e) {
                 this.logWarning(relativePath, e);
             }
