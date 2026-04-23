@@ -307,7 +307,7 @@ class ModConverter {
             // Add consolidated advancement warning if any were skipped
             if (this.skippedAdvancements > 0) {
                 this.warnings.push({
-                    path: 'data/*/advancements/*.json',
+                    path: '[multiple advancement files]',
                     error: `${this.skippedAdvancements} advancement(s) detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.`
                 });
             }
@@ -602,12 +602,14 @@ class ModConverter {
                 } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
                     this.structureSummary.data[ns].advancements.push(subPath);
                     // Don't count advancements in totalData since they're skipped in conversion
+                    // Skip the totalData++ increment below by continuing to next file
                     continue;
                 } else if (subPath.startsWith('worldgen/')) {
                     this.structureSummary.data[ns].worldgen.push(subPath);
                 } else {
                     this.structureSummary.data[ns].other.push(subPath);
                 }
+                // Count this data file in totalData (advancements already continued above)
                 this.structureSummary.totalData++;
                 continue;
             }
