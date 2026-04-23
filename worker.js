@@ -117,7 +117,10 @@ self.onmessage = function (e) {
     if (e.data.type === 'start') {
         self.postMessage({ type: 'status', title: 'Starting conversion...', desc: 'Initializing worker', isLoading: true });
         const converter = new ModConverter(e.data.file, e.data.options);
-        converter.process();
+        converter.process().catch(err => {
+            console.error('Unhandled error in process():', err);
+            self.postMessage({ type: 'error', message: `Fatal error: ${err.message || err}`, warnings: [] });
+        });
     }
 };
 
@@ -613,9 +616,14 @@ class ModConverter {
     }
 
     scan() {
+        const MAX_ZIP_ENTRIES = 65536;
         const files = [];
         for (const [relativePath, zipEntry] of Object.entries(this.loadedZip.files)) {
             if (zipEntry.dir) continue;
+            if (files.length >= MAX_ZIP_ENTRIES) {
+                this.warnings.push({ path: 'scan', error: `ZIP contains more than ${MAX_ZIP_ENTRIES} entries. Processing stopped at limit to prevent memory exhaustion.` });
+                break;
+            }
             files.push({ path: relativePath, entry: zipEntry });
         }
         return files;
@@ -778,6 +786,11 @@ world.afterEvents.entityDie.subscribe(ev => {
     }
 
     async convertNbtToMcstructure(nbtBuffer) {
+        const MAX_NBT_BYTES = 64 * 1024 * 1024; // 64 MB
+        if (nbtBuffer.byteLength > MAX_NBT_BYTES) {
+            throw new Error(`NBT structure too large (${(nbtBuffer.byteLength / 1024 / 1024).toFixed(1)} MB). Maximum is 64 MB.`);
+        }
+
         if (typeof pako === 'undefined' || typeof nbt === 'undefined') {
             throw new Error('NBT structure conversion requires pako and nbt libraries, which are not available.');
         }

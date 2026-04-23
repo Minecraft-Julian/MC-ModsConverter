@@ -251,6 +251,7 @@ header p {
 .status-texts p {
     font-size: 0.875rem;
     color: var(--text-muted);
+    white-space: pre-wrap;
 }
 
 .progress-bar-container {
