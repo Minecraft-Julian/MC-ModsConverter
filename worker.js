@@ -182,7 +182,8 @@ class ModConverter {
 
         this.fileCount = 0;
         this.skippedClasses = 0;
-        this.skippedAdvancements = 0;
+        this.advancementEntries = [];
+        this.advancementIds = new Set();
         this.warnings = [];
 
         // Manifests initialized after mod identification
@@ -302,14 +303,6 @@ class ModConverter {
             });
 
             this.warnings.push(...this.validator.getResults());
-
-            // Add consolidated advancement warning if any were skipped
-            if (this.skippedAdvancements > 0) {
-                this.warnings.push({
-                    path: '[multiple advancement files]',
-                    error: `${this.skippedAdvancements} advancement(s) detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.`
-                });
-            }
 
             // Accuracy estimation system
             let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
@@ -600,8 +593,6 @@ class ModConverter {
                     this.structureSummary.data[ns].tags.push(subPath);
                 } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
                     this.structureSummary.data[ns].advancements.push(subPath);
-                    // Skip totalData increment since advancements cannot be converted to Bedrock
-                    continue;
                 } else if (subPath.startsWith('worldgen/')) {
                     this.structureSummary.data[ns].worldgen.push(subPath);
                 } else {
@@ -640,7 +631,7 @@ class ModConverter {
         }
 
         // MINI-LOGIC ENGINE (Bedrock Script API)
-        if (this.scriptsList.length > 0 || this.blocks.size > 0) {
+        if (this.scriptsList.length > 0 || this.blocks.size > 0 || this.advancementEntries.length > 0) {
             this.bpManifest.modules.push({
                 "type": "script",
                 "language": "javascript",
@@ -654,12 +645,20 @@ class ModConverter {
                 "version": "1.1.0"
             });
 
-            let mainJs = `import { world, system } from "@minecraft/server";\n\n`;
+            let mainJs = `import { world, system, ItemStack } from "@minecraft/server";\n\n`;
             mainJs += `// --- MCBE-KI LOGIC ENGINE ---\n`;
             mainJs += `console.warn("[MCBE-KI] Logic Engine Initialized");\n\n`;
             
             // Universal mod logic generation - analyzes mod content and generates appropriate behavior
             mainJs += this.generateUniversalModLogic();
+
+            if (this.advancementEntries.length > 0) {
+                this.bpFolder.file("achievements/advancements.json", JSON.stringify({
+                    format_version: "1.0.0",
+                    advancements: this.advancementEntries
+                }, null, 4));
+                mainJs += this.generateAdvancementBookLogic();
+            }
 
             for (let scr of this.scriptsList) {
                 mainJs += `import "./${scr}";\n`;
@@ -669,6 +668,113 @@ class ModConverter {
 
         this.rpFolder.file("manifest.json", JSON.stringify(this.rpManifest, null, 4));
         this.bpFolder.file("manifest.json", JSON.stringify(this.bpManifest, null, 4));
+    }
+
+    extractAdvancementText(value, fallback = '') {
+        if (value == null) return fallback;
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+        if (Array.isArray(value)) {
+            const joined = value.map(part => this.extractAdvancementText(part, '')).filter(Boolean).join('');
+            return joined || fallback;
+        }
+        if (typeof value === 'object') {
+            if (typeof value.text === 'string' && value.text.trim()) return value.text;
+            if (typeof value.translate === 'string' && value.translate.trim()) return value.translate;
+            if (value.extra) {
+                const extraText = this.extractAdvancementText(value.extra, '');
+                if (extraText) return extraText;
+            }
+        }
+        return fallback;
+    }
+
+    humanizePath(path) {
+        return path
+            .split('/')
+            .pop()
+            .replace(/[_-]+/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    generateAdvancementBookLogic() {
+        const serializedAdvancements = JSON.stringify(this.advancementEntries, null, 4);
+        return `
+// --- ADVANCEMENT BOOK SUPPORT ---
+// Lore is intentionally capped to keep Bedrock item lore readable and short.
+const MAX_ADVANCEMENTS_DISPLAYED = 20;
+const FRAME_ICON_MAP = { challenge: "§5◆", goal: "§6◆", task: "§a◆" };
+const convertedAdvancements = ${serializedAdvancements};
+const pendingDeathAchievementBooks = new Set();
+
+function getPlayerName(playerLike) {
+    return playerLike?.name || playerLike?.nameTag || "";
+}
+
+function buildAchievementLoreLines() {
+    const lines = [];
+    for (const advancement of convertedAdvancements.slice(0, MAX_ADVANCEMENTS_DISPLAYED)) {
+        const frameIcon = FRAME_ICON_MAP[advancement.frame] || FRAME_ICON_MAP.task;
+        lines.push(\`\${frameIcon} §f\${advancement.title}\`);
+        if (advancement.description) {
+            lines.push(\`§7\${advancement.description}\`);
+        }
+    }
+
+    if (convertedAdvancements.length > MAX_ADVANCEMENTS_DISPLAYED) {
+        lines.push(\`§8+ \${convertedAdvancements.length - MAX_ADVANCEMENTS_DISPLAYED} more...\`);
+    }
+
+    return lines;
+}
+
+function giveAchievementBook(player, source) {
+    try {
+        const inventory = player.getComponent("minecraft:inventory");
+        const container = inventory?.container;
+        const achievementBook = new ItemStack("minecraft:book", 1);
+        achievementBook.nameTag = "§6Achievement Book";
+
+        if (typeof achievementBook.setLore === "function") {
+            achievementBook.setLore(buildAchievementLoreLines());
+        }
+
+        if (container) {
+            const leftovers = container.addItem(achievementBook);
+            if (leftovers > 0) {
+                player.runCommandAsync("give @s book 1");
+            }
+        } else {
+            player.runCommandAsync("give @s book 1");
+        }
+
+        player.sendMessage(\`§6[Achievement Book] Updated from converted advancements (\${source}).\`);
+    } catch (error) {
+        player.runCommandAsync("give @s book 1");
+    }
+}
+
+world.afterEvents.playerSpawn.subscribe(ev => {
+    if (!ev.player) return;
+    const playerName = getPlayerName(ev.player);
+    const dueToDeath = pendingDeathAchievementBooks.has(playerName);
+    if (!ev.initialSpawn && !dueToDeath) return;
+    if (dueToDeath) {
+        pendingDeathAchievementBooks.delete(playerName);
+    }
+    giveAchievementBook(ev.player, dueToDeath ? "death" : "first spawn");
+});
+
+world.afterEvents.entityDie.subscribe(ev => {
+    const deadEntity = ev.deadEntity;
+    if (!deadEntity || deadEntity.typeId !== "minecraft:player") return;
+    const playerName = getPlayerName(deadEntity);
+    if (playerName) {
+        pendingDeathAchievementBooks.add(playerName);
+    }
+});
+
+`;
     }
 
     async convertNbtToMcstructure(nbtBuffer) {
@@ -1592,14 +1698,31 @@ class ModConverter {
             return;
         }
 
-        // ADVANCEMENTS (noted but not directly convertible to Bedrock)
+        // ADVANCEMENTS -> achievement book dataset + Bedrock script support
         const advancementMatch = relativePath.match(/^data\/([^/]+)\/(?:advancements|advancement)\/(.*)\.json$/);
         if (advancementMatch) {
             try {
+                const namespace = advancementMatch[1];
+                const advancementPath = advancementMatch[2];
+                const fileContent = await zipEntry.async('string');
+                const parsed = parseJSON(fileContent);
+                const display = parsed?.display || {};
+                const id = `${namespace}:${advancementPath}`;
+                const title = this.extractAdvancementText(display.title, this.humanizePath(advancementPath));
+                const description = this.extractAdvancementText(display.description, '');
+                const frame = typeof display.frame === 'string' ? display.frame : 'task';
+
+                if (!this.advancementIds.has(id)) {
+                    this.advancementEntries.push({
+                        id,
+                        title,
+                        description,
+                        frame
+                    });
+                    this.advancementIds.add(id);
+                }
+
                 this.incrementCounter();
-                // Advancements don't have a direct Bedrock equivalent
-                // Count them instead of adding individual warnings
-                this.skippedAdvancements++;
             } catch (e) {
                 this.logWarning(relativePath, e);
             }
