@@ -601,15 +601,14 @@ class ModConverter {
                     this.structureSummary.data[ns].tags.push(subPath);
                 } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
                     this.structureSummary.data[ns].advancements.push(subPath);
-                    // Don't count advancements in totalData since they're skipped in conversion
-                    // Skip the totalData++ increment below by continuing to next file
+                    // Skip totalData increment since advancements cannot be converted to Bedrock
                     continue;
                 } else if (subPath.startsWith('worldgen/')) {
                     this.structureSummary.data[ns].worldgen.push(subPath);
                 } else {
                     this.structureSummary.data[ns].other.push(subPath);
                 }
-                // Increment totalData counter (note: advancements were already skipped via continue above)
+                // Count non-advancement data files in totalData for accuracy calculation
                 this.structureSummary.totalData++;
                 continue;
             }
