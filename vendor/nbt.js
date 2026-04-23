@@ -25,8 +25,11 @@
 
 	/** @exports nbt */
 
+	var root = typeof globalThis !== 'undefined'
+		? globalThis
+		: (typeof self !== 'undefined' ? self : this);
 	var nbt = this;
-	var zlib = typeof require !== 'undefined' ? require('zlib') : window.zlib;
+	var zlib = typeof require !== 'undefined' ? require('zlib') : (root.zlib || null);
 
 	/**
 	 * A mapping from type names to NBT type numbers.
@@ -671,4 +674,6 @@
 			});
 		}
 	};
-}).apply(typeof exports !== 'undefined' ? exports : (window.nbt = {}));
+}).apply(typeof exports !== 'undefined'
+	? exports
+	: ((typeof globalThis !== 'undefined' ? globalThis : (typeof self !== 'undefined' ? self : this)).nbt = {}));

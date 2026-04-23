@@ -22,6 +22,68 @@ function generateUUID() {
     });
 }
 
+function unwrapNbtValue(tag) {
+    if (tag == null) return tag;
+
+    if (tag.type && Object.prototype.hasOwnProperty.call(tag, 'value')) {
+        switch (tag.type) {
+            case 'compound':
+                return unwrapNbtValue(tag.value);
+            case 'list':
+                return Array.isArray(tag.value?.value) ? tag.value.value.map(unwrapNbtValue) : [];
+            default:
+                return tag.value;
+        }
+    }
+
+    if (Array.isArray(tag)) {
+        return tag.map(unwrapNbtValue);
+    }
+
+    if (typeof tag === 'object') {
+        const result = {};
+        for (const [key, value] of Object.entries(tag)) {
+            result[key] = unwrapNbtValue(value);
+        }
+        return result;
+    }
+
+    return tag;
+}
+
+function toNbtTag(value, emptyListType = 'compound') {
+    if (Array.isArray(value)) {
+        const listType = value.length > 0
+            ? toNbtTag(value[0], emptyListType).type
+            : emptyListType;
+        return {
+            type: 'list',
+            value: {
+                type: listType,
+                value: value.map(item => toNbtTag(item, listType).value)
+            }
+        };
+    }
+
+    if (value && typeof value === 'object') {
+        const compound = {};
+        for (const [key, child] of Object.entries(value)) {
+            compound[key] = toNbtTag(child);
+        }
+        return { type: 'compound', value: compound };
+    }
+
+    if (typeof value === 'string') {
+        return { type: 'string', value };
+    }
+
+    if (typeof value === 'boolean') {
+        return { type: 'byte', value: value ? 1 : 0 };
+    }
+
+    return { type: 'int', value: Number.isFinite(value) ? Math.trunc(value) : 0 };
+}
+
 class Validator {
     constructor() {
         this.issues = [];
@@ -72,7 +134,7 @@ class ModConverter {
             version: null,
             description: null,
             authors: [],
-            loader: null // 'fabric', 'forge', 'neoforge', 'quilt', or null
+            loader: null // 'fabric', 'quilt', 'forge', 'neoforge', or null
         };
 
         // Registries
@@ -613,12 +675,13 @@ class ModConverter {
         }
 
         // Parse the Java NBT structure
-        const nbtData = await new Promise((resolve, reject) => {
+        const parsedNbt = await new Promise((resolve, reject) => {
             nbt.parse(decompressed, (error, data) => {
                 if (error) reject(error);
                 else resolve(data);
             });
         });
+        const nbtData = unwrapNbtValue(parsedNbt.value || parsedNbt);
 
         // Block mapping from Java to Bedrock
         const blockMappings = {
@@ -933,12 +996,14 @@ class ModConverter {
         }
 
         // Serialize back to NBT
-        const nbtBufferOut = await new Promise((resolve, reject) => {
-            nbt.write(structure, (error, data) => {
-                if (error) reject(error);
-                else resolve(data);
+        const nbtBufferOut = typeof nbt.writeUncompressed === 'function'
+            ? nbt.writeUncompressed({ name: 'structure', value: toNbtTag(structure).value })
+            : await new Promise((resolve, reject) => {
+                nbt.write(structure, (error, data) => {
+                    if (error) reject(error);
+                    else resolve(data);
+                });
             });
-        });
 
         // Gzip compress for MCStructure
         return pako.gzip(nbtBufferOut);
