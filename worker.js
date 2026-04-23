@@ -608,7 +608,6 @@ class ModConverter {
                 } else {
                     this.structureSummary.data[ns].other.push(subPath);
                 }
-                // Count non-advancement data files in totalData for accuracy calculation
                 this.structureSummary.totalData++;
                 continue;
             }
