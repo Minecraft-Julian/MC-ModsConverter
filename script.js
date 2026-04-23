@@ -1,4 +1,5 @@
 // Global variables
+let currentBlobUrl = null; // Track the active blob URL so it can be revoked
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
 const statusPanel = document.getElementById('statusPanel');
@@ -91,11 +92,30 @@ function handleFiles(files) {
                 progressContainer.classList.add('hidden');
             }
         } else if (data.type === 'success') {
-            let accuracyText = data.accuracy !== undefined ? `\nAccuracy: ~${data.accuracy}% Java Match.` : '';
-            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, 'success');
+            let statsText = '';
+            if (data.conversionStats) {
+                const cs = data.conversionStats;
+                const parts = [];
+                if (cs.texturesConverted > 0) parts.push(`Textures: ${cs.texturesConverted}`);
+                if (cs.modelsConverted > 0) parts.push(`Models: ${cs.modelsConverted}`);
+                if (cs.blocksGenerated > 0) parts.push(`Blocks: ${cs.blocksGenerated}`);
+                if (cs.itemsGenerated > 0) parts.push(`Items: ${cs.itemsGenerated}`);
+                if (cs.recipesConverted > 0) parts.push(`Recipes: ${cs.recipesConverted}`);
+                if (cs.soundsConverted > 0) parts.push(`Sounds: ${cs.soundsConverted}`);
+                if (parts.length > 0) statsText += '\n' + parts.join('  ·  ');
+                const classFiles = data.structureSummary ? data.structureSummary.classFiles : 0;
+                if (classFiles > 0) {
+                    statsText += `\nLogic: not portable (${classFiles} .class files)`;
+                }
+            }
+            updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + statsText, 'success');
             document.getElementById('progressContainer').classList.add('hidden');
-            const url = URL.createObjectURL(data.blob);
-            downloadBtn.href = url;
+            // Revoke any previous blob URL before creating a new one
+            if (currentBlobUrl) {
+                URL.revokeObjectURL(currentBlobUrl);
+            }
+            currentBlobUrl = URL.createObjectURL(data.blob);
+            downloadBtn.href = currentBlobUrl;
             downloadBtn.download = data.fileName;
             downloadBtn.classList.remove('hidden');
 
