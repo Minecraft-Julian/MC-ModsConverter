@@ -202,7 +202,9 @@ function groupWarningsByError(warnings) {
 function formatWarningMessage(warning) {
     if (!warning) return 'Unknown warning';
     if (typeof warning === 'string') return warning;
-    return warning.error || String(warning);
+
+    const message = warning.error || String(warning);
+    return warning.path ? `[${warning.path}] ${message}` : message;
 }
 
 function generateUUID() {
