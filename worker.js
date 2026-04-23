@@ -182,6 +182,7 @@ class ModConverter {
 
         this.fileCount = 0;
         this.skippedClasses = 0;
+        this.skippedAdvancements = 0;
         this.warnings = [];
 
         // Manifests initialized after mod identification
@@ -302,6 +303,14 @@ class ModConverter {
             });
 
             this.warnings.push(...this.validator.getResults());
+
+            // Add consolidated advancement warning if any were skipped
+            if (this.skippedAdvancements > 0) {
+                this.warnings.push({
+                    path: 'data/*/advancements/*.json',
+                    error: `${this.skippedAdvancements} advancement(s) detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.`
+                });
+            }
 
             // Accuracy estimation system
             let scorableFiles = this.structureSummary.totalAssets + this.structureSummary.totalData;
@@ -592,6 +601,8 @@ class ModConverter {
                     this.structureSummary.data[ns].tags.push(subPath);
                 } else if (subPath.startsWith('advancements/') || subPath.startsWith('advancement/')) {
                     this.structureSummary.data[ns].advancements.push(subPath);
+                    // Don't count advancements in totalData since they're skipped in conversion
+                    continue;
                 } else if (subPath.startsWith('worldgen/')) {
                     this.structureSummary.data[ns].worldgen.push(subPath);
                 } else {
@@ -1588,11 +1599,8 @@ class ModConverter {
             try {
                 this.incrementCounter();
                 // Advancements don't have a direct Bedrock equivalent
-                // Log them so the user knows they were detected but skipped
-                this.warnings.push({
-                    path: relativePath,
-                    error: 'Advancement detected but skipped: Bedrock uses a different achievement system that cannot be auto-converted.'
-                });
+                // Count them instead of adding individual warnings
+                this.skippedAdvancements++;
             } catch (e) {
                 this.logWarning(relativePath, e);
             }
