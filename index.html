@@ -55,6 +55,10 @@
             </div>
             <h1>MC Mods Converter</h1>
             <p>Convert Java Mods (.jar) into Bedrock Addons (.mcaddon).</p>
+            <div class="location-notice" id="locationNotice" role="note">
+                <strong id="locationNoticeTitle">Language suggestion</strong>
+                <span id="locationNoticeText">We only use rough browser region hints to suggest a language, never precise location, and we do not store it.</span>
+            </div>
         </header>
 
         <main>
@@ -75,6 +79,20 @@
                         significant time/RAM.</p>
                 </div>
             </div>
+
+            <section class="achievement-book">
+                <button id="achievementBookToggle" class="achievement-book-toggle" type="button" aria-expanded="false" aria-controls="achievementBookPanel">
+                    <span id="achievementBookButton">Open Achievement Book</span>
+                    <span aria-hidden="true">📖</span>
+                </button>
+                <div id="achievementBookPanel" class="achievement-book-panel hidden">
+                    <div class="achievement-book-header">
+                        <h3 id="achievementBookTitle">Achievement Book</h3>
+                        <p id="achievementBookSubtitle">Track what you have unlocked while using the converter.</p>
+                    </div>
+                    <ul id="achievementList" class="achievement-list"></ul>
+                </div>
+            </section>
 
             <div class="status-panel hidden" id="statusPanel">
                 <div class="status-indicator">

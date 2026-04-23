@@ -9,6 +9,11 @@ const statusTitle = document.getElementById('statusTitle');
 const statusDesc = document.getElementById('statusDesc');
 const downloadBtn = document.getElementById('downloadBtn');
 const downloadBtnText = document.getElementById('downloadBtnText');
+const locationNoticeTitle = document.getElementById('locationNoticeTitle');
+const locationNoticeText = document.getElementById('locationNoticeText');
+const achievementBookToggle = document.getElementById('achievementBookToggle');
+const achievementBookPanel = document.getElementById('achievementBookPanel');
+const achievementList = document.getElementById('achievementList');
 
 const dropzoneTitle = document.querySelector('.dropzone h3');
 
@@ -69,6 +74,8 @@ function handleFiles(files) {
         }
     }
 
+    unlockAchievement('uploader');
+
     // Hide download button & errors on new conversion
     downloadBtn.classList.add('hidden');
     const errorsContainer = document.getElementById('errorsContainer');
@@ -92,6 +99,7 @@ function handleFiles(files) {
             let accuracyText = data.accuracy !== undefined ? `\nAccuracy: ~${data.accuracy}% Java Match.` : '';
             updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.count}) + accuracyText, 'success');
             document.getElementById('progressContainer').classList.add('hidden');
+            unlockAchievement('creator');
 
             const url = URL.createObjectURL(data.blob);
             downloadBtn.href = url;
@@ -194,7 +202,9 @@ function groupWarningsByError(warnings) {
 function formatWarningMessage(warning) {
     if (!warning) return 'Unknown warning';
     if (typeof warning === 'string') return warning;
-    return warning.error || String(warning);
+
+    const message = warning.error || String(warning);
+    return warning.path ? `[${warning.path}] ${message}` : message;
 }
 
 function generateUUID() {
@@ -227,12 +237,29 @@ const translations = {
     en: {
         title: "Jar to Bedrock Addon",
         subtitle: "Convert Java Minecraft Mods (.jar) to Bedrock Addons (.mcaddon) instantly.",
+        locationNoticeTitle: "Automatic language suggestion",
+        locationNoticeText: "We only use rough browser country/region hints to suggest a language, never precise location, and we do not store it.",
         dropzoneTitle: "Drag & Drop your .jar file here",
         dropzoneSubtitle: "or click to browse from your computer",
         dropzoneWarning: "Large mods (>100MB) may take significant time/RAM.",
         convertModels: "Convert Block Models to Geometry (Experimental)",
         downloadBtnText: "Download .mcaddon",
         errorsHeader: "Warnings & Errors",
+        achievementBookButton: "Open Achievement Book",
+        achievementBookTitle: "Achievement Book",
+        achievementBookSubtitle: "Track what you have unlocked while using the converter.",
+        achievementUnlocked: "Unlocked",
+        achievementLocked: "Locked",
+        achievementWelcomeTitle: "First Spawn",
+        achievementWelcomeDesc: "Open the converter and start your session.",
+        achievementBookwormTitle: "Bookworm",
+        achievementBookwormDesc: "Open the achievement book.",
+        achievementLinguistTitle: "Linguist",
+        achievementLinguistDesc: "Let the app pick a language automatically or switch it yourself.",
+        achievementUploaderTitle: "Mod Courier",
+        achievementUploaderDesc: "Select a Java mod to begin conversion.",
+        achievementCreatorTitle: "Addon Crafter",
+        achievementCreatorDesc: "Finish a conversion successfully.",
         processing: "Processing...",
         readingDesc: "Reading file architecture",
         errorInvalidFile: "Please upload a valid .jar file.",
@@ -245,12 +272,29 @@ const translations = {
     de: {
         title: "Jar zu Bedrock Addon",
         subtitle: "Konvertiere Java Minecraft Mods (.jar) sofort in Bedrock Addons (.mcaddon).",
+        locationNoticeTitle: "Automatische Sprachwahl",
+        locationNoticeText: "Wir nutzen nur grobe Browser-Länder-/Regionshinweise für einen Sprachvorschlag, niemals einen genauen Standort, und speichern das nicht.",
         dropzoneTitle: "Ziehe deine .jar Datei hierher",
         dropzoneSubtitle: "oder klicke, um auf deinem Computer zu suchen",
         dropzoneWarning: "Große Mods (>100MB) können viel Zeit/RAM beanspruchen.",
         convertModels: "Blockmodelle in Geometrie konvertieren (Experimentell)",
         downloadBtnText: ".mcaddon Herunterladen",
         errorsHeader: "Warnungen & Fehler",
+        achievementBookButton: "Achievement-Buch öffnen",
+        achievementBookTitle: "Achievement-Buch",
+        achievementBookSubtitle: "Verfolge, was du während der Nutzung des Converters freigeschaltet hast.",
+        achievementUnlocked: "Freigeschaltet",
+        achievementLocked: "Gesperrt",
+        achievementWelcomeTitle: "Erster Spawn",
+        achievementWelcomeDesc: "Öffne den Converter und starte deine Sitzung.",
+        achievementBookwormTitle: "Bücherwurm",
+        achievementBookwormDesc: "Öffne das Achievement-Buch.",
+        achievementLinguistTitle: "Sprachkundig",
+        achievementLinguistDesc: "Lass die App automatisch eine Sprache wählen oder ändere sie selbst.",
+        achievementUploaderTitle: "Mod-Kurier",
+        achievementUploaderDesc: "Wähle eine Java-Mod aus, um die Konvertierung zu starten.",
+        achievementCreatorTitle: "Addon-Schmied",
+        achievementCreatorDesc: "Schließe eine Konvertierung erfolgreich ab.",
         processing: "Verarbeitung...",
         readingDesc: "Lese Dateistruktur",
         errorInvalidFile: "Bitte laden Sie eine gültige .jar Datei hoch.",
@@ -587,11 +631,27 @@ const translations = {
 };
 
 let currentLang = 'en';
+const achievements = [
+    { id: 'welcome', icon: '✨', titleKey: 'achievementWelcomeTitle', descKey: 'achievementWelcomeDesc', unlocked: true },
+    { id: 'bookworm', icon: '📖', titleKey: 'achievementBookwormTitle', descKey: 'achievementBookwormDesc', unlocked: false },
+    { id: 'linguist', icon: '🌍', titleKey: 'achievementLinguistTitle', descKey: 'achievementLinguistDesc', unlocked: false },
+    { id: 'uploader', icon: '📦', titleKey: 'achievementUploaderTitle', descKey: 'achievementUploaderDesc', unlocked: false },
+    { id: 'creator', icon: '🛠️', titleKey: 'achievementCreatorTitle', descKey: 'achievementCreatorDesc', unlocked: false }
+];
 const langSelect = document.getElementById('langSelect');
 if (langSelect) {
     langSelect.addEventListener('change', (e) => {
         currentLang = e.target.value;
+        unlockAchievement('linguist');
         applyTranslations();
+    });
+}
+
+if (achievementBookToggle) {
+    achievementBookToggle.addEventListener('click', () => {
+        const isHidden = achievementBookPanel.classList.toggle('hidden');
+        achievementBookToggle.setAttribute('aria-expanded', String(!isHidden));
+        unlockAchievement('bookworm');
     });
 }
 
@@ -603,18 +663,131 @@ function t(key, replacements = {}) {
     return text;
 }
 
+function renderAchievements() {
+    if (!achievementList) return;
+
+    achievementList.innerHTML = '';
+    achievements.forEach((achievement) => {
+        const item = document.createElement('li');
+        item.className = `achievement-item${achievement.unlocked ? ' unlocked' : ''}`;
+
+        const stateText = achievement.unlocked ? t('achievementUnlocked') : t('achievementLocked');
+        item.innerHTML = `
+            <span class="achievement-icon" aria-hidden="true">${achievement.icon}</span>
+            <div class="achievement-copy">
+                <h4>${t(achievement.titleKey)}</h4>
+                <p>${t(achievement.descKey)}</p>
+                <span class="achievement-state">${stateText}</span>
+            </div>
+        `;
+
+        achievementList.appendChild(item);
+    });
+}
+
+function unlockAchievement(id) {
+    const achievement = achievements.find((entry) => entry.id === id);
+    if (!achievement || achievement.unlocked) return;
+    achievement.unlocked = true;
+    renderAchievements();
+}
+
+function getRegionFromLocaleTag(localeTag) {
+    if (!localeTag || typeof localeTag !== 'string') return '';
+
+    try {
+        if (typeof Intl.Locale === 'function') {
+            return new Intl.Locale(localeTag).region || '';
+        }
+    } catch (error) {
+        console.debug('Failed to parse locale tag for region detection:', error);
+    }
+
+    const parts = localeTag.split(/[-_]/);
+    const regionCandidate = parts.find((part, index) => index > 0 && /^[A-Z]{2}$/.test(part.toUpperCase()));
+    return regionCandidate ? regionCandidate.toUpperCase() : '';
+}
+
+function detectLanguageFromBrowserHints() {
+    const supportedLanguages = new Set(Object.keys(translations));
+    const localeHints = Array.from(new Set([
+        ...(navigator.languages || []),
+        navigator.language,
+        navigator.userLanguage
+    ].filter(Boolean)));
+
+    for (const localeHint of localeHints) {
+        const baseLanguage = localeHint.toLowerCase().split(/[-_]/)[0];
+        if (supportedLanguages.has(baseLanguage)) {
+            return baseLanguage;
+        }
+    }
+
+    const regionToLanguage = {
+        AT: 'de', BR: 'pt', CN: 'zh', CZ: 'cs', DE: 'de', DK: 'da',
+        ES: 'es', FI: 'fi', FR: 'fr', HU: 'hu', IT: 'it', JP: 'ja', KR: 'ko', MX: 'es',
+        NL: 'nl', NO: 'no', PL: 'pl', PT: 'pt', RU: 'ru', SE: 'sv', SK: 'sk', TR: 'tr'
+    };
+
+    for (const localeHint of localeHints) {
+        const region = getRegionFromLocaleTag(localeHint);
+        if (regionToLanguage[region]) {
+            return regionToLanguage[region];
+        }
+    }
+
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const timezoneToLanguage = {
+        'Europe/Berlin': 'de',
+        'Europe/Vienna': 'de',
+        'Europe/Zurich': 'de',
+        'Europe/Paris': 'fr',
+        'Europe/Madrid': 'es',
+        'Europe/Rome': 'it',
+        'Europe/Lisbon': 'pt',
+        'Europe/Amsterdam': 'nl',
+        'Europe/Stockholm': 'sv',
+        'Europe/Copenhagen': 'da',
+        'Europe/Oslo': 'no',
+        'Europe/Helsinki': 'fi',
+        'Europe/Warsaw': 'pl',
+        'Europe/Prague': 'cs',
+        'Europe/Bratislava': 'sk',
+        'Europe/Budapest': 'hu',
+        'Europe/Istanbul': 'tr',
+        'Europe/Moscow': 'ru',
+        'Asia/Shanghai': 'zh',
+        'Asia/Tokyo': 'ja',
+        'Asia/Seoul': 'ko'
+    };
+
+    return timezoneToLanguage[timezone] || 'en';
+}
+
 function applyTranslations() {
+    document.documentElement.lang = currentLang;
     document.querySelector('header h1').textContent = t('title');
     document.querySelector('header p').textContent = t('subtitle');
     document.querySelector('.dropzone-content h3').textContent = t('dropzoneTitle');
-    
+
     const dropzoneContentP = document.querySelectorAll('.dropzone-content p');
     if(dropzoneContentP.length >= 2) {
         dropzoneContentP[0].textContent = t('dropzoneSubtitle');
         dropzoneContentP[1].textContent = t('dropzoneWarning');
     }
 
-    document.querySelector('.options-panel label span').textContent = t('convertModels');
+    if (locationNoticeTitle && locationNoticeText) {
+        locationNoticeTitle.textContent = t('locationNoticeTitle');
+        locationNoticeText.textContent = t('locationNoticeText');
+    }
+    if (achievementBookToggle) {
+        const toggleLabel = achievementBookToggle.querySelector('#achievementBookButton');
+        if (toggleLabel) toggleLabel.textContent = t('achievementBookButton');
+    }
+    const achievementBookTitle = document.getElementById('achievementBookTitle');
+    if (achievementBookTitle) achievementBookTitle.textContent = t('achievementBookTitle');
+    const achievementBookSubtitle = document.getElementById('achievementBookSubtitle');
+    if (achievementBookSubtitle) achievementBookSubtitle.textContent = t('achievementBookSubtitle');
     
     // Status panel translations IF specific texts are present
     if (statusTitle.textContent === translations['en']['processing'] || 
@@ -629,4 +802,13 @@ function applyTranslations() {
     
     const errorsHeaderH4 = document.querySelector('.errors-header h4');
     if (errorsHeaderH4) errorsHeaderH4.textContent = t('errorsHeader');
+
+    if (langSelect) langSelect.value = currentLang;
+    renderAchievements();
 }
+
+currentLang = detectLanguageFromBrowserHints();
+if (currentLang !== 'en') {
+    unlockAchievement('linguist');
+}
+applyTranslations();
