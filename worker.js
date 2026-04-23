@@ -594,7 +594,7 @@ class ModConverter {
 
     async convertNbtToMcstructure(nbtBuffer) {
         if (typeof pako === 'undefined' || typeof nbt === 'undefined') {
-            throw new Error('NBT structure conversion is unavailable in the offline worker build.');
+            throw new Error('NBT structure conversion requires pako and nbt libraries, which are not available.');
         }
 
         // Decompress if gzipped

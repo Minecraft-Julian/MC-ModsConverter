@@ -60,7 +60,7 @@
 
     async function inflateRaw(buffer) {
         if (typeof DecompressionStream !== 'function') {
-            throw new Error('This browser does not support ZIP decompression in workers.');
+            throw new Error('DecompressionStream is not available in this environment.');
         }
 
         const stream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
