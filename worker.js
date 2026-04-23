@@ -1,5 +1,5 @@
-importScripts("https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js");
-importScripts("https://unpkg.com/nbt@1.0.0/nbt.js");
+importScripts("vendor/pako.min.js");
+importScripts("vendor/nbt.js");
 importScripts("simple-zip.js");
 
 function parseJSON(str) {
