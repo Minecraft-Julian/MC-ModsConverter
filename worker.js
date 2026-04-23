@@ -609,7 +609,7 @@ class ModConverter {
                 } else {
                     this.structureSummary.data[ns].other.push(subPath);
                 }
-                // Count this data file in totalData (advancements already continued above)
+                // Count this data file in totalData (note: advancements already skipped via continue above)
                 this.structureSummary.totalData++;
                 continue;
             }
