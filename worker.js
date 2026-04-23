@@ -183,6 +183,7 @@ class ModConverter {
         this.fileCount = 0;
         this.skippedClasses = 0;
         this.advancementEntries = [];
+        this.advancementIds = new Set();
         this.warnings = [];
 
         // Manifests initialized after mod identification
@@ -698,7 +699,82 @@ class ModConverter {
 
     generateAdvancementBookLogic() {
         const serializedAdvancements = JSON.stringify(this.advancementEntries, null, 4);
-        return `\n// --- ADVANCEMENT BOOK SUPPORT ---\nconst convertedAdvancements = ${serializedAdvancements};\n\nfunction buildAchievementLoreLines() {\n    const lines = [];\n    for (const advancement of convertedAdvancements.slice(0, 20)) {\n        const frameIcon = advancement.frame === "challenge" ? "§5◆" : (advancement.frame === "goal" ? "§6◆" : "§a◆");\n        lines.push(\`\${frameIcon} §f\${advancement.title}\`);\n        if (advancement.description) {\n            lines.push(\`§7\${advancement.description}\`);\n        }\n    }\n\n    if (convertedAdvancements.length > 20) {\n        lines.push(\`§8+ \${convertedAdvancements.length - 20} more...\`);\n    }\n\n    return lines;\n}\n\nfunction giveAchievementBook(player, source) {\n    try {\n        const inventory = player.getComponent("minecraft:inventory");\n        const container = inventory?.container;\n        const achievementBook = new ItemStack("minecraft:book", 1);\n        achievementBook.nameTag = "§6Achievement Book";\n\n        if (typeof achievementBook.setLore === "function") {\n            achievementBook.setLore(buildAchievementLoreLines());\n        }\n\n        if (container) {\n            const leftovers = container.addItem(achievementBook);\n            if (leftovers) {\n                player.runCommandAsync("give @s book 1");\n            }\n        } else {\n            player.runCommandAsync("give @s book 1");\n        }\n\n        player.sendMessage(\`§6[Achievement Book] Updated from converted advancements (\${source}).\`);\n    } catch (error) {\n        player.runCommandAsync("give @s book 1");\n    }\n}\n\nworld.afterEvents.playerSpawn.subscribe(ev => {\n    if (!ev.player || !ev.initialSpawn) return;\n    giveAchievementBook(ev.player, "first spawn");\n});\n\nworld.afterEvents.entityDie.subscribe(ev => {\n    const deadEntity = ev.deadEntity;\n    if (!deadEntity || deadEntity.typeId !== "minecraft:player") return;\n    giveAchievementBook(deadEntity, "death");\n});\n\n`;
+        return `
+// --- ADVANCEMENT BOOK SUPPORT ---
+// Lore is intentionally capped to keep Bedrock item lore readable and short.
+const MAX_ADVANCEMENTS_DISPLAYED = 20;
+const FRAME_ICON_MAP = { challenge: "§5◆", goal: "§6◆", task: "§a◆" };
+const convertedAdvancements = ${serializedAdvancements};
+const pendingDeathAchievementBooks = new Set();
+
+function getPlayerName(playerLike) {
+    return playerLike?.name || playerLike?.nameTag || "";
+}
+
+function buildAchievementLoreLines() {
+    const lines = [];
+    for (const advancement of convertedAdvancements.slice(0, MAX_ADVANCEMENTS_DISPLAYED)) {
+        const frameIcon = FRAME_ICON_MAP[advancement.frame] || FRAME_ICON_MAP.task;
+        lines.push(\`\${frameIcon} §f\${advancement.title}\`);
+        if (advancement.description) {
+            lines.push(\`§7\${advancement.description}\`);
+        }
+    }
+
+    if (convertedAdvancements.length > MAX_ADVANCEMENTS_DISPLAYED) {
+        lines.push(\`§8+ \${convertedAdvancements.length - MAX_ADVANCEMENTS_DISPLAYED} more...\`);
+    }
+
+    return lines;
+}
+
+function giveAchievementBook(player, source) {
+    try {
+        const inventory = player.getComponent("minecraft:inventory");
+        const container = inventory?.container;
+        const achievementBook = new ItemStack("minecraft:book", 1);
+        achievementBook.nameTag = "§6Achievement Book";
+
+        if (typeof achievementBook.setLore === "function") {
+            achievementBook.setLore(buildAchievementLoreLines());
+        }
+
+        if (container) {
+            const leftovers = container.addItem(achievementBook);
+            if (leftovers > 0) {
+                player.runCommandAsync("give @s book 1");
+            }
+        } else {
+            player.runCommandAsync("give @s book 1");
+        }
+
+        player.sendMessage(\`§6[Achievement Book] Updated from converted advancements (\${source}).\`);
+    } catch (error) {
+        player.runCommandAsync("give @s book 1");
+    }
+}
+
+world.afterEvents.playerSpawn.subscribe(ev => {
+    if (!ev.player) return;
+    const playerName = getPlayerName(ev.player);
+    const dueToDeath = pendingDeathAchievementBooks.has(playerName);
+    if (!ev.initialSpawn && !dueToDeath) return;
+    if (dueToDeath) {
+        pendingDeathAchievementBooks.delete(playerName);
+    }
+    giveAchievementBook(ev.player, dueToDeath ? "death" : "first spawn");
+});
+
+world.afterEvents.entityDie.subscribe(ev => {
+    const deadEntity = ev.deadEntity;
+    if (!deadEntity || deadEntity.typeId !== "minecraft:player") return;
+    const playerName = getPlayerName(deadEntity);
+    if (playerName) {
+        pendingDeathAchievementBooks.add(playerName);
+    }
+});
+
+`;
     }
 
     async convertNbtToMcstructure(nbtBuffer) {
@@ -1636,13 +1712,14 @@ class ModConverter {
                 const description = this.extractAdvancementText(display.description, '');
                 const frame = typeof display.frame === 'string' ? display.frame : 'task';
 
-                if (!this.advancementEntries.some(entry => entry.id === id)) {
+                if (!this.advancementIds.has(id)) {
                     this.advancementEntries.push({
                         id,
                         title,
                         description,
                         frame
                     });
+                    this.advancementIds.add(id);
                 }
 
                 this.incrementCounter();
