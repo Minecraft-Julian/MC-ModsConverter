@@ -694,7 +694,7 @@ class ModConverter {
             let mainJs = `import { world, system, ItemStack } from "@minecraft/server";\n\n`;
             mainJs += `// --- MCBE-KI LOGIC ENGINE ---\n`;
             mainJs += `console.warn("[MCBE-KI] Logic Engine Initialized");\n\n`;
-            
+
             // Universal mod logic generation - analyzes mod content and generates appropriate behavior
             mainJs += this.generateUniversalModLogic();
 
@@ -2849,7 +2849,7 @@ world.afterEvents.entityDie.subscribe(ev => {
 
                 // MINI-LOGIC ENGINE: Pattern Detection
                 const idLower = blockId.toLowerCase();
-                
+
                 // Light Emission
                 if (idLower.includes("lamp") || idLower.includes("glow") || idLower.includes("light") || idLower.includes("lantern") || idLower.includes("torch") || idLower.includes("candle")) {
                     bedrockBlock["minecraft:block"].components["minecraft:light_emission"] = (idLower.includes("torch") || idLower.includes("lantern")) ? 14 : 15;
