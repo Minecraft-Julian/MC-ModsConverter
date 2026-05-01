@@ -6,3 +6,4 @@ library/bedrock/*.mcaddon
 library/bedrock/*.mcpack
 library/java/*.jar
 library/java/*.zip
+.vercel
