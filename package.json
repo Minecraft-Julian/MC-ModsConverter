@@ -8,9 +8,11 @@
     "analyze-library": "node scripts/analyze-library.js"
   },
   "dependencies": {
-    "ollama": "^0.5.14",
-    "jszip": "^3.10.1",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "cheerio": "^1.0.0",
+    "jszip": "^3.10.1",
+    "ollama": "^0.5.14",
     "uuid": "^11.1.0"
   }
 }
