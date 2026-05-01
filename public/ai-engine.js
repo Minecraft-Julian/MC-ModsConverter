@@ -1,7 +1,8 @@
 import * as webllm from "webllm";
 import { PluginSystem, loadBuiltinPlugins } from "./plugin-system.js";
-import { Validator } from "./validator.js";
-import { SimilarityScorer } from "./similarity-scorer.js";
+import { BedrockValidator } from "./validator.js";
+import * as Scorer from "./similarity-scorer.js";
+import JSZip from "jszip";
 
 /**
  * AI Engine — Runs LLM directly in the browser via WebGPU/WebLLM.
@@ -13,8 +14,8 @@ export class AIEngine {
         this.onProgress = onProgress;
         this.selectedModel = "Llama-3-8B-Instruct-v0.1-q4f32_1-MLC"; // Good balance for browser
         this.ps = new PluginSystem();
-        this.validator = new Validator();
-        this.scorer = new SimilarityScorer();
+        this.validator = new BedrockValidator();
+        this.scorer = Scorer;
     }
 
     async init() {
@@ -72,8 +73,9 @@ export class AIEngine {
         }
 
         // Final Validation
-        const validationResult = await this.validator.validate(ctx.rpFolder, ctx.bpFolder);
-        const similarity = this.scorer.calculate(javaAnalysis, ctx);
+        const validationResult = await this.validator.validate(ctx);
+        const bedrockAnalysis = this.scorer.analyzeBedrockOutput(ctx.rpFolder, ctx.bpFolder, ctx);
+        const similarity = this.scorer.calculateSimilarity(javaAnalysis, bedrockAnalysis, validationResult, this.ps.getStats());
 
         return {
             success: true,
