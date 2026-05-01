@@ -1,4 +1,10 @@
 import { AIEngine } from "./ai-engine.js";
+import { inject as injectAnalytics } from "@vercel/analytics";
+import { inject as injectSpeedInsights } from "@vercel/speed-insights";
+
+// Initialize Vercel services
+injectAnalytics();
+injectSpeedInsights();
 
 // Global variables
 let currentBlobUrl = null;
