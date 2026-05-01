@@ -1,237 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC Mods Converter — AI-Powered Java → Bedrock</title>
-    <meta name="description" content="Convert Minecraft Java mods to Bedrock addons using AI. Upload a .jar file and get a working .mcaddon instantly.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>MC Mods Converter</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <!-- Animated Background -->
-    <div class="bg-grid" id="bgGrid"></div>
-    <div class="bg-glow bg-glow-1"></div>
-    <div class="bg-glow bg-glow-2"></div>
-    <div class="bg-glow bg-glow-3"></div>
+    <div class="background-animation">
+        <div class="blob shape-1"></div>
+        <div class="blob shape-2"></div>
+        <div class="blob shape-3"></div>
+    </div>
 
-    <!-- Particle Canvas for conversion animation -->
-    <canvas id="particleCanvas"></canvas>
-
-    <div class="app-container" id="appContainer">
-        <!-- Header -->
+    <div class="app-container">
         <header>
-            <div class="header-row">
-                <div class="logo-badge">
-                    <div class="logo-cube" id="logoCube">
-                        <div class="cube-face cube-front"></div>
-                        <div class="cube-face cube-back"></div>
-                        <div class="cube-face cube-right"></div>
-                        <div class="cube-face cube-left"></div>
-                        <div class="cube-face cube-top"></div>
-                        <div class="cube-face cube-bottom"></div>
-                    </div>
-                </div>
-                <div class="header-text">
-                    <h1>MC Mods Converter</h1>
-                    <p class="subtitle">AI-Powered Java → Bedrock Conversion</p>
-                </div>
-                <div class="header-actions">
-                    <div class="ai-status" id="aiStatus" title="AI Status">
-                        <span class="status-dot offline" id="statusDot"></span>
-                        <span class="status-label" id="statusLabel">Checking AI...</span>
-                    </div>
-                    <select id="langSelect" class="lang-select">
-                        <option value="en">EN</option>
-                        <option value="de">DE</option>
-                        <option value="fr">FR</option>
-                        <option value="es">ES</option>
-                        <option value="ja">JA</option>
-                        <option value="zh">ZH</option>
-                        <option value="ko">KO</option>
-                        <option value="ru">RU</option>
+            <div class="logo-container">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                    </path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <div class="lang-selector-container" style="position: absolute; right: 2rem; top: 2rem;">
+                    <select id="langSelect" style="padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.1); color: var(--text-main); border: 1px solid var(--border-color);">
+                        <option value="en">English</option>
+                        <option value="de">Deutsch</option>
+                        <option value="fr">Français</option>
+                        <option value="es">Español</option>
+                        <option value="it">Italiano</option>
+                        <option value="pt">Português</option>
+                        <option value="ru">Русский</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                        <option value="ko">한국어</option>
+                        <option value="nl">Nederlands</option>
+                        <option value="sv">Svenska</option>
+                        <option value="da">Dansk</option>
+                        <option value="no">Norsk</option>
+                        <option value="fi">Suomi</option>
+                        <option value="pl">Polski</option>
+                        <option value="cs">Čeština</option>
+                        <option value="sk">Slovenčina</option>
+                        <option value="hu">Magyar</option>
+                        <option value="tr">Türkçe</option>
                     </select>
                 </div>
             </div>
+            <h1>MC Mods Converter</h1>
+            <p>Convert Java Mods (.jar) into Bedrock Addons (.mcaddon).</p>
+            <div class="location-notice" id="locationNotice" role="note">
+                <strong id="locationNoticeTitle">Language suggestion</strong>
+                <span id="locationNoticeText">We only use rough browser region hints to suggest a language, never precise location, and we do not store it.</span>
+            </div>
         </header>
 
-        <!-- Upload Section -->
-        <section id="uploadSection">
-            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload a Java mod file">
-                <input type="file" id="fileInput" class="file-input" accept=".jar,.zip">
+        <main>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Click or drag to upload a mod file">
+                <input type="file" id="fileInput" class="file-input" accept=".jar, .zip">
                 <div class="dropzone-content">
-                    <div class="upload-icon-wrap">
-                        <svg class="upload-icon" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <div class="upload-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
                     </div>
-                    <h3 id="dropzoneTitle">Drop your .jar file here</h3>
-                    <p id="dropzoneSubtitle">or click to browse</p>
-                    <div class="upload-chips">
-                        <span class="chip">.jar</span>
-                        <span class="chip">.zip</span>
-                        <span class="chip-arrow">→</span>
-                        <span class="chip chip-result">.mcaddon</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Conversion Section (hidden until upload) -->
-        <section id="conversionSection" class="hidden">
-            <!-- Minecraft Block Animation -->
-            <div class="conversion-animation" id="conversionAnimation">
-                <div class="morph-scene">
-                    <div class="block-container" id="javaBlock">
-                        <div class="mc-block java-block">
-                            <div class="block-face block-front"><span>J</span></div>
-                            <div class="block-face block-back"></div>
-                            <div class="block-face block-right"></div>
-                            <div class="block-face block-left"></div>
-                            <div class="block-face block-top"></div>
-                            <div class="block-face block-bottom"></div>
-                        </div>
-                        <span class="block-label">Java</span>
-                    </div>
-
-                    <div class="morph-arrows" id="morphArrows">
-                        <div class="arrow-particle"></div>
-                        <div class="arrow-particle"></div>
-                        <div class="arrow-particle"></div>
-                        <svg class="arrow-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                        <div class="arrow-particle"></div>
-                        <div class="arrow-particle"></div>
-                    </div>
-
-                    <div class="block-container" id="bedrockBlock">
-                        <div class="mc-block bedrock-block">
-                            <div class="block-face block-front"><span>B</span></div>
-                            <div class="block-face block-back"></div>
-                            <div class="block-face block-right"></div>
-                            <div class="block-face block-left"></div>
-                            <div class="block-face block-top"></div>
-                            <div class="block-face block-bottom"></div>
-                        </div>
-                        <span class="block-label">Bedrock</span>
-                    </div>
+                    <h3>Drag & Drop your .jar file here</h3>
+                    <p>or click to browse from your computer</p>
+                    <p style="font-size: 0.75rem; color: #F59E0B; margin-top: 0.5rem;">Large mods (>100MB) may take
+                        significant time/RAM.</p>
                 </div>
             </div>
 
-            <!-- AI Status Log -->
-            <div class="ai-log" id="aiLog">
-                <div class="ai-log-header">
-                    <div class="ai-pulse"></div>
-                    <span id="aiLogTitle">AI is converting...</span>
-                </div>
-                <div class="ai-log-entries" id="aiLogEntries">
-                    <!-- Dynamically populated -->
-                </div>
-                <div class="progress-track">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Results Section (hidden until complete) -->
-        <section id="resultSection" class="hidden">
-            <div class="result-card">
-                <div class="result-header">
-                    <div class="result-icon success-glow" id="resultIcon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 id="resultTitle">Addon Ready!</h2>
-                        <p id="resultSubtitle" class="text-muted"></p>
-                    </div>
-                </div>
-
-                <!-- Similarity Score Ring -->
-                <div class="similarity-ring-container">
-                    <div class="similarity-ring" id="similarityRing">
-                        <svg viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="52" class="ring-bg"/>
-                            <circle cx="60" cy="60" r="52" class="ring-fill" id="ringFill"
-                                stroke-dasharray="326.73" stroke-dashoffset="326.73"/>
-                        </svg>
-                        <div class="ring-text">
-                            <span class="ring-percent" id="ringPercent">0</span>
-                            <span class="ring-label">% Similar</span>
-                        </div>
-                    </div>
-                    <p class="similarity-verdict" id="similarityVerdict"></p>
-                </div>
-
-                <!-- Score Breakdown -->
-                <div class="score-breakdown" id="scoreBreakdown">
-                    <!-- Dynamically populated -->
-                </div>
-
-                <!-- AI Stats -->
-                <div class="ai-stats" id="aiStats">
-                    <!-- Dynamically populated -->
-                </div>
-            </div>
-
-            <!-- Download Button -->
-            <a id="downloadBtn" class="download-btn" download="converted.mcaddon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                <span id="downloadBtnText">Download .mcaddon</span>
-            </a>
-
-            <!-- Validation Warnings -->
-            <div class="warnings-panel hidden" id="warningsPanel">
-                <details class="warnings-details">
-                    <summary class="warnings-summary">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                        <span id="warningsCount">Warnings</span>
-                    </summary>
-                    <ul class="warnings-list" id="warningsList"></ul>
-                </details>
-            </div>
-
-            <!-- Convert Another -->
-            <button class="btn-secondary" id="convertAnotherBtn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="1 4 1 10 7 10"></polyline>
-                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                </svg>
-                Convert Another Mod
-            </button>
-        </section>
-
-        <!-- Error Section -->
-        <section id="errorSection" class="hidden">
-            <div class="error-card">
-                <div class="error-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2">
+            <div class="status-panel hidden" id="statusPanel">
+                <div class="status-indicator">
+                    <div class="spinner" id="spinner"></div>
+                    <svg id="successIcon" class="hidden success-icon" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <svg id="errorIcon" class="hidden error-icon" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="15" y1="9" x2="9" y2="15"></line>
                         <line x1="9" y1="9" x2="15" y2="15"></line>
                     </svg>
                 </div>
-                <h3 id="errorTitle">Conversion Failed</h3>
-                <p id="errorMessage" class="text-muted"></p>
-                <button class="btn-secondary" id="retryBtn">Try Again</button>
+                <div class="status-texts" style="width: 100%;">
+                    <h4 id="statusTitle">Processing...</h4>
+                    <p id="statusDesc">Reading file architecture</p>
+                    <div class="progress-bar-container hidden" id="progressContainer">
+                        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                    </div>
+                </div>
             </div>
-        </section>
+
+            <div class="errors-container hidden" id="errorsContainer">
+                <div class="errors-header">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <h4>Warnings & Errors</h4>
+                </div>
+                <ul id="errorsList" class="errors-list"></ul>
+            </div>
+
+            <a id="downloadBtn" class="download-btn hidden" download="converted.mcaddon">
+                <span id="downloadBtnText">Download .mcaddon</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </a>
+        </main>
     </div>
 
-    <script src="animation.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

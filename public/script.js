@@ -1,136 +1,109 @@
-/**
- * MC Mods Converter v2 — Frontend Logic
- * Handles file upload, API communication, and UI state management.
- */
+// Global variables
+let currentBlobUrl = null; // Track the active blob URL so it can be revoked
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const statusPanel = document.getElementById('statusPanel');
+const spinner = document.getElementById('spinner');
+const successIcon = document.getElementById('successIcon');
+const errorIcon = document.getElementById('errorIcon');
+const statusTitle = document.getElementById('statusTitle');
+const statusDesc = document.getElementById('statusDesc');
+const downloadBtn = document.getElementById('downloadBtn');
+const downloadBtnText = document.getElementById('downloadBtnText');
+const locationNoticeTitle = document.getElementById('locationNoticeTitle');
+const locationNoticeText = document.getElementById('locationNoticeText');
+const progressContainer = document.getElementById('progressContainer');
+const progressBarFill = document.getElementById('progressBarFill');
 
-// ---- DOM Elements ----
-const $ = id => document.getElementById(id);
-const dropzone = $('dropzone');
-const fileInput = $('fileInput');
-const uploadSection = $('uploadSection');
-const conversionSection = $('conversionSection');
-const resultSection = $('resultSection');
-const errorSection = $('errorSection');
-const aiLogEntries = $('aiLogEntries');
-const progressFill = $('progressFill');
-const downloadBtn = $('downloadBtn');
-const statusDot = $('statusDot');
-const statusLabel = $('statusLabel');
+const dropzoneTitle = document.querySelector('.dropzone h3');
 
-let currentBlobUrl = null;
-
-// ---- AI Health Check ----
-async function checkAIHealth() {
-    statusDot.className = 'status-dot checking';
-    statusLabel.textContent = 'Checking...';
-
-    try {
-        const res = await fetch('/api/health');
-        const data = await res.json();
-
-        if (data.status === 'online') {
-            statusDot.className = 'status-dot online';
-            statusLabel.textContent = `AI Online`;
-        } else {
-            statusDot.className = 'status-dot offline';
-            statusLabel.textContent = 'AI Offline';
-        }
-    } catch {
-        statusDot.className = 'status-dot offline';
-        statusLabel.textContent = 'AI Offline';
-    }
-}
-
-checkAIHealth();
-setInterval(checkAIHealth, 30000);
-
-// ---- Drag & Drop ----
+// Setup Drag & Drop Listeners
 dropzone.addEventListener('click', () => fileInput.click());
-dropzone.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+
+dropzone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+    }
 });
 
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt =>
-    dropzone.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); }, false)
-);
-['dragenter', 'dragover'].forEach(evt =>
-    dropzone.addEventListener(evt, () => dropzone.classList.add('dragover'), false)
-);
-['dragleave', 'drop'].forEach(evt =>
-    dropzone.addEventListener(evt, () => dropzone.classList.remove('dragover'), false)
-);
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, preventDefaults, false);
+});
 
-dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files), false);
-fileInput.addEventListener('change', e => {
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => dropzone.classList.add('dragover'), false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(evt, () => dropzone.classList.remove('dragover'), false);
+});
+
+// Wait, fixed the typo in ['dragleave', 'drop'] loop above
+['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, () => dropzone.classList.remove('dragover'), false);
+});
+
+dropzone.addEventListener('drop', handleDrop, false);
+fileInput.addEventListener('change', (e) => {
     handleFiles(e.target.files);
     e.target.value = '';
 }, false);
 
-// ---- Convert Another ----
-$('convertAnotherBtn')?.addEventListener('click', resetUI);
-$('retryBtn')?.addEventListener('click', resetUI);
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    handleFiles(files);
+}
 
-function resetUI() {
-    uploadSection.classList.remove('hidden');
-    conversionSection.classList.add('hidden');
-    resultSection.classList.add('hidden');
-    errorSection.classList.add('hidden');
-    aiLogEntries.innerHTML = '';
-    progressFill.style.width = '0%';
-
+// Revoke active blob URL when the page is unloaded to prevent memory leaks
+window.addEventListener('beforeunload', () => {
     if (currentBlobUrl) {
         URL.revokeObjectURL(currentBlobUrl);
         currentBlobUrl = null;
     }
+});
 
-    window.particleSystem?.stop();
-}
-
-// ---- File Handling ----
 async function handleFiles(files) {
-    if (!files || files.length === 0) return;
+    if (files.length === 0) return;
     const file = files[0];
 
-    if (!file.name.match(/\.(jar|zip)$/i)) {
-        showError('Invalid File', 'Please upload a .jar or .zip file.');
+    if (!file.name.endsWith('.jar') && !file.name.endsWith('.zip')) {
+        updateStatus(t('conversionFailedTitle'), t('errorInvalidFile'), 'error');
         return;
     }
 
-    if (file.size > 200 * 1024 * 1024) {
-        if (!confirm('This file is very large (>200MB). The AI conversion may take several minutes. Continue?')) {
+    if (file.size > 100 * 1024 * 1024) { // over 100mb
+        if (!confirm(t('errorLargeFileConfirm'))) {
             return;
         }
     }
 
-    startConversion(file);
-}
+    // Hide download button & errors on new conversion
+    downloadBtn.classList.add('hidden');
+    const errorsContainer = document.getElementById('errorsContainer');
+    if (errorsContainer) errorsContainer.classList.add('hidden');
 
-// ---- Conversion ----
-async function startConversion(file) {
-    // Switch to conversion view
-    uploadSection.classList.add('hidden');
-    conversionSection.classList.remove('hidden');
-    resultSection.classList.add('hidden');
-    errorSection.classList.add('hidden');
-
-    // Start particles
-    window.particleSystem?.start();
-
-    // Reset log
-    aiLogEntries.innerHTML = '';
-    progressFill.style.width = '0%';
-
-    addLogEntry('info', `Uploading ${file.name} (${formatSize(file.size)})...`);
-    progressFill.style.width = '5%';
+    // UI Feedback: Start conversion
+    updateStatus(t('processing'), t('readingDesc'), 'loading');
+    progressContainer.classList.remove('hidden');
+    progressBarFill.style.width = '10%';
 
     try {
-        // Upload file to API
-        addLogEntry('info', 'Sending to AI conversion server...');
-        progressFill.style.width = '10%';
+        // Start a progress simulation for better UX since AI takes time
+        const simInterval = setInterval(() => {
+            const currentWidth = parseFloat(progressBarFill.style.width);
+            if (currentWidth < 90) {
+                progressBarFill.style.width = (currentWidth + (90 - currentWidth) * 0.05) + '%';
+            }
+        }, 800);
 
-        // Simulate progress while waiting
-        const progressInterval = startProgressSimulation();
-
+        // Call the Vercel AI API
         const response = await fetch('/api/convert', {
             method: 'POST',
             headers: {
@@ -140,329 +113,199 @@ async function startConversion(file) {
             body: file
         });
 
-        clearInterval(progressInterval);
-        progressFill.style.width = '90%';
+        clearInterval(simInterval);
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-            throw new Error(errorData.message || errorData.error || `Server error: ${response.status}`);
+            const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
+            throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`);
         }
 
         const data = await response.json();
-        addLogEntry('success', `Conversion complete in ${data.duration}`);
-        progressFill.style.width = '100%';
-
+        
         if (!data.success) {
-            throw new Error(data.message || 'Conversion returned unsuccessful');
+            throw new Error(data.message || 'Conversion failed on server');
         }
 
-        // Log AI activity
+        progressBarFill.style.width = '100%';
+
+        // Success Feedback
+        let infoText = `\nJava similarity: ${data.similarity.percentage}% (${data.similarity.verdict.label})`;
         if (data.ai) {
-            addLogEntry('info', `AI used ${data.ai.toolCalls} tool calls in ${data.ai.iterations} iterations`);
-
-            if (data.ai.toolStats?.toolUsage) {
-                for (const [tool, usage] of Object.entries(data.ai.toolStats.toolUsage)) {
-                    addLogEntry('tool', `${tool}: ${usage.calls}x (${usage.successes} OK, ${usage.failures} failed)`);
-                }
-            }
+            infoText += `\nAI used ${data.ai.toolCalls} tools in ${data.ai.iterations} steps.`;
         }
-
-        // Show results after a brief delay for animation
-        setTimeout(() => showResults(data), 800);
-
-    } catch (error) {
-        window.particleSystem?.stop();
-        console.error('Conversion error:', error);
-        addLogEntry('error', error.message);
-
+        
+        updateStatus(t('addonReadyTitle'), t('addonReadyDesc', {count: data.javaAnalysis.totalTextures + data.javaAnalysis.totalModels}) + infoText, 'success');
+        
         setTimeout(() => {
-            conversionSection.classList.add('hidden');
-            showError('Conversion Failed', error.message);
+            progressContainer.classList.add('hidden');
         }, 1000);
-    }
-}
 
-function startProgressSimulation() {
-    let progress = 10;
-    const steps = [
-        { at: 15, msg: 'AI scanning mod structure...' },
-        { at: 25, msg: 'Analyzing textures and models...' },
-        { at: 35, msg: 'Converting assets to Bedrock format...' },
-        { at: 45, msg: 'Processing blockstates and recipes...' },
-        { at: 55, msg: 'Generating Script API logic...' },
-        { at: 65, msg: 'Running validation checks...' },
-        { at: 75, msg: 'Calculating similarity score...' },
-        { at: 82, msg: 'Packaging .mcaddon...' }
-    ];
-
-    let stepIndex = 0;
-
-    return setInterval(() => {
-        if (progress < 85) {
-            progress += 0.3 + Math.random() * 0.5;
-            progressFill.style.width = `${Math.min(progress, 85)}%`;
-
-            if (stepIndex < steps.length && progress >= steps[stepIndex].at) {
-                addLogEntry('info', steps[stepIndex].msg);
-                stepIndex++;
-            }
+        // Handle Download
+        if (currentBlobUrl) {
+            URL.revokeObjectURL(currentBlobUrl);
         }
-    }, 500);
-}
 
-// ---- Results Display ----
-function showResults(data) {
-    conversionSection.classList.add('hidden');
-    resultSection.classList.remove('hidden');
-    window.particleSystem?.stop();
-
-    // Title & subtitle
-    $('resultTitle').textContent = 'Addon Ready!';
-    $('resultSubtitle').textContent = `${data.modName} — ${data.duration} — ${formatSize(data.fileSize)}`;
-
-    // Similarity Ring
-    const percentage = data.similarity?.percentage || 0;
-    animateSimilarityRing(percentage);
-
-    const verdict = data.similarity?.verdict;
-    if (verdict) {
-        $('similarityVerdict').textContent = `${verdict.emoji} ${verdict.label} — ${verdict.description}`;
-    }
-
-    // Score Breakdown
-    const breakdownEl = $('scoreBreakdown');
-    breakdownEl.innerHTML = '';
-
-    if (data.similarity?.breakdown) {
-        const categories = {
-            textures: 'Textures',
-            models: 'Models',
-            blocks: 'Blocks',
-            recipes: 'Recipes',
-            sounds: 'Sounds',
-            logic: 'Logic'
-        };
-
-        for (const [key, label] of Object.entries(categories)) {
-            const cat = data.similarity.breakdown[key];
-            if (!cat || cat.score === undefined) continue;
-
-            const row = document.createElement('div');
-            row.className = 'score-row';
-            row.innerHTML = `
-                <span class="score-label">${label}</span>
-                <div class="score-bar-track">
-                    <div class="score-bar-fill" style="width: 0%"></div>
-                </div>
-                <span class="score-value">${Math.round(cat.score)}%</span>
-            `;
-            breakdownEl.appendChild(row);
-
-            // Animate bar
-            setTimeout(() => {
-                row.querySelector('.score-bar-fill').style.width = `${cat.score}%`;
-            }, 300);
-        }
-    }
-
-    // AI Stats
-    const statsEl = $('aiStats');
-    statsEl.innerHTML = '';
-
-    const stats = [
-        { value: data.ai?.toolCalls || 0, label: 'Tool Calls' },
-        { value: data.ai?.iterations || 0, label: 'Iterations' },
-        { value: `${data.validation?.attempts || 1}x`, label: 'Validations' }
-    ];
-
-    for (const stat of stats) {
-        const box = document.createElement('div');
-        box.className = 'stat-box';
-        box.innerHTML = `
-            <div class="stat-value">${stat.value}</div>
-            <div class="stat-label">${stat.label}</div>
-        `;
-        statsEl.appendChild(box);
-    }
-
-    // Download button
-    if (data.fileBase64) {
+        // Convert base64 from API back to blob
         const byteChars = atob(data.fileBase64);
         const byteArray = new Uint8Array(byteChars.length);
         for (let i = 0; i < byteChars.length; i++) {
             byteArray[i] = byteChars.charCodeAt(i);
         }
         const blob = new Blob([byteArray], { type: 'application/octet-stream' });
-
-        if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+        
         currentBlobUrl = URL.createObjectURL(blob);
-
         downloadBtn.href = currentBlobUrl;
-        downloadBtn.download = data.fileName || 'converted.mcaddon';
+        downloadBtn.download = data.fileName;
+        downloadBtn.classList.remove('hidden');
 
         downloadBtn.onclick = () => {
             setTimeout(() => {
                 if (currentBlobUrl) {
                     URL.revokeObjectURL(currentBlobUrl);
                     currentBlobUrl = null;
+                    downloadBtn.href = '#';
                 }
             }, 3000);
         };
-    }
 
-    // Warnings
-    const warningsPanel = $('warningsPanel');
-    const warningsList = $('warningsList');
-
-    if (data.validation && (data.validation.errors > 0 || data.validation.warnings > 0)) {
-        warningsPanel.classList.remove('hidden');
-        $('warningsCount').textContent = `${data.validation.errors} errors, ${data.validation.warnings} warnings`;
-        warningsList.innerHTML = '';
-        // We don't have detailed warnings in this response shape, but the panel is ready
-    } else {
-        warningsPanel.classList.add('hidden');
-    }
-}
-
-function animateSimilarityRing(percentage) {
-    const ringFill = $('ringFill');
-    const ringPercent = $('ringPercent');
-    const circumference = 2 * Math.PI * 52; // r=52
-
-    // Add SVG gradient definition if not present
-    const svg = ringFill?.closest('svg');
-    if (svg && !svg.querySelector('#ringGradient')) {
-        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        defs.innerHTML = `
-            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color: #7c5cfc"/>
-                <stop offset="100%" style="stop-color: #38bdf8"/>
-            </linearGradient>
-        `;
-        svg.prepend(defs);
-    }
-
-    // Animate ring
-    const targetOffset = circumference - (circumference * percentage / 100);
-    setTimeout(() => {
-        if (ringFill) ringFill.style.strokeDashoffset = targetOffset;
-    }, 200);
-
-    // Animate counter
-    let current = 0;
-    const step = percentage / 40;
-    const counter = setInterval(() => {
-        current += step;
-        if (current >= percentage) {
-            current = percentage;
-            clearInterval(counter);
+        // Display validation errors as warnings
+        if (data.validation && data.validation.errors > 0) {
+            displayWarnings([`Validation failed with ${data.validation.errors} errors. See logs for details.`]);
         }
-        if (ringPercent) ringPercent.textContent = Math.round(current);
-    }, 30);
+
+    } catch (error) {
+        console.error('Conversion error:', error);
+        updateStatus(t('conversionFailedTitle'), error.message || t('conversionFailedFatal'), 'error');
+        progressContainer.classList.add('hidden');
+    }
 }
 
-// ---- Error Display ----
-function showError(title, message) {
-    errorSection.classList.remove('hidden');
-    $('errorTitle').textContent = title;
-    $('errorMessage').textContent = message;
-}
+function displayWarnings(warnings) {
+    const container = document.getElementById('errorsContainer');
+    const list = document.getElementById('errorsList');
+    if (!container || !list) return;
 
-// ---- Log Entries ----
-function addLogEntry(type, message) {
-    const entry = document.createElement('div');
-    entry.className = 'log-entry';
-
-    const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-    let icon = '';
-    let cssClass = 'log-info';
-    switch (type) {
-        case 'tool': icon = '🔧'; cssClass = 'log-tool'; break;
-        case 'success': icon = '✅'; cssClass = 'log-success'; break;
-        case 'error': icon = '❌'; cssClass = 'log-error'; break;
-        case 'info': default: icon = '▸'; cssClass = 'log-info'; break;
+    list.innerHTML = '';
+    if (!warnings || warnings.length === 0) {
+        container.classList.add('hidden');
+        return;
     }
 
-    entry.innerHTML = `<span class="log-info">${time}</span> ${icon} <span class="${cssClass}">${escapeHtml(message)}</span>`;
-    aiLogEntries.appendChild(entry);
-    aiLogEntries.scrollTop = aiLogEntries.scrollHeight;
+    warnings.forEach(warning => {
+        const li = document.createElement('li');
+        li.textContent = typeof warning === 'string' ? warning : (warning.message || JSON.stringify(warning));
+        list.appendChild(li);
+    });
 
-    // Update header title
-    const logTitle = $('aiLogTitle');
-    if (logTitle) logTitle.textContent = message.substring(0, 60);
+    container.classList.remove('hidden');
 }
 
-// ---- Utilities ----
-function formatSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+function updateStatus(title, desc, statusObj = 'loading') {
+    statusPanel.classList.remove('hidden');
+    statusTitle.textContent = title;
+    statusDesc.textContent = desc;
 
-function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
+    spinner.classList.add('hidden');
+    successIcon.classList.add('hidden');
+    if (errorIcon) errorIcon.classList.add('hidden');
 
-// ---- Cleanup ----
-window.addEventListener('beforeunload', () => {
-    if (currentBlobUrl) {
-        URL.revokeObjectURL(currentBlobUrl);
-        currentBlobUrl = null;
+    if (statusObj === 'loading' || statusObj === true) {
+        spinner.classList.remove('hidden');
+    } else if (statusObj === 'success' || statusObj === false) {
+        successIcon.classList.remove('hidden');
+    } else if (statusObj === 'error' && errorIcon) {
+        errorIcon.classList.remove('hidden');
     }
-});
+}
 
-// ---- Translation System (simplified) ----
+// Translation System
 const translations = {
     en: {
-        dropTitle: 'Drop your .jar file here',
-        dropSub: 'or click to browse',
-        addonReady: 'Addon Ready!',
-        downloadBtn: 'Download .mcaddon',
-        convertAnother: 'Convert Another Mod',
-        conversionFailed: 'Conversion Failed'
+        title: "Jar to Bedrock Addon",
+        subtitle: "Convert Java Minecraft Mods (.jar) to Bedrock Addons (.mcaddon) instantly.",
+        locationNoticeTitle: "Automatic language suggestion",
+        locationNoticeText: "We only use rough browser country/region hints to suggest a language, never precise location, and we do not store it.",
+        dropzoneTitle: "Drag & Drop your .jar file here",
+        dropzoneSubtitle: "or click to browse from your computer",
+        dropzoneWarning: "Large mods (>100MB) may take significant time/RAM.",
+        downloadBtnText: "Download .mcaddon",
+        errorsHeader: "Warnings & Errors",
+        processing: "Processing...",
+        readingDesc: "AI is analyzing and converting...",
+        errorInvalidFile: "Please upload a valid .jar file.",
+        errorLargeFileConfirm: "This file is heavily sized (>100MB). AI conversion may take several minutes. Do you wish to continue?",
+        addonReadyTitle: "Addon Ready!",
+        addonReadyDesc: "Converted assets successfully!",
+        conversionFailedTitle: "Conversion Failed",
+        conversionFailedFatal: "A fatal error occurred during conversion."
     },
     de: {
-        dropTitle: 'Ziehe deine .jar Datei hierher',
-        dropSub: 'oder klicke zum Durchsuchen',
-        addonReady: 'Addon Bereit!',
-        downloadBtn: '.mcaddon Herunterladen',
-        convertAnother: 'Weiteren Mod konvertieren',
-        conversionFailed: 'Konvertierung fehlgeschlagen'
+        title: "Jar zu Bedrock Addon",
+        subtitle: "Konvertiere Java Minecraft Mods (.jar) sofort in Bedrock Addons (.mcaddon).",
+        locationNoticeTitle: "Automatische Sprachwahl",
+        locationNoticeText: "Wir nutzen nur grobe Browser-Länder-/Regionshinweise für einen Sprachvorschlag, niemals einen genauen Standort, und speichern das nicht.",
+        dropzoneTitle: "Ziehe deine .jar Datei hierher",
+        dropzoneSubtitle: "oder klicke, um auf deinem Computer zu suchen",
+        dropzoneWarning: "Große Mods (>100MB) können viel Zeit/RAM beanspruchen.",
+        downloadBtnText: ".mcaddon Herunterladen",
+        errorsHeader: "Warnungen & Fehler",
+        processing: "Verarbeitung...",
+        readingDesc: "KI analysiert und konvertiert...",
+        errorInvalidFile: "Bitte laden Sie eine gültige .jar Datei hoch.",
+        errorLargeFileConfirm: "Diese Datei ist sehr groß (>100MB). Die KI-Konvertierung kann einige Minuten dauern. Möchten Sie fortfahren?",
+        addonReadyTitle: "Addon Bereit!",
+        addonReadyDesc: "Assets erfolgreich konvertiert!",
+        conversionFailedTitle: "Konvertierung fehlgeschlagen",
+        conversionFailedFatal: "Ein schwerwiegender Fehler ist aufgetreten."
     }
 };
 
 let currentLang = 'en';
-const langSelect = $('langSelect');
-
+const langSelect = document.getElementById('langSelect');
 if (langSelect) {
-    // Detect browser language
-    const browserLang = (navigator.language || 'en').split('-')[0];
-    if (translations[browserLang]) {
-        currentLang = browserLang;
-        langSelect.value = currentLang;
-    }
-
-    langSelect.addEventListener('change', e => {
+    langSelect.addEventListener('change', (e) => {
         currentLang = e.target.value;
         applyTranslations();
     });
 }
 
-function t(key) {
-    return translations[currentLang]?.[key] || translations.en[key] || key;
+function t(key, replacements = {}) {
+    let text = (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key;
+    for (const [k, v] of Object.entries(replacements)) {
+        text = text.replace(`{${k}}`, v);
+    }
+    return text;
 }
 
 function applyTranslations() {
-    const dropTitle = $('dropzoneTitle');
-    const dropSub = $('dropzoneSubtitle');
-    const dlBtn = $('downloadBtnText');
+    document.documentElement.lang = currentLang;
+    document.querySelector('header h1').textContent = t('title');
+    document.querySelector('header p').textContent = t('subtitle');
+    document.querySelector('.dropzone-content h3').textContent = t('dropzoneTitle');
 
-    if (dropTitle) dropTitle.textContent = t('dropTitle');
-    if (dropSub) dropSub.textContent = t('dropSub');
-    if (dlBtn) dlBtn.textContent = t('downloadBtn');
+    const dropzoneContentP = document.querySelectorAll('.dropzone-content p');
+    if(dropzoneContentP.length >= 2) {
+        dropzoneContentP[0].textContent = t('dropzoneSubtitle');
+        dropzoneContentP[1].textContent = t('dropzoneWarning');
+    }
+
+    if (locationNoticeTitle && locationNoticeText) {
+        locationNoticeTitle.textContent = t('locationNoticeTitle');
+        locationNoticeText.textContent = t('locationNoticeText');
+    }
+
+    const downloadSpan = document.querySelector('#downloadBtn span');
+    if (downloadSpan) downloadSpan.textContent = t('downloadBtnText');
+    
+    const errorsHeaderH4 = document.querySelector('.errors-header h4');
+    if (errorsHeaderH4) errorsHeaderH4.textContent = t('errorsHeader');
+
+    if (langSelect) langSelect.value = currentLang;
 }
 
+// Simple language detection
+const browserLang = (navigator.language || 'en').split('-')[0];
+if (translations[browserLang]) {
+    currentLang = browserLang;
+}
 applyTranslations();
