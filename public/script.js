@@ -2,9 +2,13 @@ import { AIEngine } from "./ai-engine.js";
 import { inject as injectAnalytics } from "@vercel/analytics";
 import { inject as injectSpeedInsights } from "@vercel/speed-insights";
 
-// Initialize Vercel services
-injectAnalytics();
-injectSpeedInsights();
+// Initialize Vercel services (only in production)
+try {
+    injectAnalytics();
+    injectSpeedInsights();
+} catch (e) {
+    console.warn("Vercel Insights could not be initialized (normal in local development):", e.message);
+}
 
 // Global variables
 let currentBlobUrl = null;
