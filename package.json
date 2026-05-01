@@ -1,0 +1,16 @@
+{
+  "name": "mc-mods-converter",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "analyze-library": "node scripts/analyze-library.js"
+  },
+  "dependencies": {
+    "ollama": "^0.5.14",
+    "jszip": "^3.10.1",
+    "cheerio": "^1.0.0",
+    "uuid": "^11.1.0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "",
+  "outputDirectory": "public",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 300
+    }
+  },
+  "env": {
+    "OLLAMA_URL": "@ollama-url"
+  }
+}

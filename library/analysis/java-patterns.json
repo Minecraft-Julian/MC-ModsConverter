@@ -1,0 +1,86 @@
+{
+  "version": "1.0.0",
+  "generated": null,
+  "note": "Run 'npm run analyze-library' after adding Java modpacks to library/java/",
+  "patterns": {
+    "folderStructure": {
+      "assets": [
+        "assets/<namespace>/textures/block/",
+        "assets/<namespace>/textures/item/",
+        "assets/<namespace>/textures/entity/",
+        "assets/<namespace>/textures/gui/",
+        "assets/<namespace>/textures/particle/",
+        "assets/<namespace>/models/block/",
+        "assets/<namespace>/models/item/",
+        "assets/<namespace>/blockstates/",
+        "assets/<namespace>/sounds/",
+        "assets/<namespace>/sounds.json",
+        "assets/<namespace>/lang/en_us.json",
+        "assets/<namespace>/particles/",
+        "assets/<namespace>/shaders/"
+      ],
+      "data": [
+        "data/<namespace>/recipes/",
+        "data/<namespace>/loot_tables/",
+        "data/<namespace>/tags/blocks/",
+        "data/<namespace>/tags/items/",
+        "data/<namespace>/advancements/",
+        "data/<namespace>/worldgen/"
+      ],
+      "meta": [
+        "fabric.mod.json",
+        "quilt.mod.json",
+        "META-INF/mods.toml",
+        "META-INF/neoforge.mods.toml",
+        "mcmod.info",
+        "pack.mcmeta",
+        "pack.png"
+      ]
+    },
+    "modelFormat": {
+      "note": "Java models use elements[] with from/to/faces, parent references, and texture variables",
+      "example": {
+        "parent": "minecraft:block/cube_all",
+        "textures": { "all": "namespace:block/my_block" },
+        "elements": [
+          {
+            "from": [0, 0, 0],
+            "to": [16, 16, 16],
+            "faces": {
+              "north": { "uv": [0, 0, 16, 16], "texture": "#all" },
+              "south": { "uv": [0, 0, 16, 16], "texture": "#all" },
+              "east": { "uv": [0, 0, 16, 16], "texture": "#all" },
+              "west": { "uv": [0, 0, 16, 16], "texture": "#all" },
+              "up": { "uv": [0, 0, 16, 16], "texture": "#all" },
+              "down": { "uv": [0, 0, 16, 16], "texture": "#all" }
+            }
+          }
+        ]
+      }
+    },
+    "blockstateFormat": {
+      "variants": {
+        "": { "model": "namespace:block/my_block" },
+        "facing=north": { "model": "namespace:block/my_block" },
+        "facing=east": { "model": "namespace:block/my_block", "y": 90 }
+      },
+      "multipart": [
+        { "apply": { "model": "namespace:block/my_block" } },
+        { "when": { "facing": "north" }, "apply": { "model": "namespace:block/my_block_part" } }
+      ]
+    },
+    "recipeFormat": {
+      "shaped": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": ["###", "# #", "###"],
+        "key": { "#": { "item": "namespace:my_item" } },
+        "result": { "item": "namespace:my_result", "count": 1 }
+      },
+      "shapeless": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [{ "item": "namespace:item1" }, { "item": "namespace:item2" }],
+        "result": { "item": "namespace:my_result", "count": 1 }
+      }
+    }
+  }
+}
