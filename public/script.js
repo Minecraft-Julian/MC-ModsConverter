@@ -32,7 +32,11 @@ const aiModelLabel = document.getElementById('aiModelLabel');
 const aiModelProgress = document.getElementById('aiModelProgress');
 
 // Setup Drag & Drop Listeners
-dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('click', (e) => {
+    if (e.target !== fileInput) {
+        fileInput.click();
+    }
+});
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropzone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);

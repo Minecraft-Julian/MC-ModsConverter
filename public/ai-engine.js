@@ -21,14 +21,20 @@ export class AIEngine {
     async init() {
         if (this.engine) return;
 
-        this.engine = new webllm.MLCEngine();
-        this.engine.setInitProgressCallback((report) => {
-            console.log("Model loading:", report.text);
-            if (this.onProgress) this.onProgress(report);
-        });
+        try {
+            this.engine = new webllm.MLCEngine();
+            this.engine.setInitProgressCallback((report) => {
+                const text = String(report.text || "Initializing...");
+                console.log("Model loading:", text);
+                if (this.onProgress) this.onProgress({ ...report, text });
+            });
 
-        await this.engine.reload(this.selectedModel);
-        await loadBuiltinPlugins(this.ps);
+            await this.engine.reload(this.selectedModel);
+            await loadBuiltinPlugins(this.ps);
+        } catch (e) {
+            console.error("AI Engine Init Error:", e);
+            throw new Error(`KI-Initialisierung fehlgeschlagen: ${e.message}. Unterstützt dein Browser WebGPU?`);
+        }
     }
 
     async convert(file, ctx) {
